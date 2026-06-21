@@ -32,6 +32,7 @@ export default function HomePage() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [showRequirementForm, setShowRequirementForm] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     fetch('/api/public/cities').then(r => r.json()).then(setCities);
@@ -116,25 +117,36 @@ export default function HomePage() {
             <button onClick={() => setShowRequirementForm(true)} className="hover:text-blue-600 transition-colors">Post Requirement</button>
             <Link href="/agent/login" className="text-blue-600 border border-blue-600 px-4 py-2 rounded-lg hover:bg-blue-600 hover:text-white transition-all">Agent Login</Link>
           </nav>
-          <button className="md:hidden text-gray-600 text-xl">☰</button>
+          <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="md:hidden w-10 h-10 flex items-center justify-center rounded-lg hover:bg-gray-100 text-gray-600 text-xl active:scale-95 transition-transform">
+            {mobileMenuOpen ? '✕' : '☰'}
+          </button>
         </div>
+        {/* Mobile Nav Menu */}
+        {mobileMenuOpen && (
+          <div className="md:hidden border-t border-gray-100 bg-white px-4 py-4 space-y-1 animate-in slide-in-from-top">
+            <Link href="/" onClick={() => setMobileMenuOpen(false)} className="block px-4 py-3 rounded-xl text-gray-700 font-medium hover:bg-gray-50 active:bg-gray-100">🏠 Home</Link>
+            <Link href="#properties" onClick={() => setMobileMenuOpen(false)} className="block px-4 py-3 rounded-xl text-gray-700 font-medium hover:bg-gray-50 active:bg-gray-100">🏢 Properties</Link>
+            <button onClick={() => { setShowRequirementForm(true); setMobileMenuOpen(false); }} className="block w-full text-left px-4 py-3 rounded-xl text-gray-700 font-medium hover:bg-gray-50 active:bg-gray-100">📝 Post Requirement</button>
+            <Link href="/agent/login" onClick={() => setMobileMenuOpen(false)} className="block px-4 py-3 rounded-xl text-blue-600 font-medium bg-blue-50 hover:bg-blue-100 active:bg-blue-200 text-center">Agent Login</Link>
+          </div>
+        )}
       </header>
 
       {/* Hero Section */}
       <section className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900"></div>
         <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.4\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")' }}></div>
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-28">
           <div className="text-center">
-            <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-4 py-2 mb-6">
+            <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-3 py-1.5 mb-4 md:mb-6">
               <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
-              <span className="text-white/90 text-sm font-medium">Now serving {selectedCity}</span>
+              <span className="text-white/90 text-xs md:text-sm font-medium">Now serving {selectedCity}</span>
             </div>
-            <h1 className="text-4xl md:text-6xl font-bold text-white mb-4 tracking-tight">
+            <h1 className="text-3xl md:text-6xl font-bold text-white mb-3 md:mb-4 tracking-tight">
               Premium Commercial<br />
               <span className="bg-gradient-to-r from-blue-300 to-cyan-300 bg-clip-text text-transparent">Real Estate</span>
             </h1>
-            <p className="text-blue-100/80 text-lg md:text-xl max-w-2xl mx-auto mb-10">
+            <p className="text-blue-100/80 text-base md:text-xl max-w-2xl mx-auto mb-6 md:mb-10 px-4">
               Discover the finest retail spaces, offices, co-working hubs & investment opportunities
             </p>
 
@@ -462,8 +474,8 @@ function RequirementModal({ onClose, cities }: { onClose: () => void; cities: { 
             <button onClick={onClose} className="bg-blue-600 text-white px-6 py-3 rounded-xl font-medium hover:bg-blue-700">Done</button>
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className="p-6 space-y-4">
-            <div className="grid grid-cols-2 gap-4">
+          <form onSubmit={handleSubmit} className="p-5 md:p-6 space-y-3 md:space-y-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4">
               <div>
                 <label className="block text-xs font-medium text-gray-600 mb-1.5">Name *</label>
                 <input type="text" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} required className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm text-gray-800 focus:ring-2 focus:ring-blue-100 focus:border-blue-300 outline-none" />
@@ -473,7 +485,7 @@ function RequirementModal({ onClose, cities }: { onClose: () => void; cities: { 
                 <input type="tel" value={form.mobile} onChange={e => setForm({ ...form, mobile: e.target.value })} required className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm text-gray-800 focus:ring-2 focus:ring-blue-100 focus:border-blue-300 outline-none" />
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4">
               <div>
                 <label className="block text-xs font-medium text-gray-600 mb-1.5">City *</label>
                 <select value={form.city} onChange={e => setForm({ ...form, city: e.target.value })} required className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm text-gray-800 focus:ring-2 focus:ring-blue-100 focus:border-blue-300 outline-none">
@@ -490,7 +502,7 @@ function RequirementModal({ onClose, cities }: { onClose: () => void; cities: { 
                 </select>
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4">
               <div>
                 <label className="block text-xs font-medium text-gray-600 mb-1.5">Property Type</label>
                 <select value={form.propertyType} onChange={e => setForm({ ...form, propertyType: e.target.value })} className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm text-gray-800 focus:ring-2 focus:ring-blue-100 focus:border-blue-300 outline-none">
@@ -503,7 +515,7 @@ function RequirementModal({ onClose, cities }: { onClose: () => void; cities: { 
                 <input type="text" value={form.location} onChange={e => setForm({ ...form, location: e.target.value })} placeholder="e.g. Banjara Hills" className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm text-gray-800 focus:ring-2 focus:ring-blue-100 focus:border-blue-300 outline-none" />
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4">
               <div>
                 <label className="block text-xs font-medium text-gray-600 mb-1.5">Area Required</label>
                 <input type="text" value={form.area} onChange={e => setForm({ ...form, area: e.target.value })} placeholder="e.g. 2000 sq ft" className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm text-gray-800 focus:ring-2 focus:ring-blue-100 focus:border-blue-300 outline-none" />
