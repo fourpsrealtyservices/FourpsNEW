@@ -95,7 +95,7 @@ export default function HomePage() {
 
           {/* For Lease / For Sale Toggle */}
           <div className="flex justify-center gap-2 mb-6">
-            <button onClick={() => { setTransactionFilter(transactionFilter === 'lease' ? '' : 'lease'); setCategoryFilter(''); }} className={`px-5 py-2.5 rounded-xl text-sm font-bold transition-all active:scale-95 ${transactionFilter === 'lease' ? 'bg-emerald-500 text-white shadow-lg' : 'bg-white/15 backdrop-blur-sm text-white border border-white/20'}`}>
+            <button onClick={() => { setTransactionFilter(transactionFilter === 'lease' ? '' : 'lease'); setCategoryFilter(''); }} className={`px-5 py-2.5 rounded-xl text-sm font-bold transition-all active:scale-95 ${transactionFilter === 'lease' ? 'bg-violet-500 text-white shadow-lg' : 'bg-white/15 backdrop-blur-sm text-white border border-white/20'}`}>
               For Lease
             </button>
             <button onClick={() => { setTransactionFilter(transactionFilter === 'sale' ? '' : 'sale'); setCategoryFilter(''); }} className={`px-5 py-2.5 rounded-xl text-sm font-bold transition-all active:scale-95 ${transactionFilter === 'sale' ? 'bg-violet-500 text-white shadow-lg' : 'bg-white/15 backdrop-blur-sm text-white border border-white/20'}`}>
