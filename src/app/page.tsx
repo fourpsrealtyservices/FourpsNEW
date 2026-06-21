@@ -12,7 +12,7 @@ interface Property {
   photos: { url: string; isCover: boolean; isMasked: boolean; label: string }[]; createdAt: string;
 }
 
-const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '919876543210';
+const WHATSAPP_NUMBER = '919059909675';
 
 const AREA_SUGGESTIONS = [
   'Banjara Hills', 'Jubilee Hills', 'HITEC City', 'Madhapur', 'Gachibowli', 'Kondapur',
@@ -161,6 +161,38 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* About 4Ps Section */}
+      <section className="bg-white py-14 border-b border-gray-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-3xl mx-auto text-center">
+            <h2 className="text-2xl md:text-3xl font-extrabold text-gray-900 mb-3">4Ps Realty Services</h2>
+            <p className="text-gray-600 text-base md:text-lg mb-8">Exclusive services in Commercial Real Estate</p>
+            <div className="mb-8">
+              <h3 className="text-lg font-bold text-gray-800 mb-5">What are the 4Ps?</h3>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {[
+                  { letter: 'P', word: 'Product', icon: '📦' },
+                  { letter: 'P', word: 'Price', icon: '💰' },
+                  { letter: 'P', word: 'Promotion', icon: '📣' },
+                  { letter: 'P', word: 'Place', icon: '📍' },
+                ].map(item => (
+                  <div key={item.word} className={`p-4 rounded-2xl border-2 ${item.word === 'Place' ? 'border-blue-500 bg-blue-50' : 'border-gray-100 bg-gray-50'}`}>
+                    <span className="text-2xl block mb-1">{item.icon}</span>
+                    <p className={`font-extrabold text-lg ${item.word === 'Place' ? 'text-blue-700' : 'text-gray-800'}`}>{item.word}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <p className="text-gray-600 text-sm md:text-base leading-relaxed">
+              Every business runs on the 4Ps and we specialize in the most crucial one: <span className="font-bold text-blue-700">Place</span>.
+            </p>
+            <p className="text-gray-500 text-sm md:text-base leading-relaxed mt-3">
+              We help brands, investors, and companies find the right commercial locations across Hyderabad through data-driven insights and strong market expertise.
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* Properties Section - Only 2 rows (6 items) */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <div className="flex items-center justify-between mb-6">
@@ -226,6 +258,32 @@ export default function HomePage() {
         )}
       </section>
 
+      {/* Blog / Insights Section */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
+        <h2 className="text-2xl md:text-3xl font-extrabold text-gray-900 text-center mb-3">Insights & Market Updates</h2>
+        <p className="text-gray-500 text-center mb-10">Stay informed about the commercial real estate market</p>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {[
+            { title: 'Why HITEC City is the #1 Choice for IT Offices in 2025', tag: 'Market Trends', date: 'May 2025', img: 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=600&q=80' },
+            { title: 'Complete Guide: Leasing Commercial Space in Hyderabad', tag: 'Guide', date: 'Apr 2025', img: 'https://images.unsplash.com/photo-1560179707-f14e90ef3623?auto=format&fit=crop&w=600&q=80' },
+            { title: 'Top 5 Emerging Commercial Hubs in Hyderabad', tag: 'Insights', date: 'Mar 2025', img: 'https://images.unsplash.com/photo-1582407947092-79ad8656ff9d?auto=format&fit=crop&w=600&q=80' },
+          ].map((blog, i) => (
+            <div key={i} className="bg-white rounded-2xl border border-gray-100 overflow-hidden hover:shadow-lg transition-shadow group cursor-pointer">
+              <div className="h-40 overflow-hidden">
+                <img src={blog.img} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+              </div>
+              <div className="p-5">
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded">{blog.tag}</span>
+                  <span className="text-xs text-gray-400">{blog.date}</span>
+                </div>
+                <h3 className="font-bold text-gray-900 text-sm leading-snug group-hover:text-blue-600 transition-colors">{blog.title}</h3>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
       {/* Client Testimonials */}
       {testimonials.length > 0 && (
         <section className="bg-white py-14 border-t border-gray-100">
@@ -254,32 +312,6 @@ export default function HomePage() {
         </section>
       )}
 
-      {/* Blog / Insights Section */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
-        <h2 className="text-2xl md:text-3xl font-extrabold text-gray-900 text-center mb-3">Insights & Market Updates</h2>
-        <p className="text-gray-500 text-center mb-10">Stay informed about the commercial real estate market</p>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {[
-            { title: 'Why HITEC City is the #1 Choice for IT Offices in 2025', tag: 'Market Trends', date: 'May 2025', img: 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=600&q=80' },
-            { title: 'Complete Guide: Leasing Commercial Space in Hyderabad', tag: 'Guide', date: 'Apr 2025', img: 'https://images.unsplash.com/photo-1560179707-f14e90ef3623?auto=format&fit=crop&w=600&q=80' },
-            { title: 'Top 5 Emerging Commercial Hubs in Hyderabad', tag: 'Insights', date: 'Mar 2025', img: 'https://images.unsplash.com/photo-1582407947092-79ad8656ff9d?auto=format&fit=crop&w=600&q=80' },
-          ].map((blog, i) => (
-            <div key={i} className="bg-white rounded-2xl border border-gray-100 overflow-hidden hover:shadow-lg transition-shadow group cursor-pointer">
-              <div className="h-40 overflow-hidden">
-                <img src={blog.img} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-              </div>
-              <div className="p-5">
-                <div className="flex items-center gap-2 mb-2">
-                  <span className="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded">{blog.tag}</span>
-                  <span className="text-xs text-gray-400">{blog.date}</span>
-                </div>
-                <h3 className="font-bold text-gray-900 text-sm leading-snug group-hover:text-blue-600 transition-colors">{blog.title}</h3>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
       {/* Why FourPs */}
       <section className="bg-white border-t border-gray-100 py-14">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -302,15 +334,15 @@ export default function HomePage() {
       </section>
 
       {/* CTA */}
-      <section className="relative py-14 overflow-hidden">
+      <section className="relative py-16 overflow-hidden">
         <div className="absolute inset-0">
           <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1920&q=80" alt="" className="w-full h-full object-cover" />
           <div className="absolute inset-0 bg-gray-900/80"></div>
         </div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-xl md:text-2xl font-extrabold text-white mb-2">Can&apos;t find what you need?</h2>
-          <p className="text-blue-100 text-sm mb-5">Tell us your requirements and we&apos;ll find the perfect space</p>
-          <button onClick={() => setShowRequirementForm(true)} className="bg-white text-blue-600 px-7 py-3.5 rounded-xl font-bold text-sm hover:bg-blue-50 shadow-lg active:scale-95 transition-all">Post Your Requirement →</button>
+          <h2 className="text-2xl md:text-4xl font-extrabold text-white mb-3">Can&apos;t find what you need?</h2>
+          <p className="text-blue-100 text-base md:text-lg mb-6">Tell us your requirements and we&apos;ll find the perfect space</p>
+          <button onClick={() => setShowRequirementForm(true)} className="bg-white text-blue-600 px-8 py-4 rounded-xl font-bold text-base hover:bg-blue-50 shadow-lg active:scale-95 transition-all">Post Your Requirement →</button>
         </div>
       </section>
 
@@ -356,48 +388,39 @@ export default function HomePage() {
   );
 }
 
-function RequirementModal({ onClose, cities }: { onClose: () => void; cities: { _id: string; name: string; status: string }[] }) {
-  const [form, setForm] = useState({ name: '', mobile: '', city: '', lookingFor: '', propertyType: '', location: '', area: '', budget: '', notes: '' });
-  const [submitting, setSubmitting] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
+function RequirementModal({ onClose }: { onClose: () => void; cities?: { _id: string; name: string; status: string }[] }) {
+  const [form, setForm] = useState({ name: '', mobile: '', location: '', message: '' });
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault(); setSubmitting(true);
-    const res = await fetch('/api/public/leads', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...form, type: 'requirement' }) });
-    if (res.ok) setSubmitted(true); setSubmitting(false);
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const template = `Hi FourPs! I'm looking for a commercial property.
+
+Name: ${form.name}
+Mobile: ${form.mobile}
+Location: ${form.location}
+Message: ${form.message}`;
+    const encoded = encodeURIComponent(template);
+    window.open(`https://wa.me/919059909675?text=${encoded}`, '_blank');
+    onClose();
   };
 
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center z-[100]" onClick={onClose}>
-      <div className="bg-white rounded-t-3xl sm:rounded-3xl w-full sm:max-w-lg max-h-[85vh] overflow-y-auto shadow-2xl" onClick={e => e.stopPropagation()}>
+      <div className="bg-white rounded-t-3xl sm:rounded-3xl w-full sm:max-w-md max-h-[85vh] overflow-y-auto shadow-2xl" onClick={e => e.stopPropagation()}>
         <div className="p-5 border-b border-gray-100 flex justify-between items-center sticky top-0 bg-white rounded-t-3xl z-10">
-          <div><h3 className="text-lg font-extrabold text-gray-900">Post Your Requirement</h3><p className="text-xs text-gray-500">Tell us what you&apos;re looking for</p></div>
+          <div><h3 className="text-lg font-extrabold text-gray-900">Post Your Requirement</h3><p className="text-xs text-gray-500">We&apos;ll get back to you on WhatsApp</p></div>
           <button onClick={onClose} className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-400">✕</button>
         </div>
-        {submitted ? (
-          <div className="p-8 text-center"><div className="text-5xl mb-3">✅</div><h4 className="text-lg font-bold text-gray-900 mb-2">Submitted!</h4><p className="text-gray-500 text-sm mb-5">We&apos;ll get back to you shortly.</p><button onClick={onClose} className="bg-blue-600 text-white px-5 py-2.5 rounded-xl font-medium text-sm">Done</button></div>
-        ) : (
-          <form onSubmit={handleSubmit} className="p-5 space-y-3">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div><label className="block text-xs font-semibold text-gray-600 mb-1">Name *</label><input type="text" value={form.name} onChange={e => setForm({...form, name: e.target.value})} required className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm text-gray-800 outline-none focus:border-blue-300" /></div>
-              <div><label className="block text-xs font-semibold text-gray-600 mb-1">Mobile *</label><input type="tel" value={form.mobile} onChange={e => setForm({...form, mobile: e.target.value})} required className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm text-gray-800 outline-none focus:border-blue-300" /></div>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div><label className="block text-xs font-semibold text-gray-600 mb-1">City *</label><select value={form.city} onChange={e => setForm({...form, city: e.target.value})} required className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm text-gray-800 outline-none focus:border-blue-300"><option value="">Select</option>{cities.filter(c=>c.status!=='hidden').map(c=><option key={c._id} value={c.name}>{c.name}</option>)}</select></div>
-              <div><label className="block text-xs font-semibold text-gray-600 mb-1">Looking For *</label><select value={form.lookingFor} onChange={e => setForm({...form, lookingFor: e.target.value})} required className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm text-gray-800 outline-none focus:border-blue-300"><option value="">Select</option><option value="Lease">Lease</option><option value="Sale">Sale</option></select></div>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div><label className="block text-xs font-semibold text-gray-600 mb-1">Property Type</label><select value={form.propertyType} onChange={e => setForm({...form, propertyType: e.target.value})} className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm text-gray-800 outline-none focus:border-blue-300"><option value="">Select</option><option>Retail</option><option>Office</option><option>Co-working</option><option>Plot/Warehouse</option></select></div>
-              <div><label className="block text-xs font-semibold text-gray-600 mb-1">Area/Locality</label><input type="text" value={form.location} onChange={e => setForm({...form, location: e.target.value})} placeholder="e.g. HITEC City" className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm text-gray-800 outline-none focus:border-blue-300" /></div>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div><label className="block text-xs font-semibold text-gray-600 mb-1">Area Required</label><input type="text" value={form.area} onChange={e => setForm({...form, area: e.target.value})} placeholder="e.g. 2000 sq ft" className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm text-gray-800 outline-none focus:border-blue-300" /></div>
-              <div><label className="block text-xs font-semibold text-gray-600 mb-1">Budget</label><input type="text" value={form.budget} onChange={e => setForm({...form, budget: e.target.value})} placeholder="e.g. ₹50-60/sq ft" className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm text-gray-800 outline-none focus:border-blue-300" /></div>
-            </div>
-            <div><label className="block text-xs font-semibold text-gray-600 mb-1">Notes</label><textarea value={form.notes} onChange={e => setForm({...form, notes: e.target.value})} rows={2} placeholder="Any specific requirements..." className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm text-gray-800 outline-none focus:border-blue-300 resize-none" /></div>
-            <button type="submit" disabled={submitting} className="w-full bg-blue-600 text-white py-3.5 rounded-xl font-bold text-sm disabled:opacity-50 active:scale-95 transition-all">{submitting ? 'Submitting...' : 'Submit Requirement'}</button>
-          </form>
-        )}
+        <form onSubmit={handleSubmit} className="p-5 space-y-4">
+          <div><label className="block text-xs font-semibold text-gray-600 mb-1">Name *</label><input type="text" value={form.name} onChange={e => setForm({...form, name: e.target.value})} required placeholder="Your name" className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm text-gray-800 outline-none focus:border-blue-300" /></div>
+          <div><label className="block text-xs font-semibold text-gray-600 mb-1">Mobile *</label><input type="tel" value={form.mobile} onChange={e => setForm({...form, mobile: e.target.value})} required placeholder="+91 98765 43210" className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm text-gray-800 outline-none focus:border-blue-300" /></div>
+          <div><label className="block text-xs font-semibold text-gray-600 mb-1">Preferred Location *</label><input type="text" value={form.location} onChange={e => setForm({...form, location: e.target.value})} required placeholder="e.g. HITEC City, Madhapur" className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm text-gray-800 outline-none focus:border-blue-300" /></div>
+          <div><label className="block text-xs font-semibold text-gray-600 mb-1">Message</label><textarea value={form.message} onChange={e => setForm({...form, message: e.target.value})} rows={3} placeholder="Tell us what you're looking for..." className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm text-gray-800 outline-none focus:border-blue-300 resize-none" /></div>
+          <button type="submit" className="w-full bg-green-600 text-white py-3.5 rounded-xl font-bold text-sm active:scale-95 transition-all flex items-center justify-center gap-2 hover:bg-green-700">
+            <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/></svg>
+            Send on WhatsApp
+          </button>
+        </form>
       </div>
     </div>
   );

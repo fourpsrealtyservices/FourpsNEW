@@ -17,7 +17,7 @@ interface Property {
   createdAt: string;
 }
 
-const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '919876543210';
+const WHATSAPP_NUMBER = '919059909675';
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.fourps.in';
 
 export default function ListingPage({ params }: { params: Promise<{ id: string }> }) {
