@@ -308,7 +308,6 @@ export default function HomePage() {
           <div className="absolute inset-0 bg-gray-900/80"></div>
         </div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <img src="/logo.webp" alt="FourPs Realty" className="h-10 w-auto mx-auto mb-4" />
           <h2 className="text-xl md:text-2xl font-extrabold text-white mb-2">Can&apos;t find what you need?</h2>
           <p className="text-blue-100 text-sm mb-5">Tell us your requirements and we&apos;ll find the perfect space</p>
           <button onClick={() => setShowRequirementForm(true)} className="bg-white text-blue-600 px-7 py-3.5 rounded-xl font-bold text-sm hover:bg-blue-50 shadow-lg active:scale-95 transition-all">Post Your Requirement →</button>
