@@ -29,7 +29,7 @@ export default function AgentSubmitPage() {
     if (transactionType && category) {
       const fields = getFieldsForCategory(transactionType, category);
       const init: Record<string, { value: string | string[]; checked: boolean; unit?: string }> = {};
-      fields.forEach(f => { init[f.key] = { value: f.type === 'multi-checkbox' ? [] : '', checked: true, unit: f.unit || '' }; });
+      fields.forEach(f => { init[f.key] = { value: f.type === 'multi-checkbox' ? [] : '', checked: false, unit: f.unit || '' }; });
       setFieldValues(init);
     }
   }, [transactionType, category]);
@@ -84,6 +84,7 @@ export default function AgentSubmitPage() {
   const renderField = (field: FieldDefinition) => {
     const fs = fieldValues[field.key];
     if (!fs) return null;
+    const isCFP = fs.value === 'Call for Price';
     return (
       <div key={field.key} className="border rounded-lg p-3 bg-white">
         <div className="flex items-center gap-2 mb-1">
@@ -92,8 +93,21 @@ export default function AgentSubmitPage() {
         </div>
         {fs.checked && (
           <div className="ml-6">
-            {(field.type === 'text' || field.type === 'number') && (
+            {field.hasCFP && (
+              <label className="flex items-center gap-2 mb-2 text-sm cursor-pointer">
+                <input type="checkbox" checked={isCFP} onChange={e => setFieldValues(p => ({ ...p, [field.key]: { ...p[field.key], value: e.target.checked ? 'Call for Price' : '' } }))} className="w-3.5 h-3.5" />
+                <span className="text-orange-700 font-medium">Call for Price</span>
+              </label>
+            )}
+            {!isCFP && (field.type === 'text' || field.type === 'number') && (
               <input type={field.type} value={fs.value as string} onChange={e => setFieldValues(p => ({ ...p, [field.key]: { ...p[field.key], value: e.target.value } }))} placeholder={field.placeholder || ''} className="w-full px-3 py-2 border rounded text-sm text-gray-800" />
+            )}
+            {!isCFP && field.type === 'range' && (
+              <div className="flex gap-2 items-center">
+                <input type="number" value={(fs.value as string).split(' to ')[0] || ''} onChange={e => { const max = (fs.value as string).split(' to ')[1] || ''; setFieldValues(p => ({ ...p, [field.key]: { ...p[field.key], value: `${e.target.value} to ${max}` } })); }} placeholder={field.placeholderMin || 'Min'} className="w-full px-3 py-2 border rounded text-sm text-gray-800" />
+                <span className="text-sm text-gray-500">to</span>
+                <input type="number" value={(fs.value as string).split(' to ')[1] || ''} onChange={e => { const min = (fs.value as string).split(' to ')[0] || ''; setFieldValues(p => ({ ...p, [field.key]: { ...p[field.key], value: `${min} to ${e.target.value}` } })); }} placeholder={field.placeholderMax || 'Max'} className="w-full px-3 py-2 border rounded text-sm text-gray-800" />
+              </div>
             )}
             {field.type === 'textarea' && (
               <textarea value={fs.value as string} onChange={e => setFieldValues(p => ({ ...p, [field.key]: { ...p[field.key], value: e.target.value } }))} rows={2} className="w-full px-3 py-2 border rounded text-sm text-gray-800" />

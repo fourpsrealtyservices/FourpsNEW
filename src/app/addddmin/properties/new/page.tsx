@@ -63,7 +63,7 @@ export default function NewPropertyPage() {
       fields.forEach((field) => {
         initialValues[field.key] = {
           value: field.type === 'multi-checkbox' ? [] : '',
-          checked: true, // Default all checked
+          checked: false, // Default all UNchecked — admin selects what's relevant
           unit: field.unit || '',
         };
       });
@@ -153,6 +153,8 @@ export default function NewPropertyPage() {
     const fieldState = fieldValues[field.key];
     if (!fieldState) return null;
 
+    const isCFP = fieldState.value === 'Call for Price';
+
     return (
       <div key={field.key} className="border rounded-lg p-4 bg-white">
         <div className="flex items-center gap-3 mb-2">
@@ -171,7 +173,23 @@ export default function NewPropertyPage() {
 
         {fieldState.checked && (
           <div className="ml-7">
-            {field.type === 'text' && (
+            {/* Call for Price toggle for price fields */}
+            {field.hasCFP && (
+              <label className="flex items-center gap-2 mb-2 text-sm cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={isCFP}
+                  onChange={(e) => setFieldValues((prev) => ({
+                    ...prev,
+                    [field.key]: { ...prev[field.key], value: e.target.checked ? 'Call for Price' : '' }
+                  }))}
+                  className="w-3.5 h-3.5"
+                />
+                <span className="text-orange-700 font-medium">Call for Price</span>
+              </label>
+            )}
+
+            {!isCFP && field.type === 'text' && (
               <input
                 type="text"
                 value={fieldState.value as string}
@@ -183,7 +201,7 @@ export default function NewPropertyPage() {
                 className="w-full px-3 py-2 border rounded-lg text-gray-800 text-sm"
               />
             )}
-            {field.type === 'number' && (
+            {!isCFP && field.type === 'number' && (
               <div className="flex gap-2 items-center">
                 <input
                   type="number"
@@ -193,6 +211,38 @@ export default function NewPropertyPage() {
                     [field.key]: { ...prev[field.key], value: e.target.value }
                   }))}
                   placeholder={field.placeholder || '0'}
+                  className="w-full px-3 py-2 border rounded-lg text-gray-800 text-sm"
+                />
+                {field.unit && <span className="text-sm text-gray-500 whitespace-nowrap">{field.unit}</span>}
+              </div>
+            )}
+            {!isCFP && field.type === 'range' && (
+              <div className="flex gap-2 items-center">
+                <input
+                  type="number"
+                  value={(fieldState.value as string).split(' to ')[0] || ''}
+                  onChange={(e) => {
+                    const max = (fieldState.value as string).split(' to ')[1] || '';
+                    setFieldValues((prev) => ({
+                      ...prev,
+                      [field.key]: { ...prev[field.key], value: `${e.target.value} to ${max}` }
+                    }));
+                  }}
+                  placeholder={field.placeholderMin || 'Min'}
+                  className="w-full px-3 py-2 border rounded-lg text-gray-800 text-sm"
+                />
+                <span className="text-sm text-gray-500">to</span>
+                <input
+                  type="number"
+                  value={(fieldState.value as string).split(' to ')[1] || ''}
+                  onChange={(e) => {
+                    const min = (fieldState.value as string).split(' to ')[0] || '';
+                    setFieldValues((prev) => ({
+                      ...prev,
+                      [field.key]: { ...prev[field.key], value: `${min} to ${e.target.value}` }
+                    }));
+                  }}
+                  placeholder={field.placeholderMax || 'Max'}
                   className="w-full px-3 py-2 border rounded-lg text-gray-800 text-sm"
                 />
                 {field.unit && <span className="text-sm text-gray-500 whitespace-nowrap">{field.unit}</span>}

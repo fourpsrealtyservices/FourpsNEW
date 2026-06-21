@@ -141,7 +141,11 @@ export default function ManagePropertiesPage() {
                       By: {property.submittedBy?.name} • {new Date(property.createdAt).toLocaleDateString()}
                     </p>
                   </div>
-                  <div className="flex gap-2">
+                  <div className="flex gap-2 items-center">
+                    {property.status === 'published' && (
+                      <a href={`/listing/${property.propertyId}`} target="_blank" className="text-blue-600 hover:text-blue-800 text-sm font-medium border px-2 py-1 rounded">View</a>
+                    )}
+                    <Link href={`/addddmin/properties/${property._id}/edit`} className="text-indigo-600 hover:text-indigo-800 text-sm font-medium border px-2 py-1 rounded">Edit</Link>
                     {property.status === 'pending' && (
                       <>
                         <button onClick={() => handleStatusChange(property._id, 'published')} className="text-green-600 hover:text-green-800 text-sm font-medium">Approve</button>

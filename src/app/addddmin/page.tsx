@@ -1,90 +1,119 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { useState, useEffect } from 'react';
+
+interface Stats {
+  properties: number;
+  pending: number;
+  leads: number;
+  agents: number;
+}
 
 export default function AdminDashboard() {
-  const router = useRouter();
+  const [stats, setStats] = useState<Stats>({ properties: 0, pending: 0, leads: 0, agents: 0 });
 
-  const handleLogout = async () => {
-    await fetch('/api/auth/logout', { method: 'POST' });
-    router.push('/addddmin/login');
-  };
+  useEffect(() => {
+    // Fetch quick stats
+    Promise.all([
+      fetch('/api/admin/properties').then(r => r.json()),
+      fetch('/api/admin/leads').then(r => r.json()),
+      fetch('/api/admin/agents').then(r => r.json()),
+    ]).then(([props, leads, agents]) => {
+      const propList = Array.isArray(props) ? props : props.properties || [];
+      const leadList = Array.isArray(leads) ? leads : leads.leads || [];
+      const agentList = Array.isArray(agents) ? agents : [];
+      setStats({
+        properties: propList.filter((p: { status: string }) => p.status === 'published').length,
+        pending: propList.filter((p: { status: string }) => p.status === 'pending').length,
+        leads: leadList.length,
+        agents: agentList.filter((a: { status: string }) => a.status === 'approved').length,
+      });
+    });
+  }, []);
 
   const menuItems = [
-    {
-      title: 'Upload New Property',
-      description: 'Add a new property listing',
-      href: '/addddmin/properties/new',
-      icon: '🏢',
-      color: 'bg-blue-50 border-blue-200 hover:bg-blue-100',
-    },
-    {
-      title: 'Pending Approvals',
-      description: 'Review agent submissions',
-      href: '/addddmin/properties?status=pending',
-      icon: '⏳',
-      color: 'bg-yellow-50 border-yellow-200 hover:bg-yellow-100',
-    },
-    {
-      title: 'Manage Listings',
-      description: 'Edit, unpublish or delete properties',
-      href: '/addddmin/properties',
-      icon: '📋',
-      color: 'bg-green-50 border-green-200 hover:bg-green-100',
-    },
-    {
-      title: 'Agent Management',
-      description: 'Add or manage agent accounts',
-      href: '/addddmin/agents',
-      icon: '👥',
-      color: 'bg-purple-50 border-purple-200 hover:bg-purple-100',
-    },
-    {
-      title: 'Leads & Enquiries',
-      description: 'View visitor enquiries and requirements',
-      href: '/addddmin/leads',
-      icon: '📞',
-      color: 'bg-orange-50 border-orange-200 hover:bg-orange-100',
-    },
-    {
-      title: 'City Management',
-      description: 'Manage cities and their status',
-      href: '/addddmin/cities',
-      icon: '🏙️',
-      color: 'bg-teal-50 border-teal-200 hover:bg-teal-100',
-    },
+    { href: '/addddmin/properties/new', icon: '➕', title: 'Upload Property', desc: 'Add a new listing', color: 'from-blue-500 to-blue-600' },
+    { href: '/addddmin/approvals', icon: '✅', title: 'Pending Approvals', desc: `${stats.pending} submissions waiting`, color: 'from-amber-500 to-orange-500', badge: stats.pending },
+    { href: '/addddmin/properties', icon: '🏢', title: 'Manage Listings', desc: `${stats.properties} live properties`, color: 'from-emerald-500 to-teal-600' },
+    { href: '/addddmin/leads', icon: '📋', title: 'Leads & Enquiries', desc: `${stats.leads} total leads`, color: 'from-purple-500 to-indigo-600' },
+    { href: '/addddmin/agents', icon: '👥', title: 'Agent Management', desc: `${stats.agents} active agents`, color: 'from-pink-500 to-rose-600' },
+    { href: '/addddmin/cities', icon: '🌍', title: 'City Settings', desc: 'Manage active cities', color: 'from-cyan-500 to-blue-600' },
   ];
 
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b">
+      <header className="bg-white border-b border-gray-100 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-          <h1 className="text-xl font-bold text-gray-800">FourPs Admin Panel</h1>
-          <button
-            onClick={handleLogout}
-            className="text-sm text-gray-600 hover:text-red-600 transition-colors"
-          >
-            Logout
-          </button>
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-xl flex items-center justify-center text-white font-bold text-sm">4P</div>
+            <div>
+              <h1 className="text-lg font-bold text-gray-900">Admin Dashboard</h1>
+              <p className="text-xs text-gray-400">FourPs.in Management</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-3">
+            <Link href="/" target="_blank" className="text-sm text-gray-500 hover:text-blue-600 px-3 py-2 rounded-lg hover:bg-gray-50 transition-colors">
+              🌐 View Site
+            </Link>
+            <a href="/api/auth/logout" className="text-sm text-red-500 hover:text-red-700 px-3 py-2 rounded-lg hover:bg-red-50 transition-colors font-medium">
+              Logout
+            </a>
+          </div>
         </div>
       </header>
 
-      {/* Dashboard Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <h2 className="text-2xl font-semibold text-gray-800 mb-6">Dashboard</h2>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* Welcome */}
+        <div className="mb-8">
+          <h2 className="text-2xl font-bold text-gray-900 mb-1">Welcome back! 👋</h2>
+          <p className="text-gray-500">Here&apos;s what&apos;s happening with your listings today.</p>
+        </div>
+
+        {/* Stats Cards */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+          <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm">
+            <p className="text-3xl font-bold text-gray-900">{stats.properties}</p>
+            <p className="text-sm text-gray-500 mt-1">Live Listings</p>
+          </div>
+          <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm">
+            <p className="text-3xl font-bold text-amber-600">{stats.pending}</p>
+            <p className="text-sm text-gray-500 mt-1">Pending Review</p>
+          </div>
+          <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm">
+            <p className="text-3xl font-bold text-purple-600">{stats.leads}</p>
+            <p className="text-sm text-gray-500 mt-1">Total Leads</p>
+          </div>
+          <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm">
+            <p className="text-3xl font-bold text-emerald-600">{stats.agents}</p>
+            <p className="text-sm text-gray-500 mt-1">Active Agents</p>
+          </div>
+        </div>
+
+        {/* Quick Actions Grid */}
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {menuItems.map((item) => (
             <Link
-              key={item.title}
+              key={item.href}
               href={item.href}
-              className={`block p-6 rounded-xl border-2 transition-all ${item.color}`}
+              className="group bg-white rounded-2xl border border-gray-100 p-6 hover:shadow-lg hover:border-blue-100 transition-all duration-200 relative overflow-hidden"
             >
-              <div className="text-3xl mb-3">{item.icon}</div>
-              <h3 className="text-lg font-semibold text-gray-800">{item.title}</h3>
-              <p className="text-sm text-gray-600 mt-1">{item.description}</p>
+              <div className={`absolute top-0 right-0 w-24 h-24 bg-gradient-to-br ${item.color} opacity-5 rounded-bl-full group-hover:opacity-10 transition-opacity`}></div>
+              <div className="flex items-start gap-4">
+                <div className={`w-12 h-12 bg-gradient-to-br ${item.color} rounded-xl flex items-center justify-center text-xl shadow-lg shadow-blue-100/50`}>
+                  {item.icon}
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-center gap-2">
+                    <h3 className="font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">{item.title}</h3>
+                    {item.badge ? <span className="bg-amber-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">{item.badge}</span> : null}
+                  </div>
+                  <p className="text-sm text-gray-500 mt-0.5">{item.desc}</p>
+                </div>
+                <span className="text-gray-300 group-hover:text-blue-400 transition-colors text-lg">→</span>
+              </div>
             </Link>
           ))}
         </div>

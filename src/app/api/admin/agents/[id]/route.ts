@@ -2,6 +2,13 @@ import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/mongodb';
 import Agent from '@/models/Agent';
 
+// Generate unique agent code
+async function generateAgentCode(): Promise<string> {
+  const count = await Agent.countDocuments();
+  const num = String(count + 1).padStart(3, '0');
+  return `FP-AGT-${num}`;
+}
+
 // PUT update agent
 export async function PUT(
   request: NextRequest,
@@ -11,6 +18,14 @@ export async function PUT(
     await dbConnect();
     const { id } = await params;
     const body = await request.json();
+
+    // If approving and agent doesn't have a code yet, generate one
+    if (body.status === 'approved') {
+      const existing = await Agent.findById(id);
+      if (existing && !existing.agentCode) {
+        body.agentCode = await generateAgentCode();
+      }
+    }
 
     const agent = await Agent.findByIdAndUpdate(id, body, { new: true });
     if (!agent) {
