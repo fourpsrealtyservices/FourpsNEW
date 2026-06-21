@@ -3,6 +3,7 @@
 import { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
+import Navbar from '@/components/Navbar';
 
 interface City { _id: string; name: string; status: string; }
 interface Property {
@@ -52,27 +53,12 @@ function PropertiesContent() {
     const a = p.fields?.superBuiltUpArea || p.fields?.carpetArea || p.fields?.plotArea || p.fields?.assetSize;
     if (a?.checked && a.value) return `${a.value} ${a.unit || 'sq ft'}`; return '';
   };
-  const categoryLabel = (c: string) => ({ retail: 'Retail', office: 'Office', coworking: 'Co-working', commercial_plot: 'Plots/Warehouse', land_plot: 'Land', investment: 'Investment' }[c] || c);
-  const categoryIcon = (c: string) => ({ retail: '🏪', office: '🏢', coworking: '👥', commercial_plot: '🏭', land_plot: '🌍', investment: '📈' }[c] || '🏠');
+  const categoryLabel = (c: string) => ({ retail: 'Retail', office: 'Office', coworking: 'Co-working', commercial_plot: 'Commercial Plot', land_plot: 'Land', investment: 'Investment', rental_income: 'Rental Income' }[c] || c);
+  const categoryIcon = (c: string) => ({ retail: '🏪', office: '🏢', coworking: '👥', commercial_plot: '🏭', land_plot: '🌍', investment: '📈', rental_income: '🏠' }[c] || '🏠');
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white/95 backdrop-blur-md border-b border-gray-100 sticky top-0 z-50 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex justify-between items-center">
-          <Link href="/" className="flex items-center gap-2">
-            <div className="w-9 h-9 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-lg flex items-center justify-center text-white font-bold text-sm">4P</div>
-            <span className="text-xl font-bold text-gray-900">FourPs<span className="text-blue-600">.in</span></span>
-          </Link>
-          <nav className="hidden md:flex items-center gap-6 text-sm font-medium text-gray-600">
-            <Link href="/" className="hover:text-blue-600">Home</Link>
-            <Link href="/properties" className="text-blue-600 font-bold">Properties</Link>
-            <Link href="/growth-corridors" className="hover:text-blue-600">Growth Corridors</Link>
-            <Link href="/about" className="hover:text-blue-600">About Us</Link>
-            <Link href="/services" className="hover:text-blue-600">Services</Link>
-          </nav>
-        </div>
-      </header>
+      <Navbar />
 
       {/* Filters Bar */}
       <div className="bg-white border-b border-gray-100 py-4 sticky top-[57px] z-40 shadow-sm">
@@ -91,8 +77,8 @@ function PropertiesContent() {
               <option value="retail">Retail</option>
               <option value="office">Office</option>
               <option value="coworking">Co-working</option>
-              <option value="commercial_plot">Plots / Warehouse</option>
-              <option value="land_plot">Land</option>
+              <option value="commercial_plot">Commercial Plot</option>
+              <option value="rental_income">Rental Income</option>
               <option value="investment">Investment</option>
             </select>
             <input type="text" value={filters.search} onChange={e => setFilters({...filters, search: e.target.value})} placeholder="Search locality..." className="px-4 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-700 bg-white focus:border-blue-300 outline-none flex-1 min-w-[180px]" />

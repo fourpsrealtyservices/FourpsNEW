@@ -13,7 +13,7 @@ export interface IProperty extends Document {
   propertyId: string; // FP-L-RTL-0042
   city: string;
   transactionType: 'lease' | 'sale';
-  category: 'retail' | 'office' | 'coworking' | 'commercial_plot' | 'land_plot' | 'investment';
+  category: 'retail' | 'office' | 'coworking' | 'commercial_plot' | 'land_plot' | 'investment' | 'rental_income';
   officeType?: 'furnished' | 'unfurnished'; // Only for office category
   
   // Dynamic fields - stored as key-value pairs with checkbox state
@@ -76,7 +76,7 @@ const PropertySchema = new Schema<IProperty>(
     },
     category: { 
       type: String, 
-      enum: ['retail', 'office', 'coworking', 'commercial_plot', 'land_plot', 'investment'], 
+      enum: ['retail', 'office', 'coworking', 'commercial_plot', 'land_plot', 'investment', 'rental_income'], 
       required: true,
       index: true 
     },

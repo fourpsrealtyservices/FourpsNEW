@@ -100,6 +100,22 @@ export const CATEGORY_FIELDS: Record<string, FieldDefinition[]> = {
     { key: 'description', label: 'Description', type: 'textarea', placeholder: 'Free-text summary' },
   ],
 
+  // Sale - Rental Income Properties
+  sale_rental_income: [
+    { key: 'locationArea', label: 'Location / Area', type: 'text', placeholder: 'Area / locality name' },
+    { key: 'propertyType', label: 'Property Type', type: 'dropdown', options: ['Office', 'Retail', 'Warehouse', 'Mixed Use', 'Other'] },
+    { key: 'superBuiltUpArea', label: 'Super Built-up Area', type: 'number', unit: 'sq ft' },
+    { key: 'carpetArea', label: 'Carpet Area', type: 'number', unit: 'sq ft' },
+    { key: 'currentRent', label: 'Current Monthly Rent', type: 'text', placeholder: 'Monthly rental income' },
+    { key: 'tenant', label: 'Tenant Name', type: 'text', placeholder: 'Current tenant' },
+    { key: 'leaseExpiry', label: 'Lease Expiry', type: 'text', placeholder: 'e.g. Dec 2027' },
+    { key: 'expectedReturns', label: 'Expected Yield / ROI', type: 'text', placeholder: 'e.g. 7-8%' },
+    { key: 'expectedSalePrice', label: 'Expected Sale Price', type: 'text', placeholder: 'Total asking price', hasCFP: true },
+    { key: 'buildingType', label: 'Building Type', type: 'dropdown', options: ['Grade A', 'Business Park', 'Standalone', 'Mixed Use'] },
+    { key: 'parking', label: 'Parking', type: 'text', placeholder: 'Available / Not Available / Details' },
+    { key: 'description', label: 'Description', type: 'textarea', placeholder: 'Free-text summary' },
+  ],
+
   // Sale - Investment Options
   sale_investment: [
     { key: 'locationArea', label: 'Location / Area', type: 'text', placeholder: 'Area / locality name' },
@@ -127,7 +143,7 @@ export const CATEGORIES = {
   sale: [
     { key: 'retail', label: 'Retail', icon: '🏪' },
     { key: 'office', label: 'Office', icon: '🏢' },
-    { key: 'land_plot', label: 'Land / Plot', icon: '🌍' },
+    { key: 'rental_income', label: 'Rental Income Properties', icon: '🏠' },
     { key: 'investment', label: 'Investment Options', icon: '💰' },
   ],
 };

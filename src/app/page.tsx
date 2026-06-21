@@ -2,8 +2,10 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Navbar from '@/components/Navbar';
 
 interface City { _id: string; name: string; status: string; }
+interface Testimonial { _id: string; name: string; role: string; text: string; imageUrl: string; }
 interface Property {
   _id: string; propertyId: string; city: string; transactionType: string; category: string;
   officeType?: string; fields: Record<string, { value: string | string[]; checked: boolean; unit?: string }>;
@@ -29,8 +31,10 @@ export default function HomePage() {
   const [showRequirementForm, setShowRequirementForm] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
 
   useEffect(() => { fetch('/api/public/cities').then(r => r.json()).then(setCities); }, []);
+  useEffect(() => { fetch('/api/public/testimonials').then(r => r.json()).then(data => { if (Array.isArray(data) && data.length > 0) setTestimonials(data); }); }, []);
 
   useEffect(() => {
     setLoading(true);
@@ -53,51 +57,30 @@ export default function HomePage() {
     const a = p.fields?.superBuiltUpArea || p.fields?.carpetArea || p.fields?.plotArea || p.fields?.assetSize || p.fields?.seatsAvailable;
     if (a?.checked && a.value) { if (typeof a.value === 'string' && a.value.includes(' to ')) return `${a.value} ${a.unit || 'seats'}`; return `${a.value} ${a.unit || 'sq ft'}`; } return '';
   };
-  const categoryLabel = (c: string) => ({ retail: 'Retail', office: 'Office', coworking: 'Co-working', commercial_plot: 'Plots/Warehouse', land_plot: 'Land', investment: 'Investment' }[c] || c);
-  const categoryIcon = (c: string) => ({ retail: '🏪', office: '🏢', coworking: '👥', commercial_plot: '🏭', land_plot: '🌍', investment: '📈' }[c] || '🏠');
+  const categoryLabel = (c: string) => ({ retail: 'Retail', office: 'Office', coworking: 'Co-working', commercial_plot: 'Commercial Plot', land_plot: 'Land', investment: 'Investment', rental_income: 'Rental Income' }[c] || c);
+  const categoryIcon = (c: string) => ({ retail: '🏪', office: '🏢', coworking: '👥', commercial_plot: '🏭', land_plot: '🌍', investment: '📈', rental_income: '🏠' }[c] || '🏠');
 
   const filteredSuggestions = AREA_SUGGESTIONS.filter(a => a.toLowerCase().includes(search.toLowerCase()));
 
-  const categories = [
+  const leaseCategories = [
     { key: 'retail', label: 'Retail', icon: '🏪' },
     { key: 'office', label: 'Office', icon: '🏢' },
     { key: 'coworking', label: 'Co-working', icon: '👥' },
-    { key: 'commercial_plot', label: 'Plots / Warehouse', icon: '🏭' },
+    { key: 'commercial_plot', label: 'Commercial Plot', icon: '🏭' },
   ];
+
+  const saleCategories = [
+    { key: 'retail', label: 'Retail', icon: '🏪' },
+    { key: 'office', label: 'Office', icon: '🏢' },
+    { key: 'rental_income', label: 'Rental Income Properties', icon: '🏠' },
+    { key: 'investment', label: 'Investment', icon: '📈' },
+  ];
+
+  const categories = transactionFilter === 'sale' ? saleCategories : leaseCategories;
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white/95 backdrop-blur-md border-b border-gray-100 sticky top-0 z-50 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex justify-between items-center">
-          <Link href="/" className="flex items-center gap-2">
-            <img src="/logo.webp" alt="FourPs Realty" className="h-10 w-auto" />
-          </Link>
-          <nav className="hidden md:flex items-center gap-6 text-sm font-medium text-gray-600">
-            <Link href="/" className="hover:text-blue-600 transition-colors">Home</Link>
-            <Link href="/properties" className="hover:text-blue-600 transition-colors">Properties</Link>
-            <Link href="/growth-corridors" className="hover:text-blue-600 transition-colors">Growth Corridors</Link>
-            <Link href="/about" className="hover:text-blue-600 transition-colors">About Us</Link>
-            <Link href="/services" className="hover:text-blue-600 transition-colors">Services</Link>
-            <button onClick={() => setShowRequirementForm(true)} className="hover:text-blue-600 transition-colors">Post Requirement</button>
-            <Link href="/agent/login" className="text-blue-600 border border-blue-600 px-4 py-2 rounded-lg hover:bg-blue-600 hover:text-white transition-all">Agent Login</Link>
-          </nav>
-          <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="md:hidden w-10 h-10 flex items-center justify-center rounded-lg hover:bg-gray-100 text-gray-600 text-xl active:scale-95 transition-transform">
-            {mobileMenuOpen ? '✕' : '☰'}
-          </button>
-        </div>
-        {mobileMenuOpen && (
-          <div className="md:hidden border-t border-gray-100 bg-white px-4 py-3 space-y-1">
-            <Link href="/" onClick={() => setMobileMenuOpen(false)} className="block px-4 py-3 rounded-xl text-gray-700 font-medium active:bg-gray-100">🏠 Home</Link>
-            <Link href="/properties" onClick={() => setMobileMenuOpen(false)} className="block px-4 py-3 rounded-xl text-gray-700 font-medium active:bg-gray-100">🏢 Properties</Link>
-            <Link href="/growth-corridors" onClick={() => setMobileMenuOpen(false)} className="block px-4 py-3 rounded-xl text-gray-700 font-medium active:bg-gray-100">📈 Growth Corridors</Link>
-            <Link href="/about" onClick={() => setMobileMenuOpen(false)} className="block px-4 py-3 rounded-xl text-gray-700 font-medium active:bg-gray-100">ℹ️ About Us</Link>
-            <Link href="/services" onClick={() => setMobileMenuOpen(false)} className="block px-4 py-3 rounded-xl text-gray-700 font-medium active:bg-gray-100">⚙️ Services</Link>
-            <button onClick={() => { setShowRequirementForm(true); setMobileMenuOpen(false); }} className="block w-full text-left px-4 py-3 rounded-xl text-gray-700 font-medium active:bg-gray-100">📝 Post Requirement</button>
-            <Link href="/agent/login" onClick={() => setMobileMenuOpen(false)} className="block px-4 py-3 rounded-xl text-blue-600 font-medium bg-blue-50 text-center">Agent Login</Link>
-          </div>
-        )}
-      </header>
+      <Navbar />
 
       {/* Hero Banner - Compact with Real Estate Background */}
       <section className="relative">
@@ -110,7 +93,17 @@ export default function HomePage() {
             Commercial Real Estate<br />Made Simple!
           </h1>
 
-          {/* Category Icons in Banner */}
+          {/* For Lease / For Sale Toggle */}
+          <div className="flex justify-center gap-2 mb-6">
+            <button onClick={() => { setTransactionFilter(transactionFilter === 'lease' ? '' : 'lease'); setCategoryFilter(''); }} className={`px-5 py-2.5 rounded-xl text-sm font-bold transition-all active:scale-95 ${transactionFilter === 'lease' ? 'bg-emerald-500 text-white shadow-lg' : 'bg-white/15 backdrop-blur-sm text-white border border-white/20'}`}>
+              For Lease
+            </button>
+            <button onClick={() => { setTransactionFilter(transactionFilter === 'sale' ? '' : 'sale'); setCategoryFilter(''); }} className={`px-5 py-2.5 rounded-xl text-sm font-bold transition-all active:scale-95 ${transactionFilter === 'sale' ? 'bg-violet-500 text-white shadow-lg' : 'bg-white/15 backdrop-blur-sm text-white border border-white/20'}`}>
+              For Sale
+            </button>
+          </div>
+
+          {/* Category Icons */}
           <div className="flex flex-wrap justify-center gap-3 mb-6">
             {categories.map(cat => (
               <button
@@ -124,16 +117,6 @@ export default function HomePage() {
                 <span>{cat.label}</span>
               </button>
             ))}
-          </div>
-
-          {/* For Sale / For Lease Toggle */}
-          <div className="flex justify-center gap-2 mb-4">
-            <button onClick={() => setTransactionFilter(transactionFilter === 'lease' ? '' : 'lease')} className={`px-5 py-2.5 rounded-xl text-sm font-bold transition-all active:scale-95 ${transactionFilter === 'lease' ? 'bg-emerald-500 text-white shadow-lg' : 'bg-white/15 backdrop-blur-sm text-white border border-white/20'}`}>
-              For Lease
-            </button>
-            <button onClick={() => setTransactionFilter(transactionFilter === 'sale' ? '' : 'sale')} className={`px-5 py-2.5 rounded-xl text-sm font-bold transition-all active:scale-95 ${transactionFilter === 'sale' ? 'bg-violet-500 text-white shadow-lg' : 'bg-white/15 backdrop-blur-sm text-white border border-white/20'}`}>
-              For Sale
-            </button>
           </div>
 
           {/* Search Bar with Area Suggestions */}
@@ -244,27 +227,32 @@ export default function HomePage() {
       </section>
 
       {/* Client Testimonials */}
-      <section className="bg-white py-14 border-t border-gray-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-2xl md:text-3xl font-extrabold text-gray-900 text-center mb-10">What Our Clients Say</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {[
-              { name: 'Rajesh Kumar', role: 'CEO, TechStart Solutions', text: 'FourPs helped us find the perfect Grade A office in HITEC City within a week. Their understanding of commercial spaces is exceptional.' },
-              { name: 'Priya Sharma', role: 'Founder, Retail Chain', text: 'We expanded to 3 retail locations in Hyderabad with FourPs. Their curated listings saved us months of searching.' },
-              { name: 'Vikram Reddy', role: 'Managing Director, VR Group', text: 'The team at FourPs understands commercial real estate like no one else. Professional, prompt, and precise — exactly what you need.' },
-            ].map((t, i) => (
-              <div key={i} className="bg-gray-50 rounded-2xl p-6 border border-gray-100">
-                <div className="flex gap-1 text-yellow-400 mb-3">{'★★★★★'.split('').map((s, j) => <span key={j}>{s}</span>)}</div>
-                <p className="text-gray-600 text-sm leading-relaxed mb-4">&ldquo;{t.text}&rdquo;</p>
-                <div>
-                  <p className="font-bold text-gray-900 text-sm">{t.name}</p>
-                  <p className="text-xs text-gray-400">{t.role}</p>
+      {testimonials.length > 0 && (
+        <section className="bg-white py-14 border-t border-gray-100">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 className="text-2xl md:text-3xl font-extrabold text-gray-900 text-center mb-10">What Our Clients Say</h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {testimonials.map((t) => (
+                <div key={t._id} className="bg-gray-50 rounded-2xl p-6 border border-gray-100">
+                  <div className="flex gap-1 text-yellow-400 mb-3">{'★★★★★'.split('').map((s, j) => <span key={j}>{s}</span>)}</div>
+                  <p className="text-gray-600 text-sm leading-relaxed mb-4">&ldquo;{t.text}&rdquo;</p>
+                  <div className="flex items-center gap-3">
+                    {t.imageUrl ? (
+                      <img src={t.imageUrl} alt={t.name} className="w-10 h-10 rounded-full object-cover border" />
+                    ) : (
+                      <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold text-sm">{t.name.charAt(0)}</div>
+                    )}
+                    <div>
+                      <p className="font-bold text-gray-900 text-sm">{t.name}</p>
+                      <p className="text-xs text-gray-400">{t.role}</p>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Blog / Insights Section */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
@@ -314,8 +302,13 @@ export default function HomePage() {
       </section>
 
       {/* CTA */}
-      <section className="bg-gradient-to-r from-blue-600 to-indigo-600 py-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <section className="relative py-14 overflow-hidden">
+        <div className="absolute inset-0">
+          <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1920&q=80" alt="" className="w-full h-full object-cover" />
+          <div className="absolute inset-0 bg-gray-900/80"></div>
+        </div>
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <img src="/logo.webp" alt="FourPs Realty" className="h-10 w-auto mx-auto mb-4" />
           <h2 className="text-xl md:text-2xl font-extrabold text-white mb-2">Can&apos;t find what you need?</h2>
           <p className="text-blue-100 text-sm mb-5">Tell us your requirements and we&apos;ll find the perfect space</p>
           <button onClick={() => setShowRequirementForm(true)} className="bg-white text-blue-600 px-7 py-3.5 rounded-xl font-bold text-sm hover:bg-blue-50 shadow-lg active:scale-95 transition-all">Post Your Requirement →</button>
@@ -328,7 +321,7 @@ export default function HomePage() {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="md:col-span-2">
               <div className="flex items-center gap-2 mb-3">
-                <img src="/logo.webp" alt="FourPs Realty" className="h-8 w-auto brightness-0 invert" />
+                <img src="/logo.webp" alt="FourPs Realty" className="h-8 w-auto" />
               </div>
               <p className="text-gray-400 text-sm leading-relaxed max-w-sm">India&apos;s premium commercial real estate platform. Retail, Office, Co-working & Investment spaces.</p>
             </div>

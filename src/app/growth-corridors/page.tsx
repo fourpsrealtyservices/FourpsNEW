@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
+import Navbar from '@/components/Navbar';
 
 interface Corridor {
   _id: string;
@@ -34,21 +35,7 @@ export default function GrowthCorridorsPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <header className="bg-white/95 backdrop-blur-md border-b border-gray-100 sticky top-0 z-50 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex justify-between items-center">
-          <Link href="/" className="flex items-center gap-2">
-            <div className="w-9 h-9 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-lg flex items-center justify-center text-white font-bold text-sm">4P</div>
-            <span className="text-xl font-bold text-gray-900">FourPs<span className="text-blue-600">.in</span></span>
-          </Link>
-          <nav className="hidden md:flex items-center gap-6 text-sm font-medium text-gray-600">
-            <Link href="/" className="hover:text-blue-600">Home</Link>
-            <Link href="/properties" className="hover:text-blue-600">Properties</Link>
-            <Link href="/growth-corridors" className="text-blue-600 font-bold">Growth Corridors</Link>
-            <Link href="/about" className="hover:text-blue-600">About Us</Link>
-            <Link href="/services" className="hover:text-blue-600">Services</Link>
-          </nav>
-        </div>
-      </header>
+      <Navbar />
 
       <section className="relative overflow-hidden">
         <div className="absolute inset-0">

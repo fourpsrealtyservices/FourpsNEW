@@ -8,6 +8,7 @@ const CATEGORY_CODES: Record<string, string> = {
   commercial_plot: 'CPL',
   land_plot: 'LND',
   investment: 'INV',
+  rental_income: 'RIP',
 };
 
 const TRANSACTION_CODES: Record<string, string> = {
