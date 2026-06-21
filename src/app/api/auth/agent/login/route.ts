@@ -14,7 +14,9 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Phone and password are required' }, { status: 400 });
     }
 
-    const agent = await Agent.findOne({ phone });
+    // Normalize phone - try with and without +91 prefix
+    const formattedPhone = phone.startsWith('+') ? phone : `+91${phone}`;
+    const agent = await Agent.findOne({ $or: [{ phone: formattedPhone }, { phone }] });
     if (!agent) {
       return NextResponse.json({ error: 'Agent not found. Please register first.' }, { status: 404 });
     }
@@ -44,7 +46,7 @@ export async function POST(request: NextRequest) {
       agent: { id: agent._id, name: agent.name, agentCode: agent.agentCode, mustChangePassword: agent.mustChangePassword },
     });
 
-    response.cookies.set('token', token, {
+    response.cookies.set('fourps_token', token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',

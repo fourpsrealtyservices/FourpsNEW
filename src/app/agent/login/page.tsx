@@ -107,15 +107,25 @@ export default function AgentLoginPage() {
               </button>
             </form>
 
-            <div className="mt-6 text-center">
-              <p className="text-sm text-gray-600">Don&apos;t have an account?</p>
-              <button
-                onClick={() => setShowRegister(true)}
-                className="text-blue-600 font-medium text-sm hover:underline mt-1"
-              >
-                Register as Agent
-              </button>
-              <p className="text-xs text-gray-400 mt-2">Forgot password? Submit the registration form again and admin will reset it.</p>
+            <div className="mt-6 text-center space-y-3">
+              <div>
+                <p className="text-sm text-gray-600">Don&apos;t have an account?</p>
+                <button
+                  onClick={() => setShowRegister(true)}
+                  className="text-blue-600 font-medium text-sm hover:underline mt-1"
+                >
+                  Register as Agent
+                </button>
+              </div>
+              <div className="border-t pt-3">
+                <button
+                  onClick={() => setShowRegister(true)}
+                  className="text-orange-600 font-medium text-sm hover:underline"
+                >
+                  Forgot Password?
+                </button>
+                <p className="text-xs text-gray-400 mt-1">Submit the registration form again with your phone number. Admin will reset your password.</p>
+              </div>
             </div>
           </>
         ) : (

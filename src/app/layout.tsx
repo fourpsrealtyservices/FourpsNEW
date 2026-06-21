@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
@@ -12,11 +12,17 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  themeColor: "#1e40af",
+};
+
 export const metadata: Metadata = {
   title: "FourPs Realty | Commercial Real Estate",
   description: "Premium commercial real estate platform — Retail, Office, Co-working & More. Find your perfect commercial space in Hyderabad.",
-  viewport: "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no",
-  themeColor: "#1e40af",
 };
 
 export default function RootLayout({

@@ -88,47 +88,46 @@ export default function AgentSubmitPage() {
     return (
       <div key={field.key} className="border rounded-lg p-3 bg-white">
         <div className="flex items-center gap-2 mb-1">
-          <input type="checkbox" checked={fs.checked} onChange={() => setFieldValues(p => ({ ...p, [field.key]: { ...p[field.key], checked: !p[field.key].checked } }))} className="w-4 h-4" />
+          <input type="checkbox" checked={fs.checked} onChange={() => setFieldValues(p => ({ ...p, [field.key]: { ...p[field.key], checked: !p[field.key].checked } }))} className="w-4 h-4" title="Check to show on listing card" />
           <label className="font-medium text-gray-700 text-sm">{field.label}</label>
+          {!fs.checked && <span className="text-xs text-orange-500 ml-auto">Hidden on card</span>}
         </div>
-        {fs.checked && (
-          <div className="ml-6">
-            {field.hasCFP && (
-              <label className="flex items-center gap-2 mb-2 text-sm cursor-pointer">
-                <input type="checkbox" checked={isCFP} onChange={e => setFieldValues(p => ({ ...p, [field.key]: { ...p[field.key], value: e.target.checked ? 'Call for Price' : '' } }))} className="w-3.5 h-3.5" />
-                <span className="text-orange-700 font-medium">Call for Price</span>
-              </label>
-            )}
-            {!isCFP && (field.type === 'text' || field.type === 'number') && (
-              <input type={field.type} value={fs.value as string} onChange={e => setFieldValues(p => ({ ...p, [field.key]: { ...p[field.key], value: e.target.value } }))} placeholder={field.placeholder || ''} className="w-full px-3 py-2 border rounded text-sm text-gray-800" />
-            )}
-            {!isCFP && field.type === 'range' && (
-              <div className="flex gap-2 items-center">
-                <input type="number" value={(fs.value as string).split(' to ')[0] || ''} onChange={e => { const max = (fs.value as string).split(' to ')[1] || ''; setFieldValues(p => ({ ...p, [field.key]: { ...p[field.key], value: `${e.target.value} to ${max}` } })); }} placeholder={field.placeholderMin || 'Min'} className="w-full px-3 py-2 border rounded text-sm text-gray-800" />
-                <span className="text-sm text-gray-500">to</span>
-                <input type="number" value={(fs.value as string).split(' to ')[1] || ''} onChange={e => { const min = (fs.value as string).split(' to ')[0] || ''; setFieldValues(p => ({ ...p, [field.key]: { ...p[field.key], value: `${min} to ${e.target.value}` } })); }} placeholder={field.placeholderMax || 'Max'} className="w-full px-3 py-2 border rounded text-sm text-gray-800" />
-              </div>
-            )}
-            {field.type === 'textarea' && (
-              <textarea value={fs.value as string} onChange={e => setFieldValues(p => ({ ...p, [field.key]: { ...p[field.key], value: e.target.value } }))} rows={2} className="w-full px-3 py-2 border rounded text-sm text-gray-800" />
-            )}
-            {field.type === 'dropdown' && (
-              <select value={fs.value as string} onChange={e => setFieldValues(p => ({ ...p, [field.key]: { ...p[field.key], value: e.target.value } }))} className="w-full px-3 py-2 border rounded text-sm text-gray-800">
-                <option value="">Select...</option>
-                {field.options?.map(o => <option key={o} value={o}>{o}</option>)}
-              </select>
-            )}
-            {field.type === 'multi-checkbox' && (
-              <div className="flex flex-wrap gap-2">
-                {field.options?.map(o => (
-                  <label key={o} className="flex items-center gap-1 text-xs bg-gray-50 px-2 py-1 rounded">
-                    <input type="checkbox" checked={(fs.value as string[]).includes(o)} onChange={e => { const curr = fs.value as string[]; const upd = e.target.checked ? [...curr, o] : curr.filter(v => v !== o); setFieldValues(p => ({ ...p, [field.key]: { ...p[field.key], value: upd } })); }} className="w-3 h-3" />{o}
-                  </label>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
+        <div className="ml-6">
+          {field.hasCFP && (
+            <label className="flex items-center gap-2 mb-2 text-sm cursor-pointer">
+              <input type="checkbox" checked={isCFP} onChange={e => setFieldValues(p => ({ ...p, [field.key]: { ...p[field.key], value: e.target.checked ? 'Call for Price' : '' } }))} className="w-3.5 h-3.5" />
+              <span className="text-orange-700 font-medium">Call for Price</span>
+            </label>
+          )}
+          {!isCFP && (field.type === 'text' || field.type === 'number') && (
+            <input type={field.type} value={fs.value as string} onChange={e => setFieldValues(p => ({ ...p, [field.key]: { ...p[field.key], value: e.target.value } }))} placeholder={field.placeholder || ''} className="w-full px-3 py-2 border rounded text-sm text-gray-800" />
+          )}
+          {!isCFP && field.type === 'range' && (
+            <div className="flex gap-2 items-center">
+              <input type="number" value={(fs.value as string).split(' to ')[0] || ''} onChange={e => { const max = (fs.value as string).split(' to ')[1] || ''; setFieldValues(p => ({ ...p, [field.key]: { ...p[field.key], value: `${e.target.value} to ${max}` } })); }} placeholder={field.placeholderMin || 'Min'} className="w-full px-3 py-2 border rounded text-sm text-gray-800" />
+              <span className="text-sm text-gray-500">to</span>
+              <input type="number" value={(fs.value as string).split(' to ')[1] || ''} onChange={e => { const min = (fs.value as string).split(' to ')[0] || ''; setFieldValues(p => ({ ...p, [field.key]: { ...p[field.key], value: `${min} to ${e.target.value}` } })); }} placeholder={field.placeholderMax || 'Max'} className="w-full px-3 py-2 border rounded text-sm text-gray-800" />
+            </div>
+          )}
+          {field.type === 'textarea' && (
+            <textarea value={fs.value as string} onChange={e => setFieldValues(p => ({ ...p, [field.key]: { ...p[field.key], value: e.target.value } }))} rows={2} className="w-full px-3 py-2 border rounded text-sm text-gray-800" />
+          )}
+          {field.type === 'dropdown' && (
+            <select value={fs.value as string} onChange={e => setFieldValues(p => ({ ...p, [field.key]: { ...p[field.key], value: e.target.value } }))} className="w-full px-3 py-2 border rounded text-sm text-gray-800">
+              <option value="">Select...</option>
+              {field.options?.map(o => <option key={o} value={o}>{o}</option>)}
+            </select>
+          )}
+          {field.type === 'multi-checkbox' && (
+            <div className="flex flex-wrap gap-2">
+              {field.options?.map(o => (
+                <label key={o} className="flex items-center gap-1 text-xs bg-gray-50 px-2 py-1 rounded">
+                  <input type="checkbox" checked={(fs.value as string[]).includes(o)} onChange={e => { const curr = fs.value as string[]; const upd = e.target.checked ? [...curr, o] : curr.filter(v => v !== o); setFieldValues(p => ({ ...p, [field.key]: { ...p[field.key], value: upd } })); }} className="w-3 h-3" />{o}
+                </label>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     );
   };
@@ -194,7 +193,7 @@ export default function AgentSubmitPage() {
           <>
             <div className="bg-white rounded-xl border p-6">
               <h3 className="font-semibold text-gray-800 mb-3">4. Property Details</h3>
-              <div className="space-y-3">{getFieldsForCategory(transactionType, category).map(f => renderField(f))}</div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">{getFieldsForCategory(transactionType, category).map(f => renderField(f))}</div>
             </div>
 
             {/* Photo Upload */}

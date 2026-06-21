@@ -105,7 +105,8 @@ export default function ListingPage({ params }: { params: Promise<{ id: string }
     </div>
   );
 
-  const checkedFields = Object.entries(property.fields || {}).filter(([, v]) => v.checked && v.value && (Array.isArray(v.value) ? v.value.length > 0 : v.value !== ''));
+  // On individual property detail page, show ALL fields that have a value (not just checked ones)
+  const checkedFields = Object.entries(property.fields || {}).filter(([, v]) => v.value && (Array.isArray(v.value) ? v.value.length > 0 : v.value !== ''));
   const visiblePhotos = property.photos || [];
   const currentPhoto = visiblePhotos[selectedPhoto];
 

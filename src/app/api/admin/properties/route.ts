@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
   try {
     await dbConnect();
     const body = await request.json();
-    const { city, transactionType, category, officeType, fields, locationPin, contactName, contactMobile, contactDesignation, photos } = body;
+    const { city, transactionType, category, officeType, fields, locationPin, contactName, contactMobile, contactDesignation, photos, status: requestedStatus } = body;
 
     if (!city || !transactionType || !category) {
       return NextResponse.json(
@@ -59,8 +59,8 @@ export async function POST(request: NextRequest) {
       contactMobile,
       contactDesignation,
       photos: photos || [],
-      status: 'published', // Admin uploads are published directly
-      publishedAt: new Date(),
+      status: requestedStatus || 'published',
+      publishedAt: requestedStatus === 'draft' ? undefined : new Date(),
       submittedBy: {
         type: 'admin',
         id: 'admin',

@@ -8,7 +8,7 @@ const JWT_SECRET = process.env.JWT_SECRET || 'fourps-secret';
 export async function POST(request: NextRequest) {
   try {
     await dbConnect();
-    const token = request.cookies.get('token')?.value;
+    const token = request.cookies.get('fourps_token')?.value || request.cookies.get('token')?.value;
     if (!token) {
       return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
     }
@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
     );
 
     const response = NextResponse.json({ success: true, message: 'Password changed successfully' });
-    response.cookies.set('token', newToken, {
+    response.cookies.set('fourps_token', newToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',

@@ -116,7 +116,7 @@ export default function NewPropertyPage() {
     setPhotos((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (asDraft = false) => {
     setLoading(true);
     try {
       const res = await fetch('/api/admin/properties', {
@@ -133,11 +133,12 @@ export default function NewPropertyPage() {
           contactMobile,
           contactDesignation,
           photos,
+          status: asDraft ? 'draft' : 'published',
         }),
       });
 
       if (res.ok) {
-        router.push('/addddmin/properties');
+        router.push(asDraft ? '/addddmin/drafts' : '/addddmin/properties');
       } else {
         const data = await res.json();
         alert(data.error || 'Failed to create property');
@@ -166,13 +167,14 @@ export default function NewPropertyPage() {
               [field.key]: { ...prev[field.key], checked: !prev[field.key].checked }
             }))}
             className="w-4 h-4 rounded"
+            title="Check to show this field on the public listing"
           />
           <label className="font-medium text-gray-700">{field.label}</label>
           {field.unit && <span className="text-xs text-gray-500">({field.unit})</span>}
+          {!fieldState.checked && <span className="text-xs text-orange-500 ml-auto">Hidden on listing</span>}
         </div>
 
-        {fieldState.checked && (
-          <div className="ml-7">
+        <div className="ml-7">
             {/* Call for Price toggle for price fields */}
             {field.hasCFP && (
               <label className="flex items-center gap-2 mb-2 text-sm cursor-pointer">
@@ -300,7 +302,6 @@ export default function NewPropertyPage() {
               </div>
             )}
           </div>
-        )}
       </div>
     );
   };
@@ -411,7 +412,7 @@ export default function NewPropertyPage() {
             <h3 className="text-lg font-semibold text-gray-800 mb-2">Step 4: Property Details</h3>
             <p className="text-sm text-gray-500 mb-4">Check the fields applicable to this listing. Only checked fields will appear on the public listing.</p>
 
-            <div className="space-y-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {getFieldsForCategory(transactionType, category).map((field) => renderFieldInput(field))}
             </div>
           </div>
@@ -497,13 +498,20 @@ export default function NewPropertyPage() {
 
         {/* Submit */}
         {step >= 4 && transactionType && category && (category !== 'office' || officeType) && (
-          <div className="flex gap-4">
+          <div className="flex gap-4 flex-wrap">
             <button
-              onClick={handleSubmit}
+              onClick={() => handleSubmit(false)}
               disabled={loading}
               className="bg-blue-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50"
             >
               {loading ? 'Publishing...' : 'Publish Property'}
+            </button>
+            <button
+              onClick={() => handleSubmit(true)}
+              disabled={loading}
+              className="bg-amber-500 text-white px-8 py-3 rounded-lg font-medium hover:bg-amber-600 disabled:opacity-50"
+            >
+              {loading ? 'Saving...' : '💾 Save as Draft'}
             </button>
             <Link href="/addddmin" className="bg-gray-200 text-gray-700 px-8 py-3 rounded-lg font-medium hover:bg-gray-300">
               Cancel

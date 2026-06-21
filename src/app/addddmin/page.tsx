@@ -36,8 +36,10 @@ export default function AdminDashboard() {
     { href: '/addddmin/properties/new', icon: '➕', title: 'Upload Property', desc: 'Add a new listing', color: 'from-blue-500 to-blue-600' },
     { href: '/addddmin/approvals', icon: '✅', title: 'Pending Approvals', desc: `${stats.pending} submissions waiting`, color: 'from-amber-500 to-orange-500', badge: stats.pending },
     { href: '/addddmin/properties', icon: '🏢', title: 'Manage Listings', desc: `${stats.properties} live properties`, color: 'from-emerald-500 to-teal-600' },
+    { href: '/addddmin/drafts', icon: '📝', title: 'Drafts', desc: 'Incomplete listings saved for later', color: 'from-amber-400 to-yellow-500' },
     { href: '/addddmin/leads', icon: '📋', title: 'Leads & Enquiries', desc: `${stats.leads} total leads`, color: 'from-purple-500 to-indigo-600' },
     { href: '/addddmin/agents', icon: '👥', title: 'Agent Management', desc: `${stats.agents} active agents`, color: 'from-pink-500 to-rose-600' },
+    { href: '/addddmin/growth-corridors', icon: '📍', title: 'Growth Corridors', desc: 'Manage corridor zones', color: 'from-green-500 to-emerald-600' },
     { href: '/addddmin/cities', icon: '🌍', title: 'City Settings', desc: 'Manage active cities', color: 'from-cyan-500 to-blue-600' },
   ];
 
@@ -112,7 +114,7 @@ export default function AdminDashboard() {
                   </div>
                   <p className="text-sm text-gray-500 mt-0.5">{item.desc}</p>
                 </div>
-                <span className="text-gray-300 group-hover:text-blue-400 transition-colors text-lg">→</span>
+                <span className="text-gray-300 group-hover:text-blue-400 transition-colors text-lg">{'\u2192'}</span>
               </div>
             </Link>
           ))}

@@ -5,6 +5,13 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { getFieldsForCategory, FieldDefinition } from '@/lib/propertyFields';
 
+interface Photo {
+  url: string;
+  label: string;
+  isCover: boolean;
+  isMasked: boolean;
+}
+
 export default function EditPropertyPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const router = useRouter();
@@ -16,6 +23,8 @@ export default function EditPropertyPage({ params }: { params: Promise<{ id: str
   const [contactName, setContactName] = useState('');
   const [contactMobile, setContactMobile] = useState('');
   const [contactDesignation, setContactDesignation] = useState('');
+  const [photos, setPhotos] = useState<Photo[]>([]);
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     fetch(`/api/admin/properties/${id}`)
@@ -27,6 +36,7 @@ export default function EditPropertyPage({ params }: { params: Promise<{ id: str
         setContactName(data.contactName || '');
         setContactMobile(data.contactMobile || '');
         setContactDesignation(data.contactDesignation || '');
+        setPhotos(data.photos || []);
         setLoading(false);
       });
   }, [id]);
@@ -38,6 +48,7 @@ export default function EditPropertyPage({ params }: { params: Promise<{ id: str
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         fields: fieldValues,
+        photos,
         locationPin,
         contactName,
         contactMobile,
@@ -46,6 +57,55 @@ export default function EditPropertyPage({ params }: { params: Promise<{ id: str
     });
     setSaving(false);
     router.push('/addddmin/properties');
+  };
+
+  const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+    setUploading(true);
+    for (let i = 0; i < files.length; i++) {
+      const formData = new FormData();
+      formData.append('file', files[i]);
+      const res = await fetch('/api/upload', { method: 'POST', body: formData });
+      if (res.ok) {
+        const data = await res.json();
+        setPhotos(prev => [...prev, { url: data.url, label: '', isCover: prev.length === 0, isMasked: false }]);
+      }
+    }
+    setUploading(false);
+    e.target.value = '';
+  };
+
+  const deletePhoto = (index: number) => {
+    setPhotos(prev => {
+      const updated = prev.filter((_, i) => i !== index);
+      if (updated.length > 0 && !updated.some(p => p.isCover)) {
+        updated[0].isCover = true;
+      }
+      return updated;
+    });
+  };
+
+  const setCoverPhoto = (index: number) => {
+    setPhotos(prev => prev.map((p, i) => ({ ...p, isCover: i === index })));
+  };
+
+  const toggleMask = (index: number) => {
+    setPhotos(prev => prev.map((p, i) => i === index ? { ...p, isMasked: !p.isMasked } : p));
+  };
+
+  const updateLabel = (index: number, label: string) => {
+    setPhotos(prev => prev.map((p, i) => i === index ? { ...p, label } : p));
+  };
+
+  const movePhoto = (index: number, direction: 'up' | 'down') => {
+    const newIndex = direction === 'up' ? index - 1 : index + 1;
+    if (newIndex < 0 || newIndex >= photos.length) return;
+    setPhotos(prev => {
+      const updated = [...prev];
+      [updated[index], updated[newIndex]] = [updated[newIndex], updated[index]];
+      return updated;
+    });
   };
 
   const renderFieldInput = (field: FieldDefinition) => {
@@ -158,6 +218,57 @@ export default function EditPropertyPage({ params }: { params: Promise<{ id: str
                 <input type="text" value={contactDesignation} onChange={(e) => setContactDesignation(e.target.value)} className="w-full px-3 py-2 border rounded-lg text-gray-800" />
               </div>
             </div>
+          </div>
+        </div>
+
+        {/* Photo Management */}
+        <div className="bg-white rounded-xl shadow-sm border p-6 mb-6">
+          <h3 className="text-lg font-semibold text-gray-800 mb-2">Photos</h3>
+          <p className="text-sm text-gray-500 mb-4">Upload, reorder, label, mask or delete photos. The cover photo is shown as thumbnail.</p>
+
+          {/* Upload */}
+          <div className="mb-4">
+            <label className="inline-flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg cursor-pointer hover:bg-blue-700 text-sm font-medium">
+              {uploading ? '⏳ Uploading...' : '📷 Upload Photos'}
+              <input type="file" multiple accept="image/*" onChange={handlePhotoUpload} className="hidden" disabled={uploading} />
+            </label>
+          </div>
+
+          {/* Photo Grid */}
+          {photos.length === 0 && <p className="text-gray-400 text-sm">No photos uploaded yet.</p>}
+          <div className="space-y-3">
+            {photos.map((photo, index) => (
+              <div key={index} className={`flex items-start gap-4 p-3 rounded-lg border ${photo.isCover ? 'border-blue-300 bg-blue-50' : 'border-gray-200'}`}>
+                {/* Thumbnail */}
+                <div className="relative w-24 h-24 flex-shrink-0 rounded-lg overflow-hidden bg-gray-100">
+                  <img src={photo.url} alt={photo.label || `Photo ${index + 1}`} className={`w-full h-full object-cover ${photo.isMasked ? 'blur-md' : ''}`} />
+                  {photo.isCover && <span className="absolute top-1 left-1 bg-blue-600 text-white text-[10px] px-1.5 py-0.5 rounded font-bold">COVER</span>}
+                  {photo.isMasked && <span className="absolute bottom-1 left-1 bg-red-600 text-white text-[10px] px-1.5 py-0.5 rounded font-bold">MASKED</span>}
+                </div>
+
+                {/* Controls */}
+                <div className="flex-1 space-y-2">
+                  <input
+                    type="text"
+                    value={photo.label}
+                    onChange={(e) => updateLabel(index, e.target.value)}
+                    placeholder="Label (e.g. Building Exterior, Lobby)"
+                    className="w-full px-3 py-1.5 border rounded-lg text-gray-800 text-sm"
+                  />
+                  <div className="flex flex-wrap gap-2">
+                    {!photo.isCover && (
+                      <button onClick={() => setCoverPhoto(index)} className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded hover:bg-blue-200">★ Set Cover</button>
+                    )}
+                    <button onClick={() => toggleMask(index)} className={`text-xs px-2 py-1 rounded ${photo.isMasked ? 'bg-green-100 text-green-700 hover:bg-green-200' : 'bg-orange-100 text-orange-700 hover:bg-orange-200'}`}>
+                      {photo.isMasked ? '👁 Unmask' : '🔒 Mask/Blur'}
+                    </button>
+                    <button onClick={() => movePhoto(index, 'up')} disabled={index === 0} className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded hover:bg-gray-200 disabled:opacity-30">↑ Up</button>
+                    <button onClick={() => movePhoto(index, 'down')} disabled={index === photos.length - 1} className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded hover:bg-gray-200 disabled:opacity-30">↓ Down</button>
+                    <button onClick={() => deletePhoto(index)} className="text-xs bg-red-100 text-red-700 px-2 py-1 rounded hover:bg-red-200">🗑 Delete</button>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
 
