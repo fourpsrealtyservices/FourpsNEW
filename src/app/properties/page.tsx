@@ -121,7 +121,7 @@ function PropertiesContent() {
                   <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100"><span className="text-4xl opacity-30">{categoryIcon(property.category)}</span></div>
                 )}
                 <span className="absolute top-3 right-3 px-2.5 py-1 rounded-lg text-xs font-bold bg-white/95 text-gray-700 shadow-sm">{categoryLabel(property.category)}</span>
-                <span className={`absolute top-3 left-3 px-2.5 py-1 rounded-lg text-xs font-bold shadow ${property.transactionType === 'lease' ? 'bg-emerald-500 text-white' : 'bg-violet-500 text-white'}`}>
+                <span className="absolute top-3 left-3 px-2.5 py-1 rounded-lg text-xs font-bold shadow bg-violet-500 text-white">
                   {property.transactionType === 'lease' ? 'LEASE' : 'SALE'}
                 </span>
               </div>

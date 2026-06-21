@@ -194,7 +194,7 @@ export default function HomePage() {
                   {categoryLabel(property.category)}
                 </span>
                 {/* Transaction badge top-left */}
-                <span className={`absolute top-3 left-3 px-2.5 py-1 rounded-lg text-xs font-bold shadow ${property.transactionType === 'lease' ? 'bg-emerald-500 text-white' : 'bg-violet-500 text-white'}`}>
+                <span className="absolute top-3 left-3 px-2.5 py-1 rounded-lg text-xs font-bold shadow bg-violet-500 text-white">
                   {property.transactionType === 'lease' ? 'LEASE' : 'SALE'}
                 </span>
                 {property.photos?.length > 1 && <span className="absolute bottom-2 right-2 bg-black/60 text-white text-xs px-2 py-0.5 rounded-md">📷 {property.photos.length}</span>}
