@@ -66,7 +66,7 @@ export default function HomePage() {
     { key: 'retail', label: 'Retail', icon: '🏪' },
     { key: 'office', label: 'Office', icon: '🏢' },
     { key: 'coworking', label: 'Co-working', icon: '👥' },
-    { key: 'commercial_plot', label: 'Commercial Plot', icon: '🏭' },
+    { key: 'commercial_plot', label: 'Commercial Plot/Warehouse', icon: '🏭' },
   ];
 
   const saleCategories = [
@@ -89,8 +89,8 @@ export default function HomePage() {
           <div className="absolute inset-0 bg-gradient-to-r from-gray-900/90 via-gray-900/75 to-gray-900/60"></div>
         </div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-16 pb-24 md:pb-28 text-center">
-          <h1 className="text-3xl md:text-5xl font-extrabold text-white mb-6 tracking-tight">
-            Commercial Real Estate<br />Made Simple!
+           <h1 className="text-3xl md:text-5xl font-extrabold text-white mb-6 tracking-tight leading-tight md:leading-snug">
+            Commercial Real Estate<br /><span className="mt-2 inline-block">Made Simple!</span>
           </h1>
 
           {/* For Lease / For Sale Toggle */}
@@ -162,39 +162,41 @@ export default function HomePage() {
       </section>
 
       {/* About 4Ps Section */}
-      <section className="bg-white py-14 border-b border-gray-100">
+      <section className="bg-white py-10 border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-3xl mx-auto text-center">
-            <h2 className="text-2xl md:text-3xl font-extrabold text-gray-900 mb-3">4Ps Realty Services</h2>
-            <p className="text-gray-600 text-base md:text-lg mb-8">Exclusive services in Commercial Real Estate</p>
-            <div className="mb-8">
-              <h3 className="text-lg font-bold text-gray-800 mb-5">What are the 4Ps?</h3>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+            <div>
+              <h2 className="text-2xl md:text-3xl font-extrabold text-gray-900 mb-2">4Ps Realty Services</h2>
+              <p className="text-gray-600 text-base md:text-lg mb-4">Exclusive services in Commercial Real Estate</p>
+              <p className="text-gray-600 text-sm md:text-base leading-relaxed">
+                Every business runs on the 4Ps and we specialize in the most crucial one: <span className="font-bold text-blue-700">Place</span>.
+              </p>
+              <p className="text-gray-500 text-sm md:text-base leading-relaxed mt-2">
+                We help brands, investors, and companies find the right commercial locations across Hyderabad through data-driven insights and strong market expertise.
+              </p>
+            </div>
+            <div>
+              <h3 className="text-base font-bold text-gray-800 mb-4">What are the 4Ps?</h3>
+              <div className="grid grid-cols-2 gap-3">
                 {[
-                  { letter: 'P', word: 'Product', icon: '📦' },
-                  { letter: 'P', word: 'Price', icon: '💰' },
-                  { letter: 'P', word: 'Promotion', icon: '📣' },
-                  { letter: 'P', word: 'Place', icon: '📍' },
+                  { word: 'Product', icon: '📦' },
+                  { word: 'Price', icon: '💰' },
+                  { word: 'Promotion', icon: '📣' },
+                  { word: 'Place', icon: '📍' },
                 ].map(item => (
-                  <div key={item.word} className={`p-4 rounded-2xl border-2 ${item.word === 'Place' ? 'border-blue-500 bg-blue-50' : 'border-gray-100 bg-gray-50'}`}>
+                  <div key={item.word} className={`p-4 rounded-xl border-2 text-center ${item.word === 'Place' ? 'border-blue-500 bg-blue-50' : 'border-gray-100 bg-gray-50'}`}>
                     <span className="text-2xl block mb-1">{item.icon}</span>
-                    <p className={`font-extrabold text-lg ${item.word === 'Place' ? 'text-blue-700' : 'text-gray-800'}`}>{item.word}</p>
+                    <p className={`font-extrabold text-base ${item.word === 'Place' ? 'text-blue-700' : 'text-gray-800'}`}>{item.word}</p>
                   </div>
                 ))}
               </div>
             </div>
-            <p className="text-gray-600 text-sm md:text-base leading-relaxed">
-              Every business runs on the 4Ps and we specialize in the most crucial one: <span className="font-bold text-blue-700">Place</span>.
-            </p>
-            <p className="text-gray-500 text-sm md:text-base leading-relaxed mt-3">
-              We help brands, investors, and companies find the right commercial locations across Hyderabad through data-driven insights and strong market expertise.
-            </p>
           </div>
         </div>
       </section>
 
       {/* Properties Section - Only 2 rows (6 items) */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl md:text-3xl font-extrabold text-gray-900">Latest Properties</h2>
           <Link href="/properties" className="text-blue-600 font-semibold text-sm hover:text-blue-700 flex items-center gap-1">
@@ -259,7 +261,7 @@ export default function HomePage() {
       </section>
 
       {/* Blog / Insights Section */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <h2 className="text-2xl md:text-3xl font-extrabold text-gray-900 text-center mb-3">Insights & Market Updates</h2>
         <p className="text-gray-500 text-center mb-10">Stay informed about the commercial real estate market</p>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -286,9 +288,9 @@ export default function HomePage() {
 
       {/* Client Testimonials */}
       {testimonials.length > 0 && (
-        <section className="bg-white py-14 border-t border-gray-100">
+        <section className="bg-white py-10 border-t border-gray-100">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 className="text-2xl md:text-3xl font-extrabold text-gray-900 text-center mb-10">What Our Clients Say</h2>
+            <h2 className="text-2xl md:text-3xl font-extrabold text-gray-900 text-center mb-6">What Our Clients Say</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {testimonials.map((t) => (
                 <div key={t._id} className="bg-gray-50 rounded-2xl p-6 border border-gray-100">
@@ -313,10 +315,10 @@ export default function HomePage() {
       )}
 
       {/* Why FourPs */}
-      <section className="bg-white border-t border-gray-100 py-14">
+      <section className="bg-white border-t border-gray-100 py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-2xl md:text-3xl font-extrabold text-gray-900 text-center mb-10">Why Choose FourPs Realty?</h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          <h2 className="text-2xl md:text-3xl font-extrabold text-gray-900 text-center mb-6">Why Choose FourPs Realty?</h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {[
               { icon: '🎯', title: 'Precision', desc: 'Curated listings matched to your needs' },
               { icon: '💎', title: 'Premium', desc: 'Grade A properties in prime locations' },
@@ -334,7 +336,7 @@ export default function HomePage() {
       </section>
 
       {/* CTA */}
-      <section className="relative py-16 overflow-hidden">
+      <section className="relative py-12 overflow-hidden">
         <div className="absolute inset-0">
           <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1920&q=80" alt="" className="w-full h-full object-cover" />
           <div className="absolute inset-0 bg-gray-900/80"></div>
@@ -347,7 +349,7 @@ export default function HomePage() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-white text-gray-900 pt-14 pb-6 border-t border-gray-200">
+      <footer className="bg-white text-gray-900 pt-10 pb-6 border-t border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="md:col-span-2">
@@ -412,9 +414,9 @@ Message: ${form.message}`;
           <button onClick={onClose} className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-400">✕</button>
         </div>
         <form onSubmit={handleSubmit} className="p-5 space-y-4">
-          <div><label className="block text-xs font-semibold text-gray-600 mb-1">Name *</label><input type="text" value={form.name} onChange={e => setForm({...form, name: e.target.value})} required placeholder="Your name" className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm text-gray-800 outline-none focus:border-blue-300" /></div>
+          <div><label className="block text-xs font-semibold text-gray-600 mb-1">Name</label><input type="text" value={form.name} onChange={e => setForm({...form, name: e.target.value})} placeholder="Your name" className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm text-gray-800 outline-none focus:border-blue-300" /></div>
           <div><label className="block text-xs font-semibold text-gray-600 mb-1">Mobile *</label><input type="tel" value={form.mobile} onChange={e => setForm({...form, mobile: e.target.value})} required placeholder="+91 98765 43210" className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm text-gray-800 outline-none focus:border-blue-300" /></div>
-          <div><label className="block text-xs font-semibold text-gray-600 mb-1">Preferred Location *</label><input type="text" value={form.location} onChange={e => setForm({...form, location: e.target.value})} required placeholder="e.g. HITEC City, Madhapur" className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm text-gray-800 outline-none focus:border-blue-300" /></div>
+          <div><label className="block text-xs font-semibold text-gray-600 mb-1">Preferred Location</label><input type="text" value={form.location} onChange={e => setForm({...form, location: e.target.value})} placeholder="e.g. HITEC City, Madhapur" className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm text-gray-800 outline-none focus:border-blue-300" /></div>
           <div><label className="block text-xs font-semibold text-gray-600 mb-1">Message</label><textarea value={form.message} onChange={e => setForm({...form, message: e.target.value})} rows={3} placeholder="Tell us what you're looking for..." className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm text-gray-800 outline-none focus:border-blue-300 resize-none" /></div>
           <button type="submit" className="w-full bg-green-600 text-white py-3.5 rounded-xl font-bold text-sm active:scale-95 transition-all flex items-center justify-center gap-2 hover:bg-green-700">
             <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/></svg>

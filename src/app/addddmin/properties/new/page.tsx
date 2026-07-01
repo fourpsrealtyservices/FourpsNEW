@@ -35,6 +35,19 @@ export default function NewPropertyPage() {
   // Dynamic fields
   const [fieldValues, setFieldValues] = useState<Record<string, { value: string | string[]; checked: boolean; unit?: string }>>({});
 
+  // Nearby areas for search
+  const [nearbyAreas, setNearbyAreas] = useState<string[]>([]);
+  const [nearbyInput, setNearbyInput] = useState('');
+
+  const AREA_OPTIONS = [
+    'Banjara Hills', 'Jubilee Hills', 'HITEC City', 'Madhapur', 'Gachibowli', 'Kondapur',
+    'Ameerpet', 'Kukatpally', 'Begumpet', 'Secunderabad', 'Somajiguda', 'Punjagutta',
+    'Manikonda', 'Nanakramguda', 'Financial District', 'Miyapur', 'Tolichowki', 'Attapur',
+    'Kokapet', 'Narsingi', 'Shamshabad', 'Uppal', 'LB Nagar', 'Dilsukhnagar',
+    'Himayatnagar', 'Abids', 'Nampally', 'Mehdipatnam', 'Lakdi Ka Pul', 'Khairatabad',
+    'Raidurg', 'Shilpa Hills', 'Botanical Garden', 'Whitefields', 'Chandanagar',
+  ];
+
   // Backend-only fields
   const [locationPin, setLocationPin] = useState('');
   const [contactName, setContactName] = useState('');
@@ -128,6 +141,7 @@ export default function NewPropertyPage() {
           category,
           officeType: category === 'office' ? officeType : undefined,
           fields: fieldValues,
+          nearbyAreas,
           locationPin,
           contactName,
           contactMobile,
@@ -422,6 +436,39 @@ export default function NewPropertyPage() {
         {step >= 4 && transactionType && category && (category !== 'office' || officeType) && (
           <div className="bg-white rounded-xl shadow-sm border p-6 mb-6">
             <h3 className="text-lg font-semibold text-gray-800 mb-2">Backend-Only Information</h3>
+            {/* Nearby Areas Multi-Select */}
+            <div className="mb-6">
+              <label className="block text-sm font-medium text-gray-700 mb-2">Nearby Areas (for search visibility)</label>
+              <p className="text-xs text-gray-500 mb-2">Select areas near this property. When users search for any selected area, this property will appear in results.</p>
+              <div className="flex flex-wrap gap-2 mb-3">
+                {nearbyAreas.map(area => (
+                  <span key={area} className="inline-flex items-center gap-1 bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-xs font-medium">
+                    {area}
+                    <button type="button" onClick={() => setNearbyAreas(nearbyAreas.filter(a => a !== area))} className="text-blue-600 hover:text-red-500 font-bold">×</button>
+                  </span>
+                ))}
+              </div>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={nearbyInput}
+                  onChange={(e) => setNearbyInput(e.target.value)}
+                  placeholder="Type to filter or add custom area..."
+                  className="flex-1 px-3 py-2 border rounded-lg text-gray-800 text-sm"
+                />
+                {nearbyInput && !AREA_OPTIONS.includes(nearbyInput) && (
+                  <button type="button" onClick={() => { if (nearbyInput && !nearbyAreas.includes(nearbyInput)) { setNearbyAreas([...nearbyAreas, nearbyInput]); setNearbyInput(''); } }} className="px-3 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium">+ Add</button>
+                )}
+              </div>
+              <div className="flex flex-wrap gap-1.5 mt-2 max-h-32 overflow-y-auto">
+                {AREA_OPTIONS.filter(a => !nearbyAreas.includes(a) && a.toLowerCase().includes(nearbyInput.toLowerCase())).map(area => (
+                  <button key={area} type="button" onClick={() => { setNearbyAreas([...nearbyAreas, area]); setNearbyInput(''); }} className="px-2.5 py-1 bg-gray-100 hover:bg-blue-50 text-gray-700 hover:text-blue-700 rounded-lg text-xs border border-gray-200">
+                    + {area}
+                  </button>
+                ))}
+              </div>
+            </div>
+
             <p className="text-sm text-red-500 mb-4">⚠️ These fields are NEVER shown on the public website or to agents.</p>
 
             <div className="space-y-4">

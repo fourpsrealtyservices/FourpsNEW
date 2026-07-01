@@ -63,6 +63,38 @@ export default function AboutPage() {
           </div>
         </div>
       </section>
+
+      {/* Footer */}
+      <footer className="bg-white text-gray-900 pt-10 pb-6 border-t border-gray-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div className="md:col-span-2">
+              <div className="flex items-center gap-2 mb-3">
+                <img src="/logo.webp" alt="FourPs Realty" className="h-8 w-auto" />
+              </div>
+              <p className="text-gray-500 text-sm leading-relaxed max-w-sm">India&apos;s premium commercial real estate platform. Retail, Office, Co-working & Investment spaces.</p>
+            </div>
+            <div>
+              <h4 className="font-bold text-xs uppercase tracking-wider text-gray-500 mb-3">Quick Links</h4>
+              <div className="space-y-2 text-sm">
+                <p><a href="/properties" className="text-gray-600 hover:text-blue-600">All Properties</a></p>
+                <p><a href="/growth-corridors" className="text-gray-600 hover:text-blue-600">Growth Corridors</a></p>
+                <p><a href="/about" className="text-gray-600 hover:text-blue-600">About Us</a></p>
+                <p><a href="/services" className="text-gray-600 hover:text-blue-600">Services</a></p>
+              </div>
+            </div>
+            <div>
+              <h4 className="font-bold text-xs uppercase tracking-wider text-gray-500 mb-3">Contact</h4>
+              <a href="https://wa.me/919059909675" target="_blank" className="inline-flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-green-700">
+                💬 Chat on WhatsApp
+              </a>
+            </div>
+          </div>
+          <div className="border-t border-gray-200 mt-10 pt-6 text-center">
+            <p className="text-gray-500 text-xs">© {new Date().getFullYear()} FourPs Realty. All rights reserved.</p>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }

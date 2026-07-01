@@ -22,6 +22,7 @@ export async function GET(request: NextRequest) {
         { locationArea: { $regex: search, $options: 'i' } },
         { propertyId: { $regex: search, $options: 'i' } },
         { 'fields.locationArea.value': { $regex: search, $options: 'i' } },
+        { nearbyAreas: { $regex: search, $options: 'i' } },
       ];
     }
 

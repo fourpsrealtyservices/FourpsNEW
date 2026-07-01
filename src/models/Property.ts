@@ -29,6 +29,9 @@ export interface IProperty extends Document {
   locationArea?: string;
   description?: string;
   
+  // Nearby areas for search matching
+  nearbyAreas?: string[]; // e.g. ['Nanakramguda', 'HITEC City', 'Kokapet']
+
   // Back-end only fields (NEVER shown on public listing or to agents)
   locationPin?: string; // Google Maps coordinates
   contactName?: string;
@@ -91,6 +94,9 @@ const PropertySchema = new Schema<IProperty>(
     // Common
     locationArea: { type: String },
     description: { type: String },
+
+    // Nearby areas for search
+    nearbyAreas: [{ type: String }],
 
     // Back-end only
     locationPin: { type: String },

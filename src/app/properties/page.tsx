@@ -74,12 +74,30 @@ function PropertiesContent() {
             </select>
             <select value={filters.category} onChange={e => setFilters({...filters, category: e.target.value})} className="px-4 py-2.5 rounded-xl border border-gray-200 text-sm font-medium text-gray-700 bg-white focus:border-blue-300 outline-none">
               <option value="">All Categories</option>
-              <option value="retail">Retail</option>
-              <option value="office">Office</option>
-              <option value="coworking">Co-working</option>
-              <option value="commercial_plot">Commercial Plot</option>
-              <option value="rental_income">Rental Income</option>
-              <option value="investment">Investment</option>
+              {filters.transactionType === 'sale' ? (
+                <>
+                  <option value="retail">🏪 Retail</option>
+                  <option value="office">🏢 Office</option>
+                  <option value="rental_income">🏠 Rental Income</option>
+                  <option value="investment">📈 Investment</option>
+                </>
+              ) : filters.transactionType === 'lease' ? (
+                <>
+                  <option value="retail">🏪 Retail</option>
+                  <option value="office">🏢 Office</option>
+                  <option value="coworking">👥 Co-working</option>
+                  <option value="commercial_plot">🏭 Commercial Plot/Warehouse</option>
+                </>
+              ) : (
+                <>
+                  <option value="retail">🏪 Retail</option>
+                  <option value="office">🏢 Office</option>
+                  <option value="coworking">👥 Co-working</option>
+                  <option value="commercial_plot">🏭 Commercial Plot/Warehouse</option>
+                  <option value="rental_income">🏠 Rental Income</option>
+                  <option value="investment">📈 Investment</option>
+                </>
+              )}
             </select>
             <input type="text" value={filters.search} onChange={e => setFilters({...filters, search: e.target.value})} placeholder="Search locality..." className="px-4 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-700 bg-white focus:border-blue-300 outline-none flex-1 min-w-[180px]" />
             {(filters.transactionType || filters.category || filters.search) && (
@@ -138,6 +156,38 @@ function PropertiesContent() {
           ))}
         </div>
       </main>
+
+      {/* Footer */}
+      <footer className="bg-white text-gray-900 pt-10 pb-6 border-t border-gray-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div className="md:col-span-2">
+              <div className="flex items-center gap-2 mb-3">
+                <img src="/logo.webp" alt="FourPs Realty" className="h-8 w-auto" />
+              </div>
+              <p className="text-gray-500 text-sm leading-relaxed max-w-sm">India&apos;s premium commercial real estate platform. Retail, Office, Co-working & Investment spaces.</p>
+            </div>
+            <div>
+              <h4 className="font-bold text-xs uppercase tracking-wider text-gray-500 mb-3">Quick Links</h4>
+              <div className="space-y-2 text-sm">
+                <p><Link href="/properties" className="text-gray-600 hover:text-blue-600">All Properties</Link></p>
+                <p><Link href="/growth-corridors" className="text-gray-600 hover:text-blue-600">Growth Corridors</Link></p>
+                <p><Link href="/about" className="text-gray-600 hover:text-blue-600">About Us</Link></p>
+                <p><Link href="/services" className="text-gray-600 hover:text-blue-600">Services</Link></p>
+              </div>
+            </div>
+            <div>
+              <h4 className="font-bold text-xs uppercase tracking-wider text-gray-500 mb-3">Contact</h4>
+              <a href="https://wa.me/919059909675" target="_blank" className="inline-flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-green-700">
+                💬 Chat on WhatsApp
+              </a>
+            </div>
+          </div>
+          <div className="border-t border-gray-200 mt-10 pt-6 text-center">
+            <p className="text-gray-500 text-xs">© {new Date().getFullYear()} FourPs Realty. All rights reserved.</p>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
