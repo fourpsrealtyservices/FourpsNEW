@@ -204,35 +204,37 @@ export default function HomePage() {
       </section>
 
       {/* About 4Ps Section */}
-      <section className="bg-white py-10 border-b border-gray-100">
+      <section className="bg-gradient-to-b from-white to-gray-50 py-14 border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-            <div>
-              <h2 className="text-2xl md:text-3xl font-extrabold text-gray-900 mb-2">4Ps Realty Services</h2>
-              <p className="text-gray-600 text-base md:text-lg mb-4">Exclusive services in Commercial Real Estate</p>
-              <p className="text-gray-600 text-sm md:text-base leading-relaxed">
-                Every business runs on the 4Ps and we specialize in the most crucial one: <span className="font-bold text-blue-700">Place</span>.
-              </p>
-              <p className="text-gray-500 text-sm md:text-base leading-relaxed mt-2">
-                We help brands, investors, and companies find the right commercial locations across Hyderabad through data-driven insights and strong market expertise.
-              </p>
-            </div>
-            <div>
-              <h3 className="text-base font-bold text-gray-800 mb-4">What are the 4Ps?</h3>
-              <div className="grid grid-cols-2 gap-3">
-                {[
-                  { word: 'Product', icon: '📦' },
-                  { word: 'Price', icon: '💰' },
-                  { word: 'Promotion', icon: '📣' },
-                  { word: 'Place', icon: '📍' },
-                ].map(item => (
-                  <div key={item.word} className={`p-4 rounded-xl border-2 text-center ${item.word === 'Place' ? 'border-blue-500 bg-blue-50' : 'border-gray-100 bg-gray-50'}`}>
-                    <span className="text-2xl block mb-1">{item.icon}</span>
-                    <p className={`font-extrabold text-base ${item.word === 'Place' ? 'text-blue-700' : 'text-gray-800'}`}>{item.word}</p>
-                  </div>
-                ))}
+          <div className="text-center mb-10">
+            <h2 className="text-2xl md:text-4xl font-extrabold text-gray-900 mb-2">4Ps Realty Services</h2>
+            <p className="text-gray-500 text-sm md:text-base max-w-xl mx-auto">Every business runs on the 4Ps — we specialize in the most crucial one: <span className="font-bold text-blue-600">Place</span></p>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+            {[
+              { word: 'Product', icon: '📦', desc: 'What you sell' },
+              { word: 'Price', icon: '💰', desc: 'How you price it' },
+              { word: 'Promotion', icon: '📣', desc: 'How you market it' },
+              { word: 'Place', icon: '📍', desc: 'Where you operate' },
+            ].map(item => (
+              <div key={item.word} className={`relative p-5 rounded-2xl text-center transition-all hover:shadow-lg ${item.word === 'Place' ? 'bg-blue-600 text-white shadow-lg shadow-blue-200 scale-105' : 'bg-white border border-gray-100 shadow-sm'}`}>
+                <span className="text-3xl block mb-2">{item.icon}</span>
+                <p className={`font-extrabold text-base mb-0.5 ${item.word === 'Place' ? 'text-white' : 'text-gray-900'}`}>{item.word}</p>
+                <p className={`text-xs ${item.word === 'Place' ? 'text-blue-100' : 'text-gray-400'}`}>{item.desc}</p>
+                {item.word === 'Place' && <span className="absolute -top-2 -right-2 bg-yellow-400 text-gray-900 text-[10px] font-bold px-2 py-0.5 rounded-full shadow">We do this!</span>}
               </div>
+            ))}
+          </div>
+          <div className="bg-white rounded-2xl border border-gray-100 p-6 md:p-8 shadow-sm flex flex-col md:flex-row items-center gap-6">
+            <div className="flex-1">
+              <h3 className="text-lg font-bold text-gray-900 mb-2">Exclusive in Commercial Real Estate</h3>
+              <p className="text-gray-500 text-sm leading-relaxed">
+                We help brands, investors, and companies find the right commercial locations across Hyderabad through data-driven insights, strong market expertise, and exclusive inventory access.
+              </p>
             </div>
+            <Link href="/about" className="shrink-0 bg-blue-600 text-white px-6 py-3 rounded-xl font-bold text-sm hover:bg-blue-700 active:scale-95 transition-all shadow">
+              Learn More →
+            </Link>
           </div>
         </div>
       </section>
