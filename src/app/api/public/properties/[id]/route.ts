@@ -24,6 +24,10 @@ export async function GET(
       return NextResponse.json({ error: 'Property not found' }, { status: 404 });
     }
 
+    if (property.soldOut) {
+      return NextResponse.json({ error: 'This property has been sold out', soldOut: true }, { status: 410 });
+    }
+
     return NextResponse.json(property);
   } catch (error) {
     console.error('Error fetching property:', error);

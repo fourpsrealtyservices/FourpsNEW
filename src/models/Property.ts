@@ -49,6 +49,7 @@ export interface IProperty extends Document {
     name: string;
   };
   rejectionReason?: string;
+  soldOut?: boolean;
   
   // Auto-increment number for property ID
   propertyNumber: number;
@@ -120,6 +121,7 @@ const PropertySchema = new Schema<IProperty>(
       name: { type: String },
     },
     rejectionReason: { type: String },
+    soldOut: { type: Boolean, default: false },
 
     propertyNumber: { type: Number, required: true },
     publishedAt: { type: Date },

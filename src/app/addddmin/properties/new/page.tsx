@@ -38,15 +38,7 @@ export default function NewPropertyPage() {
   // Nearby areas for search
   const [nearbyAreas, setNearbyAreas] = useState<string[]>([]);
   const [nearbyInput, setNearbyInput] = useState('');
-
-  const AREA_OPTIONS = [
-    'Banjara Hills', 'Jubilee Hills', 'HITEC City', 'Madhapur', 'Gachibowli', 'Kondapur',
-    'Ameerpet', 'Kukatpally', 'Begumpet', 'Secunderabad', 'Somajiguda', 'Punjagutta',
-    'Manikonda', 'Nanakramguda', 'Financial District', 'Miyapur', 'Tolichowki', 'Attapur',
-    'Kokapet', 'Narsingi', 'Shamshabad', 'Uppal', 'LB Nagar', 'Dilsukhnagar',
-    'Himayatnagar', 'Abids', 'Nampally', 'Mehdipatnam', 'Lakdi Ka Pul', 'Khairatabad',
-    'Raidurg', 'Shilpa Hills', 'Botanical Garden', 'Whitefields', 'Chandanagar',
-  ];
+  const [areaOptions, setAreaOptions] = useState<string[]>([]);
 
   // Backend-only fields
   const [locationPin, setLocationPin] = useState('');
@@ -61,6 +53,15 @@ export default function NewPropertyPage() {
   useEffect(() => {
     fetchCities();
   }, []);
+
+  // Fetch localities when city changes
+  useEffect(() => {
+    if (city) {
+      fetch(`/api/admin/localities?city=${city}`).then(r => r.json()).then((data: { name: string }[]) => {
+        setAreaOptions(data.map((l: { name: string }) => l.name));
+      });
+    }
+  }, [city]);
 
   const fetchCities = async () => {
     const res = await fetch('/api/admin/cities');
@@ -130,6 +131,14 @@ export default function NewPropertyPage() {
   };
 
   const handleSubmit = async (asDraft = false) => {
+    // Validate minimum 4 checkboxes are ticked (only for publish, not drafts)
+    if (!asDraft) {
+      const checkedCount = Object.values(fieldValues).filter(f => f.checked && f.value && (Array.isArray(f.value) ? f.value.length > 0 : f.value !== '')).length;
+      if (checkedCount < 4) {
+        alert(`Please fill and check at least 4 fields before publishing. Currently only ${checkedCount} field(s) are checked.`);
+        return;
+      }
+    }
     setLoading(true);
     try {
       const res = await fetch('/api/admin/properties', {
@@ -456,17 +465,18 @@ export default function NewPropertyPage() {
                   placeholder="Type to filter or add custom area..."
                   className="flex-1 px-3 py-2 border rounded-lg text-gray-800 text-sm"
                 />
-                {nearbyInput && !AREA_OPTIONS.includes(nearbyInput) && (
-                  <button type="button" onClick={() => { if (nearbyInput && !nearbyAreas.includes(nearbyInput)) { setNearbyAreas([...nearbyAreas, nearbyInput]); setNearbyInput(''); } }} className="px-3 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium">+ Add</button>
+                {nearbyInput && !areaOptions.includes(nearbyInput) && (
+                  <button type="button" onClick={() => { if (nearbyInput && !nearbyAreas.includes(nearbyInput)) { setNearbyAreas([...nearbyAreas, nearbyInput]); setNearbyInput(''); } }} className="px-3 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium">+ Add Custom</button>
                 )}
               </div>
               <div className="flex flex-wrap gap-1.5 mt-2 max-h-32 overflow-y-auto">
-                {AREA_OPTIONS.filter(a => !nearbyAreas.includes(a) && a.toLowerCase().includes(nearbyInput.toLowerCase())).map(area => (
+                {areaOptions.filter((a: string) => !nearbyAreas.includes(a) && a.toLowerCase().includes(nearbyInput.toLowerCase())).map((area: string) => (
                   <button key={area} type="button" onClick={() => { setNearbyAreas([...nearbyAreas, area]); setNearbyInput(''); }} className="px-2.5 py-1 bg-gray-100 hover:bg-blue-50 text-gray-700 hover:text-blue-700 rounded-lg text-xs border border-gray-200">
                     + {area}
                   </button>
                 ))}
               </div>
+              {areaOptions.length === 0 && <p className="text-xs text-gray-400 mt-2">No localities added yet. <a href="/addddmin/localities" className="text-blue-600 underline">Manage Localities</a></p>}
             </div>
 
             <p className="text-sm text-red-500 mb-4">⚠️ These fields are NEVER shown on the public website or to agents.</p>

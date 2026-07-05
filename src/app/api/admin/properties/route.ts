@@ -41,6 +41,19 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Validate minimum 4 checked fields for non-draft submissions
+    if (requestedStatus !== 'draft' && fields) {
+      const checkedCount = Object.values(fields as Record<string, { value: unknown; checked: boolean }>).filter(
+        (f) => f.checked && f.value && (Array.isArray(f.value) ? f.value.length > 0 : f.value !== '')
+      ).length;
+      if (checkedCount < 4) {
+        return NextResponse.json(
+          { error: `At least 4 fields must be checked and filled. Currently only ${checkedCount} field(s) are checked.` },
+          { status: 400 }
+        );
+      }
+    }
+
     // Generate unique property ID
     const { propertyId, propertyNumber } = await generatePropertyId(transactionType, category);
 

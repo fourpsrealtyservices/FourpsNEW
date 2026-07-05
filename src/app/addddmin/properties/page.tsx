@@ -10,6 +10,7 @@ interface Property {
   transactionType: string;
   category: string;
   status: string;
+  soldOut?: boolean;
   locationArea?: string;
   fields?: Record<string, { value: string | string[]; checked: boolean }>;
   photos?: { url: string; label: string; isMasked: boolean; isCover: boolean }[];
@@ -54,6 +55,15 @@ export default function ManagePropertiesPage() {
     if (!confirm('Are you sure you want to delete this property?')) return;
     await fetch(`/api/admin/properties/${id}`, { method: 'DELETE' });
     fetchProperties();
+  };
+
+  const handleToggleSoldOut = async (id: string, soldOut: boolean) => {
+    setProperties(prev => prev.map(p => p._id === id ? { ...p, soldOut } : p));
+    await fetch(`/api/admin/properties/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ soldOut }),
+    });
   };
 
   const handleTogglePhotoMask = async (propertyId: string, photoIndex: number, isMasked: boolean) => {
@@ -131,6 +141,7 @@ export default function ManagePropertiesPage() {
                     <div className="flex items-center gap-3">
                       <span className="font-mono text-sm font-bold text-blue-600">{property.propertyId}</span>
                       {statusBadge(property.status)}
+                      {property.soldOut && <span className="px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">🚫 Sold Out</span>}
                       <span className="text-xs text-gray-500">{property.transactionType === 'lease' ? 'Lease' : 'Sale'}</span>
                       <span className="text-xs bg-gray-100 px-2 py-0.5 rounded">{categoryLabel(property.category)}</span>
                     </div>
@@ -154,6 +165,14 @@ export default function ManagePropertiesPage() {
                     )}
                     {property.status === 'published' && (
                       <button onClick={() => handleStatusChange(property._id, 'unpublished')} className="text-yellow-600 hover:text-yellow-800 text-sm font-medium">Unpublish</button>
+                    )}
+                    {property.status === 'published' && (
+                      <button
+                        onClick={() => handleToggleSoldOut(property._id, !property.soldOut)}
+                        className={`text-sm font-medium border px-2 py-1 rounded ${property.soldOut ? 'bg-green-50 text-green-700 border-green-300' : 'bg-red-50 text-red-700 border-red-300'}`}
+                      >
+                        {property.soldOut ? '↩ Undo Sold' : '🚫 Mark Sold Out'}
+                      </button>
                     )}
                     {property.status === 'unpublished' && (
                       <button onClick={() => handleStatusChange(property._id, 'published')} className="text-green-600 hover:text-green-800 text-sm font-medium">Publish</button>

@@ -3,6 +3,7 @@
 import { useState, useEffect, use } from 'react';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
 
 interface Property {
   _id: string;
@@ -24,6 +25,7 @@ export default function ListingPage({ params }: { params: Promise<{ id: string }
   const { id } = use(params);
   const [property, setProperty] = useState<Property | null>(null);
   const [loading, setLoading] = useState(true);
+  const [soldOut, setSoldOut] = useState(false);
   const [selectedPhoto, setSelectedPhoto] = useState(0);
   const [showEnquiry, setShowEnquiry] = useState(false);
   const [enquiryForm, setEnquiryForm] = useState({ name: '', mobile: '', email: '', message: '', preferredCallbackTime: '' });
@@ -33,7 +35,8 @@ export default function ListingPage({ params }: { params: Promise<{ id: string }
     fetch(`/api/public/properties/${id}`)
       .then(r => r.json())
       .then(data => {
-        if (data.error) setProperty(null);
+        if (data.soldOut) { setSoldOut(true); setProperty(null); }
+        else if (data.error) setProperty(null);
         else setProperty(data);
         setLoading(false);
       });
@@ -91,6 +94,17 @@ export default function ListingPage({ params }: { params: Promise<{ id: string }
       <div className="text-center">
         <div className="w-12 h-12 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mx-auto mb-4"></div>
         <p className="text-gray-500">Loading property details...</p>
+      </div>
+    </div>
+  );
+
+  if (soldOut) return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="text-center max-w-md mx-auto px-4">
+        <div className="text-6xl mb-4">🚫</div>
+        <h2 className="text-2xl font-bold text-red-700 mb-2">Sold Out</h2>
+        <p className="text-gray-600 mb-6">This property has been sold out and is no longer available.</p>
+        <Link href="/properties" className="bg-blue-600 text-white px-6 py-3 rounded-xl font-medium hover:bg-blue-700">Browse Available Properties</Link>
       </div>
     </div>
   );
@@ -364,6 +378,9 @@ export default function ListingPage({ params }: { params: Promise<{ id: string }
 
       {/* Spacer for mobile bottom bar */}
       <div className="lg:hidden h-20"></div>
+
+      {/* Footer */}
+      <Footer />
     </div>
   );
 }

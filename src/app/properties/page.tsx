@@ -3,12 +3,13 @@
 import { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
+import Footer from '@/components/Footer';
 import Navbar from '@/components/Navbar';
 
 interface City { _id: string; name: string; status: string; }
 interface Property {
   _id: string; propertyId: string; city: string; transactionType: string; category: string;
-  officeType?: string; fields: Record<string, { value: string | string[]; checked: boolean; unit?: string }>;
+  officeType?: string; soldOut?: boolean; fields: Record<string, { value: string | string[]; checked: boolean; unit?: string }>;
   photos: { url: string; isCover: boolean; isMasked: boolean; label: string }[]; createdAt: string;
 }
 
@@ -78,7 +79,7 @@ function PropertiesContent() {
                 <>
                   <option value="retail">🏪 Retail</option>
                   <option value="office">🏢 Office</option>
-                  <option value="rental_income">🏠 Rental Income</option>
+                  <option value="rental_income">🏠 Rental Income Properties</option>
                   <option value="investment">📈 Investment</option>
                 </>
               ) : filters.transactionType === 'lease' ? (
@@ -94,7 +95,7 @@ function PropertiesContent() {
                   <option value="office">🏢 Office</option>
                   <option value="coworking">👥 Co-working</option>
                   <option value="commercial_plot">🏭 Commercial Plot/Warehouse</option>
-                  <option value="rental_income">🏠 Rental Income</option>
+                  <option value="rental_income">🏠 Rental Income Properties</option>
                   <option value="investment">📈 Investment</option>
                 </>
               )}
@@ -130,8 +131,17 @@ function PropertiesContent() {
         )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {properties.map((property) => (
-            <Link key={property._id} href={`/listing/${property.propertyId}`} className="group bg-white rounded-2xl border border-gray-100 hover:shadow-xl transition-all duration-300 overflow-hidden">
+          {properties.map((property) => {
+            const isSold = property.soldOut;
+            const CardWrapper = isSold ? 'div' : Link;
+            const cardProps = isSold ? {} : { href: `/listing/${property.propertyId}` };
+            return (
+            <CardWrapper key={property._id} {...cardProps as any} className={`group bg-white rounded-2xl border border-gray-100 transition-all duration-300 overflow-hidden relative ${isSold ? 'cursor-not-allowed opacity-75' : 'hover:shadow-xl'}`}>
+              {isSold && (
+                <div className="absolute inset-0 z-20 bg-white/60 backdrop-blur-[2px] flex items-center justify-center">
+                  <span className="bg-red-600 text-white px-4 py-2 rounded-xl font-bold text-sm shadow-lg">🚫 SOLD OUT</span>
+                </div>
+              )}
               <div className="relative h-48 bg-gray-100 overflow-hidden">
                 {getCoverPhoto(property) ? (
                   <img src={getCoverPhoto(property)!.url} alt="" className={`w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ${getCoverPhoto(property)!.isMasked ? 'blur-md' : ''}`} />
@@ -152,42 +162,14 @@ function PropertiesContent() {
                 <p className="text-gray-500 text-xs">📍 {(property.fields?.locationArea?.checked && property.fields?.locationArea?.value) || property.city}</p>
                 {getArea(property) && <p className="text-xs text-gray-500 mt-1"><span className="font-medium text-gray-700">{getArea(property)}</span></p>}
               </div>
-            </Link>
-          ))}
+            </CardWrapper>
+            );
+          })}
         </div>
       </main>
 
       {/* Footer */}
-      <footer className="bg-white text-gray-900 pt-10 pb-6 border-t border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div className="md:col-span-2">
-              <div className="flex items-center gap-2 mb-3">
-                <img src="/logo.webp" alt="FourPs Realty" className="h-8 w-auto" />
-              </div>
-              <p className="text-gray-500 text-sm leading-relaxed max-w-sm">India&apos;s premium commercial real estate platform. Retail, Office, Co-working & Investment spaces.</p>
-            </div>
-            <div>
-              <h4 className="font-bold text-xs uppercase tracking-wider text-gray-500 mb-3">Quick Links</h4>
-              <div className="space-y-2 text-sm">
-                <p><Link href="/properties" className="text-gray-600 hover:text-blue-600">All Properties</Link></p>
-                <p><Link href="/growth-corridors" className="text-gray-600 hover:text-blue-600">Growth Corridors</Link></p>
-                <p><Link href="/about" className="text-gray-600 hover:text-blue-600">About Us</Link></p>
-                <p><Link href="/services" className="text-gray-600 hover:text-blue-600">Services</Link></p>
-              </div>
-            </div>
-            <div>
-              <h4 className="font-bold text-xs uppercase tracking-wider text-gray-500 mb-3">Contact</h4>
-              <a href="https://wa.me/919059909675" target="_blank" className="inline-flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-green-700">
-                💬 Chat on WhatsApp
-              </a>
-            </div>
-          </div>
-          <div className="border-t border-gray-200 mt-10 pt-6 text-center">
-            <p className="text-gray-500 text-xs">© {new Date().getFullYear()} FourPs Realty. All rights reserved.</p>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

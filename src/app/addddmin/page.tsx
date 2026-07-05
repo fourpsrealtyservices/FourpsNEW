@@ -41,6 +41,7 @@ export default function AdminDashboard() {
     { href: '/addddmin/agents', icon: '👥', title: 'Agent Management', desc: `${stats.agents} active agents`, color: 'from-pink-500 to-rose-600' },
     { href: '/addddmin/growth-corridors', icon: '📍', title: 'Growth Corridors', desc: 'Manage corridor zones', color: 'from-green-500 to-emerald-600' },
     { href: '/addddmin/testimonials', icon: '💬', title: 'Client Testimonials', desc: 'Manage homepage reviews', color: 'from-yellow-500 to-amber-600' },
+    { href: '/addddmin/localities', icon: '📌', title: 'Localities / Areas', desc: 'Manage area names for search', color: 'from-indigo-500 to-violet-600' },
     { href: '/addddmin/cities', icon: '🌍', title: 'City Settings', desc: 'Manage active cities', color: 'from-cyan-500 to-blue-600' },
   ];
 

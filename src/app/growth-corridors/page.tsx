@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
+import Footer from '@/components/Footer';
 import Navbar from '@/components/Navbar';
 
 interface Corridor {
@@ -55,15 +56,20 @@ export default function GrowthCorridorsPage() {
           <img src="https://images.unsplash.com/photo-1560179707-f14e90ef3623?auto=format&fit=crop&w=1920&q=80" alt="" className="w-full h-full object-cover" />
         </div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {corridors.map((c) => (
-              <div key={c._id} className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden hover:shadow-lg transition-shadow">
-                <div className="h-48">
-                  <img src={c.imageUrl || 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=600&q=80'} alt={c.title} className="w-full h-full object-cover" />
+              <div
+                key={c._id}
+                onClick={() => window.open(`/growth-corridors/${c._id}`, '_blank')}
+                className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden hover:shadow-lg transition-shadow cursor-pointer group"
+              >
+                <div className="h-44 overflow-hidden">
+                  <img src={c.imageUrl || 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=600&q=80'} alt={c.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                 </div>
-                <div className="p-5">
-                  <h2 className="text-lg font-extrabold text-gray-900 mb-2">{c.title}</h2>
-                  <p className="text-gray-600 text-sm leading-relaxed">{c.content}</p>
+                <div className="p-4">
+                  <h2 className="text-base font-extrabold text-gray-900 mb-1.5 group-hover:text-blue-600 transition-colors">{c.title}</h2>
+                  <p className="text-gray-600 text-sm leading-relaxed line-clamp-3">{c.content}</p>
+                  <span className="text-blue-600 text-xs font-semibold mt-2 inline-block">Read More →</span>
                 </div>
               </div>
             ))}
@@ -87,36 +93,7 @@ export default function GrowthCorridorsPage() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-white text-gray-900 pt-10 pb-6 border-t border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div className="md:col-span-2">
-              <div className="flex items-center gap-2 mb-3">
-                <img src="/logo.webp" alt="FourPs Realty" className="h-8 w-auto" />
-              </div>
-              <p className="text-gray-500 text-sm leading-relaxed max-w-sm">India&apos;s premium commercial real estate platform. Retail, Office, Co-working & Investment spaces.</p>
-            </div>
-            <div>
-              <h4 className="font-bold text-xs uppercase tracking-wider text-gray-500 mb-3">Quick Links</h4>
-              <div className="space-y-2 text-sm">
-                <p><Link href="/properties" className="text-gray-600 hover:text-blue-600">All Properties</Link></p>
-                <p><Link href="/growth-corridors" className="text-gray-600 hover:text-blue-600">Growth Corridors</Link></p>
-                <p><Link href="/about" className="text-gray-600 hover:text-blue-600">About Us</Link></p>
-                <p><Link href="/services" className="text-gray-600 hover:text-blue-600">Services</Link></p>
-              </div>
-            </div>
-            <div>
-              <h4 className="font-bold text-xs uppercase tracking-wider text-gray-500 mb-3">Contact</h4>
-              <a href="https://wa.me/919059909675" target="_blank" className="inline-flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-green-700">
-                💬 Chat on WhatsApp
-              </a>
-            </div>
-          </div>
-          <div className="border-t border-gray-200 mt-10 pt-6 text-center">
-            <p className="text-gray-500 text-xs">© {new Date().getFullYear()} FourPs Realty. All rights reserved.</p>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

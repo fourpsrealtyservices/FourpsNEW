@@ -70,6 +70,12 @@ export default function AgentSubmitPage() {
   };
 
   const handleSubmit = async () => {
+    // Validate minimum 4 checkboxes are ticked
+    const checkedCount = Object.values(fieldValues).filter(f => f.checked && f.value && (Array.isArray(f.value) ? f.value.length > 0 : f.value !== '')).length;
+    if (checkedCount < 4) {
+      alert(`Please fill and check at least 4 fields before submitting. Currently only ${checkedCount} field(s) are checked.`);
+      return;
+    }
     setLoading(true);
     const res = await fetch('/api/agent/properties', {
       method: 'POST',
