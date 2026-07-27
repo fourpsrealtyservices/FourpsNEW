@@ -8,10 +8,12 @@ interface Stats {
   pending: number;
   leads: number;
   agents: number;
+  agentProperties: number;
+  localities: number;
 }
 
 export default function AdminDashboard() {
-  const [stats, setStats] = useState<Stats>({ properties: 0, pending: 0, leads: 0, agents: 0 });
+  const [stats, setStats] = useState<Stats>({ properties: 0, pending: 0, leads: 0, agents: 0, agentProperties: 0, localities: 0 });
 
   useEffect(() => {
     // Fetch quick stats
@@ -19,15 +21,19 @@ export default function AdminDashboard() {
       fetch('/api/admin/properties').then(r => r.json()),
       fetch('/api/admin/leads').then(r => r.json()),
       fetch('/api/admin/agents').then(r => r.json()),
-    ]).then(([props, leads, agents]) => {
+      fetch('/api/admin/localities').then(r => r.json()),
+    ]).then(([props, leads, agents, localities]) => {
       const propList = Array.isArray(props) ? props : props.properties || [];
       const leadList = Array.isArray(leads) ? leads : leads.leads || [];
       const agentList = Array.isArray(agents) ? agents : [];
+      const localityList = Array.isArray(localities) ? localities : [];
       setStats({
         properties: propList.filter((p: { status: string }) => p.status === 'published').length,
         pending: propList.filter((p: { status: string }) => p.status === 'pending').length,
+        agentProperties: propList.filter((p: { submittedBy?: { type: string } }) => p.submittedBy?.type === 'agent').length,
         leads: leadList.length,
         agents: agentList.filter((a: { status: string }) => a.status === 'approved').length,
+        localities: localityList.length,
       });
     });
   }, []);
@@ -41,6 +47,7 @@ export default function AdminDashboard() {
     { href: '/addddmin/agents', icon: '👥', title: 'Agent Management', desc: `${stats.agents} active agents`, color: 'from-pink-500 to-rose-600' },
     { href: '/addddmin/growth-corridors', icon: '📍', title: 'Growth Corridors', desc: 'Manage corridor zones', color: 'from-green-500 to-emerald-600' },
     { href: '/addddmin/testimonials', icon: '💬', title: 'Client Testimonials', desc: 'Manage homepage reviews', color: 'from-yellow-500 to-amber-600' },
+    { href: '/addddmin/about', icon: '📄', title: 'About Page', desc: 'Edit founder info & content', color: 'from-orange-500 to-red-500' },
     { href: '/addddmin/localities', icon: '📌', title: 'Localities / Areas', desc: 'Manage area names for search', color: 'from-indigo-500 to-violet-600' },
     { href: '/addddmin/cities', icon: '🌍', title: 'City Settings', desc: 'Manage active cities', color: 'from-cyan-500 to-blue-600' },
   ];
@@ -76,7 +83,7 @@ export default function AdminDashboard() {
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
           <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm">
             <p className="text-3xl font-bold text-gray-900">{stats.properties}</p>
             <p className="text-sm text-gray-500 mt-1">Live Listings</p>
@@ -86,12 +93,20 @@ export default function AdminDashboard() {
             <p className="text-sm text-gray-500 mt-1">Pending Review</p>
           </div>
           <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm">
+            <p className="text-3xl font-bold text-pink-600">{stats.agentProperties}</p>
+            <p className="text-sm text-gray-500 mt-1">Agent Uploads</p>
+          </div>
+          <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm">
             <p className="text-3xl font-bold text-purple-600">{stats.leads}</p>
             <p className="text-sm text-gray-500 mt-1">Total Leads</p>
           </div>
           <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm">
             <p className="text-3xl font-bold text-emerald-600">{stats.agents}</p>
             <p className="text-sm text-gray-500 mt-1">Active Agents</p>
+          </div>
+          <div className="bg-white rounded-2xl border border-gray-100 p-5 shadow-sm">
+            <p className="text-3xl font-bold text-indigo-600">{stats.localities}</p>
+            <p className="text-sm text-gray-500 mt-1">Nearby Areas</p>
           </div>
         </div>
 

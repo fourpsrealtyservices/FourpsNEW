@@ -10,7 +10,8 @@ interface City { _id: string; name: string; status: string; }
 interface Testimonial { _id: string; name: string; role: string; text: string; imageUrl: string; }
 interface Property {
   _id: string; propertyId: string; city: string; transactionType: string; category: string;
-  officeType?: string; soldOut?: boolean; fields: Record<string, { value: string | string[]; checked: boolean; unit?: string }>;
+  officeType?: string; soldOut?: boolean; customHeading?: string;
+  fields: Record<string, { value: string | string[]; checked: boolean; unit?: string }>;
   photos: { url: string; isCover: boolean; isMasked: boolean; label: string }[]; createdAt: string;
 }
 
@@ -241,11 +242,15 @@ export default function HomePage() {
 
       {/* Properties Section - Only 2 rows (6 items) */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center justify-between mb-4">
           <h2 className="text-2xl md:text-3xl font-extrabold text-gray-900">Latest Properties</h2>
           <Link href="/properties" className="text-blue-600 font-semibold text-sm hover:text-blue-700 flex items-center gap-1">
             See All →
           </Link>
+        </div>
+        <div className="flex gap-2 mb-6">
+          <button onClick={() => setTransactionFilter('lease')} className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all ${transactionFilter === 'lease' ? 'bg-violet-500 text-white shadow' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>For Lease</button>
+          <button onClick={() => setTransactionFilter('sale')} className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all ${transactionFilter === 'sale' ? 'bg-violet-500 text-white shadow' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>For Sale</button>
         </div>
 
         {loading && <div className="text-center py-10"><div className="w-8 h-8 border-3 border-blue-200 border-t-blue-600 rounded-full animate-spin mx-auto"></div></div>}
@@ -367,27 +372,6 @@ export default function HomePage() {
           </div>
         </section>
       )}
-
-      {/* Why FourPs */}
-      <section className="bg-white border-t border-gray-100 py-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-2xl md:text-3xl font-extrabold text-gray-900 text-center mb-6">Why Choose FourPs Realty?</h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {[
-              { icon: '🎯', title: 'Precision', desc: 'Curated listings matched to your needs' },
-              { icon: '💎', title: 'Premium', desc: 'Grade A properties in prime locations' },
-              { icon: '🤝', title: 'Partnership', desc: 'Dedicated relationship managers' },
-              { icon: '⚡', title: 'Performance', desc: 'Fast closures, transparent deals' },
-            ].map(item => (
-              <div key={item.title} className="text-center p-5 rounded-2xl hover:bg-gray-50 transition-colors">
-                <span className="text-3xl block mb-2">{item.icon}</span>
-                <h3 className="font-extrabold text-gray-900 text-sm mb-1">{item.title}</h3>
-                <p className="text-xs text-gray-500">{item.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* CTA */}
       <section className="relative py-12 overflow-hidden">

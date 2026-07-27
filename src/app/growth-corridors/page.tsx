@@ -46,7 +46,7 @@ export default function GrowthCorridorsPage() {
         </div>
         <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24 text-center">
           <h1 className="text-3xl md:text-5xl font-extrabold text-white mb-4">Growth Corridors</h1>
-          <p className="text-blue-100 text-lg">Explore Hyderabad&apos;s most promising commercial real estate zones</p>
+          <p className="text-blue-100 text-lg">Explore the most promising commercial real estate zones</p>
         </div>
       </section>
 

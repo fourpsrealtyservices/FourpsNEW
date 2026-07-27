@@ -12,6 +12,7 @@ interface Property {
   transactionType: string;
   category: string;
   officeType?: string;
+  customHeading?: string;
   fields: Record<string, { value: string | string[]; checked: boolean; unit?: string }>;
   photos: { url: string; publicId: string; isCover: boolean; isMasked: boolean; label: string }[];
   submittedBy?: { type: string; name: string };
@@ -138,7 +139,7 @@ export default function ListingPage({ params }: { params: Promise<{ id: string }
           </span>
           <span className="px-3 py-1.5 rounded-lg text-sm font-semibold bg-gray-100 text-gray-700">{categoryLabel(property.category)}</span>
           {property.officeType && <span className="px-3 py-1.5 rounded-lg text-sm font-medium bg-amber-50 text-amber-700 capitalize">{property.officeType}</span>}
-          <span className="text-sm text-gray-400 ml-auto">Listed {new Date(property.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
+          <span className="text-[11px] text-gray-300 ml-auto">{new Date(property.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -199,9 +200,11 @@ export default function ListingPage({ params }: { params: Promise<{ id: string }
             {/* Property Details Card */}
             <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
               <div className="px-6 py-5 border-b border-gray-50">
-                <h2 className="text-xl font-bold text-gray-900">Property Details</h2>
+                <h2 className="text-xl font-bold text-gray-900">
+                  {property.customHeading || `${categoryLabel(property.category)} for ${property.transactionType === 'lease' ? 'Lease' : 'Sale'}`}
+                </h2>
                 <p className="text-sm text-gray-400">
-                  {categoryLabel(property.category)} for {property.transactionType === 'lease' ? 'Lease' : 'Sale'} in {property.city}
+                  {property.customHeading ? `${categoryLabel(property.category)} for ${property.transactionType === 'lease' ? 'Lease' : 'Sale'} in ${property.city}` : `Property in ${property.city}`}
                 </p>
               </div>
               <div className="p-6">
@@ -374,6 +377,11 @@ export default function ListingPage({ params }: { params: Promise<{ id: string }
         >
           📤
         </a>
+      </div>
+
+      {/* Disclaimer */}
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <p className="text-xs text-gray-400 text-center italic">* Property listing is subject to availability</p>
       </div>
 
       {/* Spacer for mobile bottom bar */}

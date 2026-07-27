@@ -32,6 +32,12 @@ export interface IProperty extends Document {
   // Nearby areas for search matching
   nearbyAreas?: string[]; // e.g. ['Nanakramguda', 'HITEC City', 'Kokapet']
 
+  // Custom heading for the property listing (optional, overrides default)
+  customHeading?: string;
+  
+  // Internal remarks/notes (admin only, never shown publicly)
+  remarks?: string;
+
   // Back-end only fields (NEVER shown on public listing or to agents)
   locationPin?: string; // Google Maps coordinates
   contactName?: string;
@@ -98,6 +104,12 @@ const PropertySchema = new Schema<IProperty>(
 
     // Nearby areas for search
     nearbyAreas: [{ type: String }],
+
+    // Custom heading (optional override for listing title)
+    customHeading: { type: String },
+    
+    // Internal remarks/notes (admin only)
+    remarks: { type: String },
 
     // Back-end only
     locationPin: { type: String },

@@ -19,6 +19,7 @@ export default function AdminGrowthCorridorsPage() {
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState<Corridor | null>(null);
   const [form, setForm] = useState({ title: '', content: '', imageUrl: '', city: 'Hyderabad', order: 0, isActive: true });
+  const [uploading, setUploading] = useState(false);
 
   const fetchCorridors = async () => {
     const res = await fetch('/api/admin/growth-corridors');
@@ -111,20 +112,50 @@ export default function AdminGrowthCorridorsPage() {
                 <label className="block text-sm font-medium text-gray-700 mb-1">Content / Description *</label>
                 <textarea value={form.content} onChange={(e) => setForm({ ...form, content: e.target.value })} rows={4} className="w-full px-3 py-2 border rounded-lg text-gray-800" placeholder="Describe this corridor..." />
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Image URL</label>
-                  <input type="text" value={form.imageUrl} onChange={(e) => setForm({ ...form, imageUrl: e.target.value })} className="w-full px-3 py-2 border rounded-lg text-gray-800" placeholder="https://..." />
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Image</label>
+                  <div className="flex items-center gap-4">
+                    {form.imageUrl && (
+                      <div className="w-24 h-16 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0">
+                        <img src={form.imageUrl} alt="Preview" className="w-full h-full object-cover" />
+                      </div>
+                    )}
+                    <div className="flex-1">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={async (e) => {
+                          const file = e.target.files?.[0];
+                          if (!file) return;
+                          setUploading(true);
+                          const formData = new FormData();
+                          formData.append('file', file);
+                          try {
+                            const res = await fetch('/api/upload', { method: 'POST', body: formData });
+                            const data = await res.json();
+                            if (res.ok) setForm({ ...form, imageUrl: data.url });
+                            else alert('Upload failed');
+                          } catch { alert('Upload error'); }
+                          setUploading(false);
+                        }}
+                        className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                      />
+                      {uploading && <p className="text-xs text-blue-600 mt-1">Uploading image...</p>}
+                    </div>
+                  </div>
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Display Order</label>
-                  <input type="number" value={form.order} onChange={(e) => setForm({ ...form, order: parseInt(e.target.value) || 0 })} className="w-full px-3 py-2 border rounded-lg text-gray-800" />
-                </div>
-                <div className="flex items-end">
-                  <label className="flex items-center gap-2 cursor-pointer">
-                    <input type="checkbox" checked={form.isActive} onChange={(e) => setForm({ ...form, isActive: e.target.checked })} className="w-4 h-4" />
-                    <span className="text-sm text-gray-700 font-medium">Active (visible on website)</span>
-                  </label>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Display Order</label>
+                    <input type="number" value={form.order} onChange={(e) => setForm({ ...form, order: parseInt(e.target.value) || 0 })} className="w-full px-3 py-2 border rounded-lg text-gray-800" />
+                  </div>
+                  <div className="flex items-end">
+                    <label className="flex items-center gap-2 cursor-pointer">
+                      <input type="checkbox" checked={form.isActive} onChange={(e) => setForm({ ...form, isActive: e.target.checked })} className="w-4 h-4" />
+                      <span className="text-sm text-gray-700 font-medium">Active (visible on website)</span>
+                    </label>
+                  </div>
                 </div>
               </div>
               <div className="flex gap-3">

@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
   try {
     await dbConnect();
     const body = await request.json();
-    const { city, transactionType, category, officeType, fields, nearbyAreas, locationPin, contactName, contactMobile, contactDesignation, photos, status: requestedStatus } = body;
+    const { city, transactionType, category, officeType, customHeading, fields, nearbyAreas, locationPin, contactName, contactMobile, contactDesignation, remarks, photos, status: requestedStatus } = body;
 
     if (!city || !transactionType || !category) {
       return NextResponse.json(
@@ -64,6 +64,7 @@ export async function POST(request: NextRequest) {
       transactionType,
       category,
       officeType: category === 'office' ? officeType : undefined,
+      customHeading: customHeading || undefined,
       fields: fields || {},
       locationArea: fields?.locationArea?.value || '',
       description: fields?.description?.value || '',
@@ -72,6 +73,7 @@ export async function POST(request: NextRequest) {
       contactName,
       contactMobile,
       contactDesignation,
+      remarks: remarks || undefined,
       photos: photos || [],
       status: requestedStatus || 'published',
       publishedAt: requestedStatus === 'draft' ? undefined : new Date(),

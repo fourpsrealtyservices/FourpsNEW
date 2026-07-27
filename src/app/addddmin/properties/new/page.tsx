@@ -40,11 +40,15 @@ export default function NewPropertyPage() {
   const [nearbyInput, setNearbyInput] = useState('');
   const [areaOptions, setAreaOptions] = useState<string[]>([]);
 
+  // Custom heading (optional)
+  const [customHeading, setCustomHeading] = useState('');
+  
   // Backend-only fields
   const [locationPin, setLocationPin] = useState('');
   const [contactName, setContactName] = useState('');
   const [contactMobile, setContactMobile] = useState('');
   const [contactDesignation, setContactDesignation] = useState('');
+  const [remarks, setRemarks] = useState('');
 
   // Photos
   const [photos, setPhotos] = useState<PhotoItem[]>([]);
@@ -149,12 +153,14 @@ export default function NewPropertyPage() {
           transactionType,
           category,
           officeType: category === 'office' ? officeType : undefined,
+          customHeading: customHeading || undefined,
           fields: fieldValues,
           nearbyAreas,
           locationPin,
           contactName,
           contactMobile,
           contactDesignation,
+          remarks: remarks || undefined,
           photos,
           status: asDraft ? 'draft' : 'published',
         }),
@@ -429,6 +435,21 @@ export default function NewPropertyPage() {
           </div>
         )}
 
+        {/* Custom Heading (optional) */}
+        {step >= 4 && transactionType && category && (category !== 'office' || officeType) && (
+          <div className="bg-white rounded-xl shadow-sm border p-6 mb-6">
+            <h3 className="text-lg font-semibold text-gray-800 mb-2">Listing Heading (Optional)</h3>
+            <p className="text-xs text-gray-500 mb-3">Custom heading for this property listing. If left blank, the default format (e.g. &quot;Office for Lease&quot;) will be used.</p>
+            <input
+              type="text"
+              value={customHeading}
+              onChange={(e) => setCustomHeading(e.target.value)}
+              placeholder="e.g. Premium Office Space in HITEC City"
+              className="w-full px-4 py-3 border rounded-lg text-gray-800 text-sm"
+            />
+          </div>
+        )}
+
         {/* Step 4: Property Details Form */}
         {step >= 4 && transactionType && category && (category !== 'office' || officeType) && (
           <div className="bg-white rounded-xl shadow-sm border p-6 mb-6">
@@ -469,12 +490,15 @@ export default function NewPropertyPage() {
                   <button type="button" onClick={() => { if (nearbyInput && !nearbyAreas.includes(nearbyInput)) { setNearbyAreas([...nearbyAreas, nearbyInput]); setNearbyInput(''); } }} className="px-3 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium">+ Add Custom</button>
                 )}
               </div>
-              <div className="flex flex-wrap gap-1.5 mt-2 max-h-32 overflow-y-auto">
+              <div className="flex flex-wrap gap-1.5 mt-2 max-h-48 overflow-y-auto border border-gray-100 rounded-lg p-2">
                 {areaOptions.filter((a: string) => !nearbyAreas.includes(a) && a.toLowerCase().includes(nearbyInput.toLowerCase())).map((area: string) => (
                   <button key={area} type="button" onClick={() => { setNearbyAreas([...nearbyAreas, area]); setNearbyInput(''); }} className="px-2.5 py-1 bg-gray-100 hover:bg-blue-50 text-gray-700 hover:text-blue-700 rounded-lg text-xs border border-gray-200">
                     + {area}
                   </button>
                 ))}
+                {areaOptions.filter((a: string) => !nearbyAreas.includes(a) && a.toLowerCase().includes(nearbyInput.toLowerCase())).length === 0 && nearbyInput && (
+                  <p className="text-xs text-gray-400 p-1">No matching areas found. Use &quot;+ Add Custom&quot; to add it.</p>
+                )}
               </div>
               {areaOptions.length === 0 && <p className="text-xs text-gray-400 mt-2">No localities added yet. <a href="/addddmin/localities" className="text-blue-600 underline">Manage Localities</a></p>}
             </div>
@@ -502,6 +526,17 @@ export default function NewPropertyPage() {
                   <label className="block text-sm font-medium text-gray-700 mb-1">Contact Designation</label>
                   <input type="text" value={contactDesignation} onChange={(e) => setContactDesignation(e.target.value)} className="w-full px-3 py-2 border rounded-lg text-gray-800" />
                 </div>
+              </div>
+              <div className="mt-4">
+                <label className="block text-sm font-medium text-gray-700 mb-1">Internal Remarks / Notes</label>
+                <p className="text-xs text-gray-400 mb-1">Private notes for internal reference only. Never shown publicly.</p>
+                <textarea
+                  value={remarks}
+                  onChange={(e) => setRemarks(e.target.value)}
+                  placeholder="Any internal notes about this property..."
+                  rows={3}
+                  className="w-full px-3 py-2 border rounded-lg text-gray-800 text-sm"
+                />
               </div>
             </div>
           </div>
