@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/mongodb';
 import Agent from '@/models/Agent';
+import Property from '@/models/Property';
 
 // Generate unique agent code like FP-AGT-001
 async function generateAgentCode(): Promise<string> {
@@ -13,8 +14,25 @@ async function generateAgentCode(): Promise<string> {
 export async function GET() {
   try {
     await dbConnect();
-    const agents = await Agent.find().sort({ createdAt: -1 });
-    return NextResponse.json(agents);
+    const agents = await Agent.find().sort({ createdAt: -1 }).lean();
+
+    // Get property counts per agent
+    const propertyCounts = await Property.aggregate([
+      { $match: { 'submittedBy.type': 'agent' } },
+      { $group: { _id: '$submittedBy.agentId', count: { $sum: 1 } } }
+    ]);
+    const countMap: Record<string, number> = {};
+    propertyCounts.forEach((item: { _id: string; count: number }) => {
+      countMap[item._id] = item.count;
+    });
+
+    // Attach property count to each agent
+    const agentsWithCount = agents.map(agent => ({
+      ...agent,
+      propertyCount: countMap[agent._id.toString()] || 0,
+    }));
+
+    return NextResponse.json(agentsWithCount);
   } catch (error) {
     console.error('Error fetching agents:', error);
     return NextResponse.json({ error: 'Failed to fetch agents' }, { status: 500 });

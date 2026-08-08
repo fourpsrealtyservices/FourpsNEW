@@ -14,6 +14,7 @@ interface Agent {
   status: string;
   mustChangePassword?: boolean;
   createdAt: string;
+  propertyCount?: number;
 }
 
 export default function AgentManagementPage() {
@@ -208,6 +209,9 @@ export default function AgentManagementPage() {
                     <p className="text-sm text-gray-600">{agent.phone} {agent.email && `• ${agent.email}`}</p>
                     <div className="flex items-center gap-3 mt-1">
                       <p className="text-xs text-gray-400">Registered: {new Date(agent.createdAt).toLocaleDateString()}</p>
+                      <span className="text-xs font-medium bg-purple-100 text-purple-800 px-2 py-0.5 rounded-full">
+                        {agent.propertyCount || 0} {(agent.propertyCount || 0) === 1 ? 'property' : 'properties'}
+                      </span>
                       <Link href={`/addddmin/agents/${agent._id}`} className="text-xs text-blue-600 hover:text-blue-700 font-medium">View Properties →</Link>
                     </div>
                   </div>
