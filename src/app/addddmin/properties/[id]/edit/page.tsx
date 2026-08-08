@@ -19,6 +19,8 @@ export default function EditPropertyPage({ params }: { params: Promise<{ id: str
   const [saving, setSaving] = useState(false);
   const [property, setProperty] = useState<Record<string, unknown> | null>(null);
   const [fieldValues, setFieldValues] = useState<Record<string, { value: string | string[]; checked: boolean; unit?: string }>>({});
+  const [customHeading, setCustomHeading] = useState('');
+  const [officeType, setOfficeType] = useState('');
   const [locationPin, setLocationPin] = useState('');
   const [contactName, setContactName] = useState('');
   const [contactMobile, setContactMobile] = useState('');
@@ -32,6 +34,8 @@ export default function EditPropertyPage({ params }: { params: Promise<{ id: str
       .then(data => {
         setProperty(data);
         setFieldValues(data.fields || {});
+        setCustomHeading(data.customHeading || '');
+        setOfficeType(data.officeType || '');
         setLocationPin(data.locationPin || '');
         setContactName(data.contactName || '');
         setContactMobile(data.contactMobile || '');
@@ -49,6 +53,8 @@ export default function EditPropertyPage({ params }: { params: Promise<{ id: str
       body: JSON.stringify({
         fields: fieldValues,
         photos,
+        customHeading,
+        officeType,
         locationPin,
         contactName,
         contactMobile,
@@ -189,6 +195,28 @@ export default function EditPropertyPage({ params }: { params: Promise<{ id: str
       </header>
 
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Heading & Office Type */}
+        <div className="bg-white rounded-xl shadow-sm border p-6 mb-6">
+          <h3 className="text-lg font-semibold text-gray-800 mb-4">Listing Title & Type</h3>
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Custom Heading / Title</label>
+              <input type="text" value={customHeading} onChange={(e) => setCustomHeading(e.target.value)} placeholder="e.g. Grade A Office in HITEC City (optional - auto-generated if empty)" className="w-full px-3 py-2 border rounded-lg text-gray-800 text-sm" />
+              <p className="text-xs text-gray-400 mt-1">Leave empty to auto-generate from category + transaction type</p>
+            </div>
+            {(property.category as string) === 'office' && (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Office Type</label>
+                <div className="flex gap-3">
+                  <button onClick={() => setOfficeType('furnished')} className={`px-4 py-2 rounded-lg text-sm font-medium border-2 ${officeType === 'furnished' ? 'border-blue-500 bg-blue-50 text-blue-700' : 'border-gray-200 text-gray-600 hover:bg-gray-50'}`}>Furnished</button>
+                  <button onClick={() => setOfficeType('unfurnished')} className={`px-4 py-2 rounded-lg text-sm font-medium border-2 ${officeType === 'unfurnished' ? 'border-blue-500 bg-blue-50 text-blue-700' : 'border-gray-200 text-gray-600 hover:bg-gray-50'}`}>Unfurnished</button>
+                  <button onClick={() => setOfficeType('')} className={`px-4 py-2 rounded-lg text-sm font-medium border-2 ${officeType === '' ? 'border-blue-500 bg-blue-50 text-blue-700' : 'border-gray-200 text-gray-600 hover:bg-gray-50'}`}>Not Specified</button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
         <div className="bg-white rounded-xl shadow-sm border p-6 mb-6">
           <h3 className="text-lg font-semibold text-gray-800 mb-2">Property Details</h3>
           <p className="text-sm text-gray-500 mb-4">Check/uncheck fields and update values. Only checked fields will show on the public listing.</p>

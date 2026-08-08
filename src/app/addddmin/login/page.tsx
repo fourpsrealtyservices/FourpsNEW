@@ -99,7 +99,7 @@ export default function AdminLoginPage() {
           </div>
         </div>
 
-        <p className="text-center text-white/30 text-xs mt-6">FourPs Realty — Admin Access Only</p>
+        <p className="text-center text-white/30 text-xs mt-6">4Ps Realty Services — Admin Access Only</p>
       </div>
     </div>
   );

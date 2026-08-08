@@ -68,7 +68,7 @@ export default function AgentLoginPage() {
     <div className="min-h-screen bg-gradient-to-br from-blue-900 to-blue-700 flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-8">
         <div className="text-center mb-6">
-          <Link href="/" className="text-2xl font-bold text-blue-900">FourPs<span className="text-blue-500">.in</span></Link>
+          <Link href="/" className="text-2xl font-bold text-blue-900">4Ps Realty<span className="text-blue-500"> Services</span></Link>
           <h1 className="text-xl font-semibold text-gray-800 mt-4">Agent Portal</h1>
         </div>
 

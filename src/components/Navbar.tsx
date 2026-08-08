@@ -25,7 +25,7 @@ export default function Navbar() {
     <header className="bg-white/95 backdrop-blur-md border-b border-gray-100 sticky top-0 z-50 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex justify-between items-center">
         <Link href="/" className="flex items-center gap-2">
-          <img src="/logo.webp" alt="FourPs Realty" className="h-10 w-auto" />
+          <img src="/logo.webp" alt="4Ps Realty Services" className="h-10 w-auto" />
         </Link>
 
         {/* Desktop Nav */}

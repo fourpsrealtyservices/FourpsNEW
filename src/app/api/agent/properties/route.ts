@@ -35,6 +35,49 @@ export async function GET(request: NextRequest) {
   }
 }
 
+// PUT update agent's own property (edit fields or mark sold)
+export async function PUT(request: NextRequest) {
+  try {
+    await dbConnect();
+    const token = request.cookies.get('fourps_token')?.value;
+    if (!token) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    const payload = await verifyToken(token);
+    if (!payload || payload.role !== 'agent') return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+
+    const body = await request.json();
+    const { propertyId, action, fields, photos } = body;
+
+    if (!propertyId) return NextResponse.json({ error: 'Property ID required' }, { status: 400 });
+
+    // Verify agent owns this property
+    const property = await Property.findOne({ _id: propertyId, 'submittedBy.id': payload.id });
+    if (!property) return NextResponse.json({ error: 'Property not found or not yours' }, { status: 404 });
+
+    if (action === 'markSold') {
+      property.soldOut = true;
+      await property.save();
+      return NextResponse.json({ success: true, message: 'Property marked as sold' });
+    }
+
+    if (action === 'undoSold') {
+      property.soldOut = false;
+      await property.save();
+      return NextResponse.json({ success: true, message: 'Sold status removed' });
+    }
+
+    // Edit fields
+    if (fields) property.fields = fields;
+    if (photos) property.photos = photos;
+    // Resubmit for approval if it was rejected
+    if (property.status === 'rejected') property.status = 'pending';
+    await property.save();
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error('Error:', error);
+    return NextResponse.json({ error: 'Failed to update' }, { status: 500 });
+  }
+}
+
 // POST submit new property (goes to pending)
 export async function POST(request: NextRequest) {
   try {

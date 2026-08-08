@@ -66,13 +66,13 @@ export default function ListingPage({ params }: { params: Promise<{ id: string }
     const location = property.fields?.locationArea?.checked ? property.fields.locationArea.value : property.city;
     const area = property.fields?.superBuiltUpArea?.checked ? `${property.fields.superBuiltUpArea.value} sq ft` : '';
     return encodeURIComponent(
-      `Hi! Check out this property on FourPs Realty:\n${categoryLabel(property.category)} for ${property.transactionType === 'lease' ? 'Lease' : 'Sale'} | ID: ${property.propertyId}\n${location ? `Location: ${location}` : ''}${area ? ` | Area: ${area}` : ''}\nView details: ${SITE_URL}/listing/${property.propertyId}`
+      `Hi! Check out this property on 4Ps Realty Services:\n${categoryLabel(property.category)} for ${property.transactionType === 'lease' ? 'Lease' : 'Sale'} | ID: ${property.propertyId}\n${location ? `Location: ${location}` : ''}${area ? ` | Area: ${area}` : ''}\nView details: ${SITE_URL}/listing/${property.propertyId}`
     );
   };
 
   const getWhatsAppEnquiryMessage = () => {
     if (!property) return '';
-    return encodeURIComponent(`Hi FourPs! I'm interested in Property ID: ${property.propertyId}. Please share more details.`);
+    return encodeURIComponent(`Hi 4Ps Realty! I'm interested in Property ID: ${property.propertyId}. Please share more details.`);
   };
 
   const handleEnquirySubmit = async (e: React.FormEvent) => {
@@ -139,7 +139,6 @@ export default function ListingPage({ params }: { params: Promise<{ id: string }
           </span>
           <span className="px-3 py-1.5 rounded-lg text-sm font-semibold bg-gray-100 text-gray-700">{categoryLabel(property.category)}</span>
           {property.officeType && <span className="px-3 py-1.5 rounded-lg text-sm font-medium bg-amber-50 text-amber-700 capitalize">{property.officeType}</span>}
-          <span className="text-[11px] text-gray-300 ml-auto">{new Date(property.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -245,6 +244,7 @@ export default function ListingPage({ params }: { params: Promise<{ id: string }
               {/* Quick Price/Area Summary */}
               <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
                 <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-3">Quick Summary</h3>
+                <p className="text-[11px] text-amber-600 italic mb-3">* Property listing is subject to availability</p>
                 {property.fields?.locationArea?.checked && (
                   <div className="flex items-center gap-2 mb-2">
                     <span className="text-lg">📍</span>
@@ -299,6 +299,13 @@ export default function ListingPage({ params }: { params: Promise<{ id: string }
                 >
                   📤 Share this Property
                 </a>
+
+                <button
+                  onClick={() => { navigator.clipboard.writeText(`${SITE_URL}/listing/${property.propertyId}`); alert('Link copied to clipboard!'); }}
+                  className="flex items-center justify-center gap-2 w-full bg-white border-2 border-gray-200 text-gray-700 py-3 rounded-xl font-medium hover:border-blue-300 hover:bg-blue-50 transition-colors"
+                >
+                  🔗 Copy Link
+                </button>
 
                 <button
                   onClick={() => setShowEnquiry(!showEnquiry)}

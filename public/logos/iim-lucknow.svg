@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 80">
+  <rect width="200" height="80" fill="white"/>
+  <!-- IIM Lucknow shield/emblem style -->
+  <circle cx="40" cy="40" r="25" fill="none" stroke="#1B237E" stroke-width="2.5"/>
+  <circle cx="40" cy="40" r="20" fill="none" stroke="#1B237E" stroke-width="1"/>
+  <text x="40" y="37" font-family="serif" font-size="12" font-weight="bold" fill="#1B237E" text-anchor="middle">IIM</text>
+  <text x="40" y="50" font-family="serif" font-size="7" fill="#1B237E" text-anchor="middle">LUCKNOW</text>
+  <!-- Full name -->
+  <text x="130" y="35" font-family="serif" font-size="11" font-weight="bold" fill="#1B237E" text-anchor="middle">Indian Institute of</text>
+  <text x="130" y="50" font-family="serif" font-size="11" font-weight="bold" fill="#1B237E" text-anchor="middle">Management Lucknow</text>
+</svg>

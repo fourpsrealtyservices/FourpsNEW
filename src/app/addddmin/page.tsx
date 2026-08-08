@@ -61,7 +61,7 @@ export default function AdminDashboard() {
             <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-xl flex items-center justify-center text-white font-bold text-sm">4P</div>
             <div>
               <h1 className="text-lg font-bold text-gray-900">Admin Dashboard</h1>
-              <p className="text-xs text-gray-400">FourPs.in Management</p>
+              <p className="text-xs text-gray-400">4Ps Realty Services Management</p>
             </div>
           </div>
           <div className="flex items-center gap-3">

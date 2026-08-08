@@ -208,8 +208,8 @@ export default function HomePage() {
       <section className="bg-gradient-to-b from-white to-gray-50 py-14 border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-10">
-            <h2 className="text-2xl md:text-4xl font-extrabold text-gray-900 mb-2">4Ps Realty Services</h2>
-            <p className="text-gray-500 text-sm md:text-base max-w-xl mx-auto">Every business runs on the 4Ps — we specialize in the most crucial one: <span className="font-bold text-blue-600">Place</span></p>
+            <h2 className="text-2xl md:text-4xl font-extrabold text-gray-900 mb-3">4Ps Realty Services</h2>
+            <p className="text-gray-500 text-sm md:text-base max-w-2xl mx-auto leading-relaxed">Every successful business depends on the 4Ps of Marketing—Product, Price, Promotion, and Place. While you build your product and brand, we help you find the right <span className="font-bold text-blue-600">Place</span> to grow your business.</p>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
             {[
@@ -228,9 +228,9 @@ export default function HomePage() {
           </div>
           <div className="bg-white rounded-2xl border border-gray-100 p-6 md:p-8 shadow-sm flex flex-col md:flex-row items-center gap-6">
             <div className="flex-1">
-              <h3 className="text-lg font-bold text-gray-900 mb-2">Exclusive in Commercial Real Estate</h3>
+              <h3 className="text-lg font-bold text-gray-900 mb-2">Built Exclusively for Commercial Real Estate</h3>
               <p className="text-gray-500 text-sm leading-relaxed">
-                We help brands, investors, and companies find the right commercial locations across Hyderabad through data-driven insights, strong market expertise, and exclusive inventory access.
+                We help retailers, corporates, investors, and landowners make confident commercial real estate decisions through market intelligence, strategic advisory, and access to exclusive opportunities.
               </p>
             </div>
             <Link href="/about" className="shrink-0 bg-blue-600 text-white px-6 py-3 rounded-xl font-bold text-sm hover:bg-blue-700 active:scale-95 transition-all shadow">

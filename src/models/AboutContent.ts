@@ -10,9 +10,15 @@ const AboutContentSchema = new Schema({
   educationDetail: { type: String, default: 'Post Graduate Programme' },
   quote: { type: String, default: 'A strong business foundation combined with years of corporate leadership shaped the consulting approach that defines 4P\'s Realty Services today.' },
   credentials: [{ type: String }],
+  education2: { type: String, default: 'Osmania University' },
+  education2Detail: { type: String, default: 'Mechanical Engineer' },
+  educationLogoUrl: { type: String, default: '' },
+  education2LogoUrl: { type: String, default: '' },
   experience: [{
     company: { type: String },
+    title: { type: String },
     description: { type: String },
+    logoUrl: { type: String, default: '' },
   }],
   storySteps: [{
     title: { type: String },

@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 
-interface ExpItem { company: string; description: string; }
+interface ExpItem { company: string; title: string; description: string; logoUrl: string; }
 interface StoryStep { title: string; description: string; }
 
 export default function AdminAboutPage() {
@@ -17,6 +17,10 @@ export default function AdminAboutPage() {
   const [linkedinUrl, setLinkedinUrl] = useState('');
   const [education, setEducation] = useState('');
   const [educationDetail, setEducationDetail] = useState('');
+  const [education2, setEducation2] = useState('');
+  const [education2Detail, setEducation2Detail] = useState('');
+  const [educationLogoUrl, setEducationLogoUrl] = useState('');
+  const [education2LogoUrl, setEducation2LogoUrl] = useState('');
   const [quote, setQuote] = useState('');
   const [mission, setMission] = useState('');
   const [vision, setVision] = useState('');
@@ -34,6 +38,10 @@ export default function AdminAboutPage() {
         setLinkedinUrl(data.linkedinUrl || '');
         setEducation(data.education || '');
         setEducationDetail(data.educationDetail || '');
+        setEducation2(data.education2 || '');
+        setEducation2Detail(data.education2Detail || '');
+        setEducationLogoUrl(data.educationLogoUrl || '');
+        setEducation2LogoUrl(data.education2LogoUrl || '');
         setQuote(data.quote || '');
         setMission(data.mission || '');
         setVision(data.vision || '');
@@ -51,7 +59,7 @@ export default function AdminAboutPage() {
     await fetch('/api/admin/about', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ founderName, founderTitle, founderPhotoUrl, linkedinUrl, education, educationDetail, quote, mission, vision, whatsappNumber, credentials, experience, storySteps }),
+      body: JSON.stringify({ founderName, founderTitle, founderPhotoUrl, linkedinUrl, education, educationDetail, education2, education2Detail, educationLogoUrl, education2LogoUrl, quote, mission, vision, whatsappNumber, credentials, experience, storySteps }),
     });
     setSaving(false);
     alert('About page content saved!');
@@ -123,13 +131,43 @@ export default function AdminAboutPage() {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Education Institute</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Education 1 — Institute</label>
                 <input type="text" value={education} onChange={e => setEducation(e.target.value)} className="w-full px-3 py-2 border rounded-lg text-gray-800" />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Education Detail</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Education 1 — Detail</label>
                 <input type="text" value={educationDetail} onChange={e => setEducationDetail(e.target.value)} className="w-full px-3 py-2 border rounded-lg text-gray-800" />
               </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <label className="block text-sm font-medium text-gray-700">Education 1 Logo:</label>
+              {educationLogoUrl && <img src={educationLogoUrl} alt="Edu1" className="w-10 h-10 rounded border object-contain bg-white" />}
+              <input type="file" accept="image/*" onChange={async (e) => {
+                const file = e.target.files?.[0]; if (!file) return;
+                const fd = new FormData(); fd.append('file', file);
+                try { const r = await fetch('/api/upload', { method: 'POST', body: fd }); const d = await r.json(); if (r.ok) setEducationLogoUrl(d.url); } catch { alert('Upload failed'); }
+              }} className="text-xs file:mr-2 file:py-1 file:px-3 file:rounded file:border-0 file:bg-blue-50 file:text-blue-700" />
+              <input type="text" value={educationLogoUrl} onChange={e => setEducationLogoUrl(e.target.value)} placeholder="or paste logo URL" className="flex-1 px-2 py-1 border rounded text-gray-800 text-xs" />
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Education 2 — Institute</label>
+                <input type="text" value={education2} onChange={e => setEducation2(e.target.value)} className="w-full px-3 py-2 border rounded-lg text-gray-800" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Education 2 — Detail</label>
+                <input type="text" value={education2Detail} onChange={e => setEducation2Detail(e.target.value)} className="w-full px-3 py-2 border rounded-lg text-gray-800" />
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <label className="block text-sm font-medium text-gray-700">Education 2 Logo:</label>
+              {education2LogoUrl && <img src={education2LogoUrl} alt="Edu2" className="w-10 h-10 rounded border object-contain bg-white" />}
+              <input type="file" accept="image/*" onChange={async (e) => {
+                const file = e.target.files?.[0]; if (!file) return;
+                const fd = new FormData(); fd.append('file', file);
+                try { const r = await fetch('/api/upload', { method: 'POST', body: fd }); const d = await r.json(); if (r.ok) setEducation2LogoUrl(d.url); } catch { alert('Upload failed'); }
+              }} className="text-xs file:mr-2 file:py-1 file:px-3 file:rounded file:border-0 file:bg-blue-50 file:text-blue-700" />
+              <input type="text" value={education2LogoUrl} onChange={e => setEducation2LogoUrl(e.target.value)} placeholder="or paste logo URL" className="flex-1 px-2 py-1 border rounded text-gray-800 text-xs" />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Founder Quote</label>
@@ -154,16 +192,36 @@ export default function AdminAboutPage() {
 
         {/* Corporate Experience */}
         <div className="bg-white rounded-xl border shadow-sm p-6">
-          <h3 className="text-lg font-semibold text-gray-800 mb-4">🏢 Corporate Experience</h3>
-          <div className="space-y-3">
+          <h3 className="text-lg font-semibold text-gray-800 mb-4">🏢 Corporate Journey</h3>
+          <p className="text-xs text-gray-500 mb-4">Add companies with title, description, and upload their logos.</p>
+          <div className="space-y-4">
             {experience.map((exp, i) => (
-              <div key={i} className="flex gap-2">
-                <input type="text" value={exp.company} onChange={e => { const u = [...experience]; u[i] = { ...u[i], company: e.target.value }; setExperience(u); }} placeholder="Company" className="w-1/3 px-3 py-2 border rounded-lg text-gray-800 text-sm" />
-                <input type="text" value={exp.description} onChange={e => { const u = [...experience]; u[i] = { ...u[i], description: e.target.value }; setExperience(u); }} placeholder="Description" className="flex-1 px-3 py-2 border rounded-lg text-gray-800 text-sm" />
-                <button onClick={() => setExperience(experience.filter((_, j) => j !== i))} className="text-red-500 text-sm px-2">✕</button>
+              <div key={i} className="border border-gray-200 rounded-lg p-4 space-y-2">
+                <div className="flex gap-2">
+                  <input type="text" value={exp.company} onChange={e => { const u = [...experience]; u[i] = { ...u[i], company: e.target.value }; setExperience(u); }} placeholder="Company Name" className="w-1/3 px-3 py-2 border rounded-lg text-gray-800 text-sm" />
+                  <input type="text" value={exp.title} onChange={e => { const u = [...experience]; u[i] = { ...u[i], title: e.target.value }; setExperience(u); }} placeholder="Role / Title" className="flex-1 px-3 py-2 border rounded-lg text-gray-800 text-sm" />
+                  <button onClick={() => setExperience(experience.filter((_, j) => j !== i))} className="text-red-500 text-sm px-2">✕</button>
+                </div>
+                <input type="text" value={exp.description} onChange={e => { const u = [...experience]; u[i] = { ...u[i], description: e.target.value }; setExperience(u); }} placeholder="Description" className="w-full px-3 py-2 border rounded-lg text-gray-800 text-sm" />
+                <div className="flex items-center gap-3">
+                  {exp.logoUrl && <img src={exp.logoUrl} alt={exp.company} className="w-10 h-10 rounded border object-contain bg-white" />}
+                  <input type="file" accept="image/*" onChange={async (e) => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+                    const formData = new FormData();
+                    formData.append('file', file);
+                    try {
+                      const res = await fetch('/api/upload', { method: 'POST', body: formData });
+                      const data = await res.json();
+                      if (res.ok) { const u = [...experience]; u[i] = { ...u[i], logoUrl: data.url }; setExperience(u); }
+                    } catch { alert('Logo upload failed'); }
+                  }} className="text-xs text-gray-500 file:mr-2 file:py-1 file:px-3 file:rounded file:border-0 file:bg-blue-50 file:text-blue-700" />
+                  <span className="text-[10px] text-gray-400">or paste URL:</span>
+                  <input type="text" value={exp.logoUrl} onChange={e => { const u = [...experience]; u[i] = { ...u[i], logoUrl: e.target.value }; setExperience(u); }} placeholder="Logo URL" className="flex-1 px-2 py-1 border rounded text-gray-800 text-xs" />
+                </div>
               </div>
             ))}
-            <button onClick={() => setExperience([...experience, { company: '', description: '' }])} className="text-sm text-blue-600 font-medium">+ Add Experience</button>
+            <button onClick={() => setExperience([...experience, { company: '', title: '', description: '', logoUrl: '' }])} className="text-sm text-blue-600 font-medium">+ Add Experience</button>
           </div>
         </div>
 

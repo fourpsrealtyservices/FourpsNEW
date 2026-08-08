@@ -119,7 +119,7 @@ export const CATEGORY_FIELDS: Record<string, FieldDefinition[]> = {
   // Sale - Investment Options
   sale_investment: [
     { key: 'locationArea', label: 'Location / Area', type: 'text', placeholder: 'Area / locality name' },
-    { key: 'investmentType', label: 'Type of Investment', type: 'dropdown', options: ['Pre-leased', 'Under Construction', 'REIT', 'Other'] },
+    { key: 'investmentType', label: 'Type of Investment', type: 'dropdown', options: ['Pre-leased', 'Under Construction', 'REIT', 'Plot', 'Land', 'Other'] },
     { key: 'assetSize', label: 'Asset Size / Area', type: 'text', placeholder: 'Number + unit' },
     { key: 'expectedReturns', label: 'Expected Returns / Yield', type: 'text', placeholder: 'e.g. 8%' },
     { key: 'expectedPrice', label: 'Expected Price', type: 'text', placeholder: 'Total investment value', hasCFP: true },
