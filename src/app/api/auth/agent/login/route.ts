@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/mongodb';
 import Agent from '@/models/Agent';
-import jwt from 'jsonwebtoken';
-
-const JWT_SECRET = process.env.JWT_SECRET || 'fourps-secret';
+import { createToken } from '@/lib/auth';
 
 export async function POST(request: NextRequest) {
   try {
@@ -35,11 +33,12 @@ export async function POST(request: NextRequest) {
     }
 
     // Create JWT token
-    const token = jwt.sign(
-      { id: agent._id, role: 'agent', name: agent.name, agentCode: agent.agentCode, mustChangePassword: agent.mustChangePassword },
-      JWT_SECRET,
-      { expiresIn: '7d' }
-    );
+    const token = await createToken({
+      id: agent._id.toString(),
+      role: 'agent',
+      name: agent.name,
+      phone: agent.phone,
+    });
 
     const response = NextResponse.json({
       success: true,

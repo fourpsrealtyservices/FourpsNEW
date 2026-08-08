@@ -1,20 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/mongodb';
 import Agent from '@/models/Agent';
-import jwt from 'jsonwebtoken';
-
-const JWT_SECRET = process.env.JWT_SECRET || 'fourps-secret';
+import { verifyToken, createToken } from '@/lib/auth';
 
 export async function POST(request: NextRequest) {
   try {
     await dbConnect();
-    const token = request.cookies.get('fourps_token')?.value || request.cookies.get('token')?.value;
+    const token = request.cookies.get('fourps_token')?.value;
     if (!token) {
       return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
     }
 
-    const decoded = jwt.verify(token, JWT_SECRET) as { id: string; role: string };
-    if (decoded.role !== 'agent') {
+    const decoded = await verifyToken(token);
+    if (!decoded || decoded.role !== 'agent') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
     }
 
@@ -39,12 +37,13 @@ export async function POST(request: NextRequest) {
     agent.mustChangePassword = false;
     await agent.save();
 
-    // Issue new token without mustChangePassword flag
-    const newToken = jwt.sign(
-      { id: agent._id, role: 'agent', name: agent.name, agentCode: agent.agentCode, mustChangePassword: false },
-      JWT_SECRET,
-      { expiresIn: '7d' }
-    );
+    // Issue new token
+    const newToken = await createToken({
+      id: agent._id.toString(),
+      role: 'agent',
+      name: agent.name,
+      phone: agent.phone,
+    });
 
     const response = NextResponse.json({ success: true, message: 'Password changed successfully' });
     response.cookies.set('fourps_token', newToken, {
