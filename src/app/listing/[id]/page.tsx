@@ -29,6 +29,8 @@ export default function ListingPage({ params }: { params: Promise<{ id: string }
   const [soldOut, setSoldOut] = useState(false);
   const [selectedPhoto, setSelectedPhoto] = useState(0);
   const [showEnquiry, setShowEnquiry] = useState(false);
+  const [showShareMenu, setShowShareMenu] = useState(false);
+  const [linkCopied, setLinkCopied] = useState(false);
   const [enquiryForm, setEnquiryForm] = useState({ name: '', mobile: '', email: '', message: '', preferredCallbackTime: '' });
   const [enquirySubmitted, setEnquirySubmitted] = useState(false);
 
@@ -292,20 +294,37 @@ export default function ListingPage({ params }: { params: Promise<{ id: string }
                   Enquire on WhatsApp
                 </a>
 
-                <a
-                  href={`https://wa.me/?text=${getWhatsAppShareMessage()}`}
-                  target="_blank"
-                  className="flex items-center justify-center gap-2 w-full bg-white border-2 border-gray-200 text-gray-700 py-3 rounded-xl font-medium hover:border-green-300 hover:bg-green-50 transition-colors"
-                >
-                  📤 Share this Property
-                </a>
-
-                <button
-                  onClick={() => { navigator.clipboard.writeText(`${SITE_URL}/listing/${property.propertyId}`); alert('Link copied to clipboard!'); }}
-                  className="flex items-center justify-center gap-2 w-full bg-white border-2 border-gray-200 text-gray-700 py-3 rounded-xl font-medium hover:border-blue-300 hover:bg-blue-50 transition-colors"
-                >
-                  🔗 Copy Link
-                </button>
+                <div className="relative">
+                  <button
+                    onClick={() => setShowShareMenu(!showShareMenu)}
+                    className="flex items-center justify-center gap-2 w-full bg-white border-2 border-gray-200 text-gray-700 py-3 rounded-xl font-medium hover:border-gray-300 hover:bg-gray-50 transition-colors"
+                  >
+                    📤 Share this Property
+                  </button>
+                  {showShareMenu && (
+                    <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-xl shadow-xl z-50 overflow-hidden">
+                      <a
+                        href={`https://wa.me/?text=${getWhatsAppShareMessage()}`}
+                        target="_blank"
+                        className="flex items-center gap-3 px-4 py-3 hover:bg-green-50 transition-colors border-b border-gray-100"
+                      >
+                        <span className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">💬</span>
+                        <span className="text-sm font-medium text-gray-700">Share on WhatsApp</span>
+                      </a>
+                      <button
+                        onClick={() => {
+                          navigator.clipboard.writeText(`${SITE_URL}/listing/${property.propertyId}`);
+                          setLinkCopied(true);
+                          setTimeout(() => { setLinkCopied(false); setShowShareMenu(false); }, 1500);
+                        }}
+                        className="flex items-center gap-3 px-4 py-3 hover:bg-blue-50 transition-colors w-full text-left"
+                      >
+                        <span className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">{linkCopied ? '✅' : '🔗'}</span>
+                        <span className="text-sm font-medium text-gray-700">{linkCopied ? 'Link Copied!' : 'Copy Link'}</span>
+                      </button>
+                    </div>
+                  )}
+                </div>
 
                 <button
                   onClick={() => setShowEnquiry(!showEnquiry)}
@@ -384,11 +403,6 @@ export default function ListingPage({ params }: { params: Promise<{ id: string }
         >
           📤
         </a>
-      </div>
-
-      {/* Disclaimer */}
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-        <p className="text-xs text-gray-400 text-center italic">* Property listing is subject to availability</p>
       </div>
 
       {/* Spacer for mobile bottom bar */}

@@ -41,9 +41,11 @@ export default function HomePage() {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const [areaSuggestions, setAreaSuggestions] = useState<string[]>([]);
+  const [insights, setInsights] = useState<{ _id: string; title: string; tag: string; imageUrl: string; content: string }[]>([]);
 
   useEffect(() => { fetch('/api/public/cities').then(r => r.json()).then(setCities); }, []);
   useEffect(() => { fetch('/api/public/testimonials').then(r => r.json()).then(data => { if (Array.isArray(data) && data.length > 0) setTestimonials(data); }); }, []);
+  useEffect(() => { fetch('/api/public/insights').then(r => r.json()).then(data => { if (Array.isArray(data)) setInsights(data); }); }, []);
 
   // Fetch localities for selected city (with fallback to hardcoded areas)
   useEffect(() => {
@@ -318,31 +320,35 @@ export default function HomePage() {
         )}
       </section>
 
-      {/* Blog / Insights Section */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <h2 className="text-2xl md:text-3xl font-extrabold text-gray-900 text-center mb-3">Insights & Market Updates</h2>
-        <p className="text-gray-500 text-center mb-10">Stay informed about the commercial real estate market</p>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {[
-            { title: 'Why HITEC City is the #1 Choice for IT Offices in 2025', tag: 'Market Trends', date: 'May 2025', img: 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=600&q=80' },
-            { title: 'Complete Guide: Leasing Commercial Space in Hyderabad', tag: 'Guide', date: 'Apr 2025', img: 'https://images.unsplash.com/photo-1560179707-f14e90ef3623?auto=format&fit=crop&w=600&q=80' },
-            { title: 'Top 5 Emerging Commercial Hubs in Hyderabad', tag: 'Insights', date: 'Mar 2025', img: 'https://images.unsplash.com/photo-1582407947092-79ad8656ff9d?auto=format&fit=crop&w=600&q=80' },
-          ].map((blog, i) => (
-            <div key={i} className="bg-white rounded-2xl border border-gray-100 overflow-hidden hover:shadow-lg transition-shadow group cursor-pointer">
-              <div className="h-40 overflow-hidden">
-                <img src={blog.img} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-              </div>
-              <div className="p-5">
-                <div className="flex items-center gap-2 mb-2">
-                  <span className="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded">{blog.tag}</span>
-                  <span className="text-xs text-gray-400">{blog.date}</span>
+      {/* Blog / Insights Section — from Admin */}
+      {insights.length > 0 && (
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-2xl md:text-3xl font-extrabold text-gray-900">Insights & Market Updates</h2>
+            <Link href="/insights" className="text-blue-600 font-semibold text-sm hover:text-blue-700">View All →</Link>
+          </div>
+          <p className="text-gray-500 mb-8">Stay informed about the commercial real estate market</p>
+          <div className={`${insights.length > 3 ? 'flex overflow-x-auto gap-5 pb-4 snap-x snap-mandatory scrollbar-hide' : 'grid grid-cols-1 md:grid-cols-3 gap-6'}`}>
+            {insights.map((insight) => (
+              <Link key={insight._id} href={`/insights/${insight._id}`} className={`bg-white rounded-2xl border border-gray-100 overflow-hidden hover:shadow-lg transition-shadow group ${insights.length > 3 ? 'min-w-[300px] snap-start flex-shrink-0' : ''}`}>
+                <div className="h-40 overflow-hidden bg-gray-100">
+                  {insight.imageUrl ? (
+                    <img src={insight.imageUrl} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-4xl text-gray-300">📰</div>
+                  )}
                 </div>
-                <h3 className="font-bold text-gray-900 text-sm leading-snug group-hover:text-blue-600 transition-colors">{blog.title}</h3>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
+                <div className="p-5">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded">{insight.tag}</span>
+                  </div>
+                  <h3 className="font-bold text-gray-900 text-sm leading-snug group-hover:text-blue-600 transition-colors">{insight.title}</h3>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* Client Testimonials */}
       {testimonials.length > 0 && (

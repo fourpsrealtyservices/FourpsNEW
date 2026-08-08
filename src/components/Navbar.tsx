@@ -12,6 +12,7 @@ export default function Navbar() {
     { href: '/', label: 'Home' },
     { href: '/properties', label: 'Properties' },
     { href: '/growth-corridors', label: 'Growth Corridors' },
+    { href: '/insights', label: 'Insights' },
     { href: '/about', label: 'About Us' },
     { href: '/services', label: 'Services' },
   ];
