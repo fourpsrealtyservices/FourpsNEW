@@ -34,6 +34,7 @@ export default function HomePage() {
   const [transactionFilter, setTransactionFilter] = useState('lease');
   const [categoryFilter, setCategoryFilter] = useState('');
   const [properties, setProperties] = useState<Property[]>([]);
+  const [latestFilter, setLatestFilter] = useState('lease');
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [showRequirementForm, setShowRequirementForm] = useState(false);
@@ -61,14 +62,14 @@ export default function HomePage() {
     }
   }, [selectedCity]);
 
+  // Fetch latest properties independently (only affected by city + latestFilter tab, NOT hero search)
   useEffect(() => {
     setLoading(true);
     const params = new URLSearchParams();
     if (selectedCity) params.set('city', selectedCity);
-    if (transactionFilter) params.set('transactionType', transactionFilter);
-    if (categoryFilter) params.set('category', categoryFilter);
+    if (latestFilter) params.set('transactionType', latestFilter);
     fetch(`/api/public/properties?${params}`).then(r => r.json()).then(data => { setProperties(data); setLoading(false); });
-  }, [selectedCity, transactionFilter, categoryFilter]);
+  }, [selectedCity, latestFilter]);
 
   useEffect(() => { const t = setTimeout(() => setShowRequirementForm(true), 45000); return () => clearTimeout(t); }, []);
 
@@ -250,8 +251,8 @@ export default function HomePage() {
           </Link>
         </div>
         <div className="flex gap-2 mb-6">
-          <button onClick={() => setTransactionFilter('lease')} className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all ${transactionFilter === 'lease' ? 'bg-violet-500 text-white shadow' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>For Lease</button>
-          <button onClick={() => setTransactionFilter('sale')} className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all ${transactionFilter === 'sale' ? 'bg-violet-500 text-white shadow' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>For Sale</button>
+          <button onClick={() => setLatestFilter('lease')} className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all ${latestFilter === 'lease' ? 'bg-violet-500 text-white shadow' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>For Lease</button>
+          <button onClick={() => setLatestFilter('sale')} className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all ${latestFilter === 'sale' ? 'bg-violet-500 text-white shadow' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}>For Sale</button>
         </div>
 
         {loading && <div className="text-center py-10"><div className="w-8 h-8 border-3 border-blue-200 border-t-blue-600 rounded-full animate-spin mx-auto"></div></div>}

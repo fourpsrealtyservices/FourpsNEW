@@ -20,18 +20,17 @@ interface Property {
 }
 
 export default function AgentDashboard() {
-  const [view, setView] = useState<'mine' | 'browse'>('mine');
   const [properties, setProperties] = useState<Property[]>([]);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
   useEffect(() => {
     fetchProperties();
-  }, [view]);
+  }, []);
 
   const fetchProperties = () => {
     setLoading(true);
-    fetch(`/api/agent/properties?view=${view}`)
+    fetch(`/api/agent/properties?view=mine`)
       .then(r => r.json())
       .then(data => { setProperties(Array.isArray(data) ? data : []); setLoading(false); });
   };
@@ -70,13 +69,13 @@ export default function AgentDashboard() {
   };
 
   const myProperties = properties;
-  const stats = view === 'mine' ? {
+  const stats = {
     total: myProperties.length,
     published: myProperties.filter(p => p.status === 'published').length,
     pending: myProperties.filter(p => p.status === 'pending').length,
     rejected: myProperties.filter(p => p.status === 'rejected').length,
     soldOut: myProperties.filter(p => p.soldOut).length,
-  } : null;
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -96,18 +95,10 @@ export default function AgentDashboard() {
       </header>
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Tab Toggle */}
-        <div className="flex gap-2 mb-6">
-          <button onClick={() => setView('mine')} className={`px-6 py-2.5 rounded-lg text-sm font-medium transition-colors ${view === 'mine' ? 'bg-blue-600 text-white shadow-sm' : 'bg-white border text-gray-600 hover:bg-gray-50'}`}>
-            📋 My Properties
-          </button>
-          <button onClick={() => setView('browse')} className={`px-6 py-2.5 rounded-lg text-sm font-medium transition-colors ${view === 'browse' ? 'bg-blue-600 text-white shadow-sm' : 'bg-white border text-gray-600 hover:bg-gray-50'}`}>
-            🏢 Browse All Listings
-          </button>
-        </div>
+        <h2 className="text-lg font-bold text-gray-800 mb-4">📋 My Submitted Properties</h2>
 
-        {/* Stats for My Properties */}
-        {view === 'mine' && stats && (
+        {/* Stats */}
+        {stats && (
           <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-6">
             <div className="bg-white rounded-xl border p-4 text-center">
               <p className="text-2xl font-bold text-gray-900">{stats.total}</p>
@@ -145,7 +136,7 @@ export default function AgentDashboard() {
                   <div className="flex-1">
                     <div className="flex items-center gap-2 flex-wrap">
                       <span className="font-mono text-sm font-bold text-blue-600">{property.propertyId}</span>
-                      {view === 'mine' && statusBadge(property.status)}
+                      {statusBadge(property.status)}
                       {property.soldOut && <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">🚫 Sold Out</span>}
                       <span className={`text-xs px-2 py-0.5 rounded ${property.transactionType === 'lease' ? 'bg-emerald-50 text-emerald-700' : 'bg-violet-50 text-violet-700'}`}>
                         {property.transactionType === 'lease' ? 'Lease' : 'Sale'}
@@ -172,39 +163,35 @@ export default function AgentDashboard() {
                         👁 View
                       </a>
                     )}
-                    {view === 'mine' && (
-                      <>
-                        {property.status === 'published' && !property.soldOut && (
-                          <button
-                            onClick={() => handleMarkSold(property._id)}
-                            className="text-xs font-medium border border-red-200 px-2.5 py-1.5 rounded-lg bg-red-50 text-red-700 hover:bg-red-100"
-                          >
-                            🚫 Mark Sold
-                          </button>
-                        )}
-                        {property.soldOut && (
-                          <button
-                            onClick={() => handleUndoSold(property._id)}
-                            className="text-xs font-medium border border-green-200 px-2.5 py-1.5 rounded-lg bg-green-50 text-green-700 hover:bg-green-100"
-                          >
-                            ↩ Undo Sold
-                          </button>
-                        )}
-                        {property.status === 'rejected' && (
-                          <Link
-                            href={`/agent/submit?edit=${property._id}`}
-                            className="text-xs font-medium border border-indigo-200 px-2.5 py-1.5 rounded-lg bg-indigo-50 text-indigo-700 hover:bg-indigo-100"
-                          >
-                            ✏️ Edit & Resubmit
-                          </Link>
-                        )}
-                      </>
+                    {property.status === 'published' && !property.soldOut && (
+                      <button
+                        onClick={() => handleMarkSold(property._id)}
+                        className="text-xs font-medium border border-red-200 px-2.5 py-1.5 rounded-lg bg-red-50 text-red-700 hover:bg-red-100"
+                      >
+                        🚫 Mark Sold
+                      </button>
+                    )}
+                    {property.soldOut && (
+                      <button
+                        onClick={() => handleUndoSold(property._id)}
+                        className="text-xs font-medium border border-green-200 px-2.5 py-1.5 rounded-lg bg-green-50 text-green-700 hover:bg-green-100"
+                      >
+                        ↩ Undo Sold
+                      </button>
+                    )}
+                    {property.status === 'rejected' && (
+                      <Link
+                        href={`/agent/submit?edit=${property._id}`}
+                        className="text-xs font-medium border border-indigo-200 px-2.5 py-1.5 rounded-lg bg-indigo-50 text-indigo-700 hover:bg-indigo-100"
+                      >
+                        ✏️ Edit & Resubmit
+                      </Link>
                     )}
                   </div>
                 </div>
 
                 {/* Photos preview for own properties */}
-                {view === 'mine' && property.photos && property.photos.length > 0 && (
+                {property.photos && property.photos.length > 0 && (
                   <div className="mt-3 flex gap-1.5 overflow-x-auto pb-1">
                     {property.photos.slice(0, 5).map((photo, i) => (
                       <img key={i} src={photo.url} alt={photo.label || ''} className={`w-14 h-14 object-cover rounded-lg border ${photo.isMasked ? 'blur-sm' : ''}`} />
@@ -220,15 +207,11 @@ export default function AgentDashboard() {
             ))}
             {properties.length === 0 && (
               <div className="text-center py-12 bg-white rounded-xl border">
-                <p className="text-4xl mb-3">{view === 'mine' ? '📝' : '🏢'}</p>
-                <p className="text-gray-600 font-medium">
-                  {view === 'mine' ? 'No submissions yet' : 'No properties available'}
-                </p>
-                {view === 'mine' && (
-                  <Link href="/agent/submit" className="inline-block mt-3 text-blue-600 font-medium text-sm hover:underline">
-                    + Submit your first property →
-                  </Link>
-                )}
+                <p className="text-4xl mb-3">📝</p>
+                <p className="text-gray-600 font-medium">No submissions yet</p>
+                <Link href="/agent/submit" className="inline-block mt-3 text-blue-600 font-medium text-sm hover:underline">
+                  + Submit your first property →
+                </Link>
               </div>
             )}
           </div>

@@ -246,7 +246,6 @@ export default function ListingPage({ params }: { params: Promise<{ id: string }
               {/* Quick Price/Area Summary */}
               <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5">
                 <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-3">Quick Summary</h3>
-                <p className="text-[11px] text-amber-600 italic mb-3">* Property listing is subject to availability</p>
                 {property.fields?.locationArea?.checked && (
                   <div className="flex items-center gap-2 mb-2">
                     <span className="text-lg">📍</span>
@@ -280,6 +279,9 @@ export default function ListingPage({ params }: { params: Promise<{ id: string }
                   </div>
                 )}
               </div>
+
+              {/* Disclaimer - below Quick Summary */}
+              <p className="text-[11px] text-amber-600 italic px-1">* Property listing is subject to availability</p>
 
               {/* Action Buttons */}
               <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 space-y-3">

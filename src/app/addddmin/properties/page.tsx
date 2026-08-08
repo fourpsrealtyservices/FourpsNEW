@@ -14,6 +14,12 @@ interface Property {
   customHeading?: string;
   locationArea?: string;
   officeType?: string;
+  remarks?: string;
+  locationPin?: string;
+  contactName?: string;
+  contactMobile?: string;
+  contactDesignation?: string;
+  nearbyAreas?: string[];
   fields?: Record<string, { value: string | string[]; checked: boolean; unit?: string }>;
   photos?: { url: string; label: string; isMasked: boolean; isCover: boolean }[];
   submittedBy: { type: string; name: string; agentId?: string };
@@ -83,8 +89,13 @@ export default function ManagePropertiesPage() {
   };
 
   const handleDownloadExcel = () => {
-    // Generate CSV (Excel-compatible)
-    const headers = ['Property ID', 'Title/Heading', 'City', 'Transaction Type', 'Category', 'Office Type', 'Status', 'Sold Out', 'Location/Area', 'Submitted By', 'Agent/Admin', 'Created Date', 'All Field Details'];
+    // Generate CSV (Excel-compatible) with ALL property details
+    const headers = [
+      'Property ID', 'Title/Heading', 'City', 'Transaction Type', 'Category', 'Office Type',
+      'Status', 'Sold Out', 'Location/Area', 'Nearby Areas',
+      'Contact Name', 'Contact Mobile', 'Contact Designation', 'Location PIN',
+      'Remarks/Notes', 'Submitted By', 'Agent/Admin', 'Created Date', 'All Field Details'
+    ];
     const rows = filteredProperties.map(p => {
       const fieldDetails = Object.entries(p.fields || {}).map(([k, v]) => `${k}: ${Array.isArray(v.value) ? v.value.join(', ') : v.value}${v.unit ? ' ' + v.unit : ''}`).join(' | ');
       return [
@@ -97,6 +108,12 @@ export default function ManagePropertiesPage() {
         p.status,
         p.soldOut ? 'Yes' : 'No',
         (p.fields?.locationArea?.value as string) || p.locationArea || '',
+        (p.nearbyAreas || []).join(', '),
+        p.contactName || '',
+        p.contactMobile || '',
+        p.contactDesignation || '',
+        p.locationPin || '',
+        p.remarks || '',
         p.submittedBy?.name || '',
         p.submittedBy?.type || '',
         new Date(p.createdAt).toLocaleDateString(),
@@ -104,7 +121,7 @@ export default function ManagePropertiesPage() {
       ];
     });
     const csv = [headers.join(','), ...rows.map(r => r.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(','))].join('\n');
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;

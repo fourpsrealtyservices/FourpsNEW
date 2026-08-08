@@ -4,28 +4,18 @@ import Property from '@/models/Property';
 import { generatePropertyId } from '@/lib/propertyId';
 import { verifyToken } from '@/lib/auth';
 
-// GET agent's own submissions + all published properties (without sensitive data)
+// GET agent's own submissions only
 export async function GET(request: NextRequest) {
   try {
     await dbConnect();
-    const { searchParams } = new URL(request.url);
-    const view = searchParams.get('view'); // 'mine' or 'browse'
 
     const token = request.cookies.get('fourps_token')?.value;
     if (!token) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     const payload = await verifyToken(token);
     if (!payload || payload.role !== 'agent') return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 
-    if (view === 'mine') {
-      // Agent's own submissions
-      const properties = await Property.find({ 'submittedBy.id': payload.id })
-        .select('-locationPin -contactName -contactMobile -contactDesignation')
-        .sort({ createdAt: -1 });
-      return NextResponse.json(properties);
-    }
-
-    // Browse all published (no sensitive data)
-    const properties = await Property.find({ status: 'published' })
+    // Agent can only see their own submissions
+    const properties = await Property.find({ 'submittedBy.id': payload.id })
       .select('-locationPin -contactName -contactMobile -contactDesignation')
       .sort({ createdAt: -1 });
     return NextResponse.json(properties);

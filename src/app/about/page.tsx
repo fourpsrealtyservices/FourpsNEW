@@ -69,8 +69,18 @@ export default function AboutPage() {
 
   const wa = data.whatsappNumber || '919059909675';
 
-  // Use experience data from API/defaults (includes logoUrl, title, etc.)
-  const corporateJourney = data.experience;
+  // Corporate journey — text is static, logos come from backend (admin can update)
+  const staticJourney = [
+    { company: 'Airtel', title: 'Enterprise Business Experience', description: 'Delivered customer-centric solutions by managing the complete corporate client lifecycle across diverse roles', defaultLogo: '/logos/airtel.svg' },
+    { company: 'Park+', title: 'South Sales Head – Commercial Vertical', description: 'Led business development and strategic partnerships across the South region for the Commercial Vertical.', defaultLogo: '/logos/parkplus.svg' },
+    { company: 'Disney Star', title: 'Pricing & Revenue Strategy Lead', description: 'Led pricing and revenue strategy for Star Maa, the leading Telugu entertainment channel.', defaultLogo: '/logos/disney-star.svg' },
+    { company: '4Ps Realty', title: 'Founder', description: 'Helping businesses, investors, and landowners make informed commercial real estate decisions through strategic leasing and sales advisory.', defaultLogo: '/logo.webp' },
+  ];
+  // Merge logo URLs from backend data if admin has updated them
+  const corporateJourney = staticJourney.map((item, i) => ({
+    ...item,
+    logoUrl: (data.experience && data.experience[i]?.logoUrl) || item.defaultLogo,
+  }));
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -110,7 +120,9 @@ export default function AboutPage() {
                 </div>
               )}
             </div>
-            <p className="text-lg font-serif italic text-gray-600">{data.founderName}</p>
+            <p className="text-lg font-bold text-gray-900">Jhansi D</p>
+            <p className="text-sm text-gray-600">Founder of 4Ps</p>
+            <p className="text-sm text-gray-500">IIM Lucknow 2013</p>
             {data.linkedinUrl && (
               <div className="flex items-center gap-2 mt-2">
                 <a href={data.linkedinUrl} target="_blank" className="w-7 h-7 bg-blue-600 rounded-md flex items-center justify-center text-white text-xs font-bold hover:bg-blue-700 transition-colors">in</a>
@@ -161,7 +173,7 @@ export default function AboutPage() {
 
             <div className="bg-white border border-gray-200 rounded-2xl p-5">
               <span className="text-4xl text-gray-200 font-serif leading-none">&ldquo;</span>
-              <p className="text-gray-600 text-sm leading-relaxed -mt-2">{data.quote}</p>
+              <p className="text-gray-600 text-sm leading-relaxed -mt-2">A decade of corporate leadership shaped the consulting approach that defines 4Ps Realty Services today.</p>
             </div>
           </div>
         </div>
@@ -202,7 +214,7 @@ export default function AboutPage() {
               <p className="text-orange-500 font-bold text-xs uppercase tracking-wider mb-2">My Story</p>
               <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900 mb-4">Why Real Estate?</h2>
               <div className="w-12 h-1 bg-orange-500 rounded-full mb-4"></div>
-              <p className="text-gray-500 text-sm max-w-md">A simple question changed everything and became the start of a journey that continues today.</p>
+              <p className="text-gray-500 text-sm">A simple question changed everything and became the start of a journey that continues today.</p>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -217,7 +229,7 @@ export default function AboutPage() {
               ))}
             </div>
 
-            <p className="text-center text-gray-600 text-lg mt-10 font-serif italic">
+            <p className="text-center text-gray-600 text-lg mt-10">
               Today, that journey continues through <span className="font-bold text-orange-600">4Ps Realty Services.</span>
             </p>
           </div>
