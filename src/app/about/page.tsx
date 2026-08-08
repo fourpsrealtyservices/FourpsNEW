@@ -172,8 +172,7 @@ export default function AboutPage() {
             </div>
 
             <div className="bg-white border border-gray-200 rounded-2xl p-5">
-              <span className="text-4xl text-gray-200 font-serif leading-none">&ldquo;</span>
-              <p className="text-gray-600 text-sm leading-relaxed -mt-2">A decade of corporate leadership shaped the consulting approach that defines 4Ps Realty Services today.</p>
+              <p className="text-gray-600 text-sm leading-relaxed">A decade of corporate leadership shaped the consulting approach that defines 4Ps Realty Services today.</p>
             </div>
           </div>
         </div>

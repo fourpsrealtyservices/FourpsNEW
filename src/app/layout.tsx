@@ -21,7 +21,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "4Ps Realty Services | Commercial Real Estate",
+  title: "FourPs Realty | Commercial Real Estate",
   description: "Premium commercial real estate platform — Retail, Office, Co-working & More. Find your perfect commercial space in Hyderabad.",
 };
 
