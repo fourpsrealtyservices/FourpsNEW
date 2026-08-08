@@ -98,7 +98,7 @@ export default function AboutPage() {
             About 4Ps Realty Services
           </h1>
           <p className="text-gray-300 max-w-xl text-sm leading-relaxed">
-            Helping brands, corporates, retailers, investors and land owners make smarter real estate decisions through strategic advisory and market expertise.
+            Commercial Real Estate Solutions Tailored to Your Goals
           </p>
         </div>
       </section>
@@ -206,24 +206,31 @@ export default function AboutPage() {
       </section>
 
       {/* Why Real Estate - Story (Full width, no numbers) */}
-      {data.storySteps.length > 0 && (
-        <section className="py-16">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="mb-10">
-              <p className="text-orange-500 font-bold text-xs uppercase tracking-wider mb-2">My Story</p>
-              <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900 mb-4">Why Real Estate?</h2>
-              <div className="w-12 h-1 bg-orange-500 rounded-full mb-4"></div>
-              <p className="text-gray-500 text-sm">A simple question changed everything and became the start of a journey that continues today.</p>
-            </div>
+      <section className="py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="mb-10">
+            <p className="text-orange-500 font-bold text-xs uppercase tracking-wider mb-2">My Story</p>
+            <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900 mb-4">Why Real Estate?</h2>
+            <div className="w-12 h-1 bg-orange-500 rounded-full mb-4"></div>
+            <p className="text-gray-500 text-sm">A simple question changed everything and became the start of a journey that continues today.</p>
+          </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {data.storySteps.map((step, i) => (
-                <div key={i} className="bg-white border border-gray-100 rounded-2xl p-5 hover:shadow-lg transition-shadow">
-                  <div className="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center mb-3">
-                    <span className="text-orange-600 text-sm">•</span>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-3">
+            {[
+              { title: 'Career Break', description: 'After a fulfilling career break following Disney Star, I was still exploring my next chapter.' },
+              { title: 'A Friend Asked', description: 'A friend casually asked if I could help find tenants for his commercial property.' },
+              { title: 'Spoke to Retail Brands', description: 'I reached out to retailers, clothing brands, electronics stores and businesses in my network.' },
+              { title: 'Unexpected Responses', description: "Most of them weren't interested in that particular property." },
+              { title: 'Realized the Market Gap', description: 'They said, "If you have opportunities in other locations, let us know."' },
+              { title: 'Started Helping Businesses', description: 'I began understanding requirements, studying markets and connecting the right dots.' },
+              { title: "Founded 4P's Realty", description: 'What began as a small favor became a full-time mission.' },
+            ].map((step, i) => (
+                <div key={i} className="bg-white border border-gray-100 rounded-2xl p-4 hover:shadow-lg transition-shadow aspect-square flex flex-col justify-start">
+                  <div className="w-7 h-7 rounded-full bg-orange-100 flex items-center justify-center mb-2">
+                    <span className="text-orange-600 text-xs">•</span>
                   </div>
-                  <h4 className="font-bold text-gray-900 text-sm mb-1.5">{step.title}</h4>
-                  <p className="text-xs text-gray-500 leading-relaxed">{step.description}</p>
+                  <h4 className="font-bold text-gray-900 text-xs mb-1">{step.title}</h4>
+                  <p className="text-[11px] text-gray-500 leading-relaxed">{step.description}</p>
                 </div>
               ))}
             </div>
@@ -233,7 +240,6 @@ export default function AboutPage() {
             </p>
           </div>
         </section>
-      )}
 
       {/* Mission, Vision, What Makes Us Different */}
       <section className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 py-14">
