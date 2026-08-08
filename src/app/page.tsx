@@ -65,9 +65,8 @@ export default function HomePage() {
     if (selectedCity) params.set('city', selectedCity);
     if (transactionFilter) params.set('transactionType', transactionFilter);
     if (categoryFilter) params.set('category', categoryFilter);
-    if (search) params.set('search', search);
     fetch(`/api/public/properties?${params}`).then(r => r.json()).then(data => { setProperties(data); setLoading(false); });
-  }, [selectedCity, transactionFilter, categoryFilter, search]);
+  }, [selectedCity, transactionFilter, categoryFilter]);
 
   useEffect(() => { const t = setTimeout(() => setShowRequirementForm(true), 45000); return () => clearTimeout(t); }, []);
 
