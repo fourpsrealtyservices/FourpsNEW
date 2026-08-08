@@ -62,14 +62,13 @@ export default function HomePage() {
     }
   }, [selectedCity]);
 
-  // Fetch latest properties independently (only affected by city + latestFilter tab, NOT hero search)
+  // Fetch latest properties completely independently — NOT affected by hero search/filters/city at all
   useEffect(() => {
     setLoading(true);
     const params = new URLSearchParams();
-    if (selectedCity) params.set('city', selectedCity);
     if (latestFilter) params.set('transactionType', latestFilter);
     fetch(`/api/public/properties?${params}`).then(r => r.json()).then(data => { setProperties(data); setLoading(false); });
-  }, [selectedCity, latestFilter]);
+  }, [latestFilter]);
 
   useEffect(() => { const t = setTimeout(() => setShowRequirementForm(true), 45000); return () => clearTimeout(t); }, []);
 
