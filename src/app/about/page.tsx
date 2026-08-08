@@ -63,7 +63,17 @@ export default function AboutPage() {
 
   useEffect(() => {
     fetch('/api/public/about').then(r => r.json()).then(d => {
-      if (d && !d.error && d.founderName) setData({ ...DEFAULTS, ...d });
+      if (d && !d.error && d.founderName) {
+        // Only override defaults with backend values that are non-empty
+        const merged = { ...DEFAULTS };
+        for (const key of Object.keys(d) as (keyof AboutData)[]) {
+          const val = d[key];
+          if (val !== undefined && val !== null && val !== '') {
+            (merged as any)[key] = val;
+          }
+        }
+        setData(merged);
+      }
     }).catch(() => {});
   }, []);
 
@@ -104,7 +114,7 @@ export default function AboutPage() {
       </section>
 
       {/* Meet Our Founder */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 items-start">
           {/* Founder Photo */}
           <div className="flex flex-col items-center lg:items-start">
@@ -215,31 +225,23 @@ export default function AboutPage() {
             <p className="text-gray-500 text-sm">A simple question changed everything and became the start of a journey that continues today.</p>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-3">
-            {[
-              { title: 'Career Break', description: 'After a fulfilling career break following Disney Star, I was still exploring my next chapter.' },
-              { title: 'A Friend Asked', description: 'A friend casually asked if I could help find tenants for his commercial property.' },
-              { title: 'Spoke to Retail Brands', description: 'I reached out to retailers, clothing brands, electronics stores and businesses in my network.' },
-              { title: 'Unexpected Responses', description: "Most of them weren't interested in that particular property." },
-              { title: 'Realized the Market Gap', description: 'They said, "If you have opportunities in other locations, let us know."' },
-              { title: 'Started Helping Businesses', description: 'I began understanding requirements, studying markets and connecting the right dots.' },
-              { title: "Founded 4P's Realty", description: 'What began as a small favor became a full-time mission.' },
-            ].map((step, i) => (
-                <div key={i} className="bg-white border border-gray-100 rounded-2xl p-4 hover:shadow-lg transition-shadow aspect-square flex flex-col justify-start">
-                  <div className="w-7 h-7 rounded-full bg-orange-100 flex items-center justify-center mb-2">
-                    <span className="text-orange-600 text-xs">•</span>
-                  </div>
-                  <h4 className="font-bold text-gray-900 text-xs mb-1">{step.title}</h4>
-                  <p className="text-[11px] text-gray-500 leading-relaxed">{step.description}</p>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
+            {data.storySteps.map((step, i) => (
+              <div key={i} className="bg-white border border-gray-100 rounded-2xl p-5 hover:shadow-lg transition-shadow aspect-square flex flex-col justify-start">
+                <div className="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center mb-3">
+                  <span className="text-orange-600 text-sm font-bold">{i + 1}</span>
                 </div>
-              ))}
-            </div>
-
-            <p className="text-center text-gray-600 text-lg mt-10">
-              Today, that journey continues through <span className="font-bold text-orange-600">4Ps Realty Services.</span>
-            </p>
+                <h4 className="font-bold text-gray-900 text-sm mb-1.5">{step.title}</h4>
+                <p className="text-xs text-gray-500 leading-relaxed">{step.description}</p>
+              </div>
+            ))}
           </div>
-        </section>
+
+          <p className="text-center text-gray-600 text-lg mt-10">
+            Today, that journey continues through <span className="font-bold text-orange-600">4Ps Realty Services.</span>
+          </p>
+        </div>
+      </section>
 
       {/* Mission, Vision, What Makes Us Different */}
       <section className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 py-14">
