@@ -108,9 +108,9 @@ export default function AboutPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 items-start">
           {/* Founder Photo */}
           <div className="flex flex-col items-center lg:items-start">
-            <div className="w-56 h-64 bg-gradient-to-br from-gray-100 to-gray-200 rounded-2xl overflow-hidden shadow-xl mb-4">
+            <div className="w-56 h-80 bg-gradient-to-br from-gray-100 to-gray-200 rounded-2xl overflow-hidden shadow-xl mb-4">
               {data.founderPhotoUrl ? (
-                <img src={data.founderPhotoUrl} alt={data.founderName} className="w-full h-full object-cover" />
+                <img src={data.founderPhotoUrl} alt={data.founderName} className="w-full h-full object-cover object-top" />
               ) : (
                 <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
                   <div className="text-center">
