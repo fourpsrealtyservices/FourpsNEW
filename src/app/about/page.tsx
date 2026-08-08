@@ -59,7 +59,8 @@ const DEFAULTS: AboutData = {
 };
 
 export default function AboutPage() {
-  const [data, setData] = useState<AboutData>(DEFAULTS);
+  const [data, setData] = useState<AboutData | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetch('/api/public/about').then(r => r.json()).then(d => {
@@ -73,9 +74,20 @@ export default function AboutPage() {
           }
         }
         setData(merged);
+      } else {
+        setData(DEFAULTS);
       }
-    }).catch(() => {});
+      setLoading(false);
+    }).catch(() => { setData(DEFAULTS); setLoading(false); });
   }, []);
+
+  if (loading || !data) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="w-8 h-8 border-3 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
+      </div>
+    );
+  }
 
   const wa = data.whatsappNumber || '919059909675';
 
@@ -188,32 +200,6 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Corporate Journey */}
-      <section className="bg-white border-y border-gray-100 py-14">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h3 className="text-center text-orange-500 font-bold text-xs uppercase tracking-wider mb-2">Corporate Journey</h3>
-          <p className="text-center text-gray-900 text-2xl font-extrabold mb-10">A Decade of Leadership</p>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {corporateJourney.map((exp, i) => (
-              <div key={exp.company} className="relative">
-                <div className="bg-gray-50 border border-gray-200 rounded-2xl p-6 h-full hover:shadow-md transition-shadow">
-                  {/* Company Logo */}
-                  <div className="w-20 h-20 rounded-xl border border-gray-200 bg-white overflow-hidden mb-4 shadow-sm flex items-center justify-center">
-                    <img src={exp.logoUrl || '/logos/airtel.svg'} alt={exp.company} className="w-full h-full object-contain" />
-                  </div>
-                  <h4 className="font-bold text-gray-900 text-sm mb-1">{exp.title}</h4>
-                  <p className="text-xs text-gray-500 leading-relaxed">{exp.description}</p>
-                </div>
-                {/* Arrow connector on desktop */}
-                {i < corporateJourney.length - 1 && (
-                  <div className="hidden lg:block absolute top-1/2 -right-3 transform -translate-y-1/2 text-gray-300 text-lg z-10">→</div>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* Why Real Estate - Story (Full width, no numbers) */}
       <section className="py-16">
@@ -229,7 +215,7 @@ export default function AboutPage() {
             {data.storySteps.map((step, i) => (
               <div key={i} className="bg-white border border-gray-100 rounded-2xl p-5 hover:shadow-lg transition-shadow aspect-square flex flex-col justify-start">
                 <div className="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center mb-3">
-                  <span className="text-orange-600 text-sm font-bold">{i + 1}</span>
+                  <span className="text-orange-600 text-sm">•</span>
                 </div>
                 <h4 className="font-bold text-gray-900 text-sm mb-1.5">{step.title}</h4>
                 <p className="text-xs text-gray-500 leading-relaxed">{step.description}</p>

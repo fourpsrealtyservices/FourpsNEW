@@ -89,15 +89,66 @@ export default function ManagePropertiesPage() {
   };
 
   const handleDownloadExcel = () => {
-    // Generate CSV (Excel-compatible) with ALL property details
+    // Master list of ALL possible field keys with their display labels
+    // This ensures every field gets its own column, even if no property currently has that field
+    const allFieldColumns: { key: string; label: string }[] = [
+      { key: 'locationArea', label: 'Location / Area' },
+      { key: 'superBuiltUpArea', label: 'Super Built-up Area (sq ft)' },
+      { key: 'carpetArea', label: 'Carpet Area (sq ft)' },
+      { key: 'floor', label: 'Floor' },
+      { key: 'frontage', label: 'Frontage (ft)' },
+      { key: 'ceilingHeight', label: 'Ceiling / Beam Height (ft)' },
+      { key: 'roadWidth', label: 'Road Width in Front (ft)' },
+      { key: 'expectedRent', label: 'Expected Rent' },
+      { key: 'expectedRentPerSeat', label: 'Expected Rent / Seat' },
+      { key: 'expectedSalePrice', label: 'Expected Sale Price' },
+      { key: 'expectedPrice', label: 'Expected Price (Investment)' },
+      { key: 'buildingStatus', label: 'Building Status' },
+      { key: 'buildingType', label: 'Building Type' },
+      { key: 'parking', label: 'Parking' },
+      { key: 'plotArea', label: 'Plot Area' },
+      { key: 'dimensions', label: 'Dimensions' },
+      { key: 'landUseZoning', label: 'Land Use / Zoning' },
+      { key: 'seatsAvailable', label: 'Seats Available' },
+      { key: 'amenities', label: 'Amenities' },
+      { key: 'investmentType', label: 'Type of Investment' },
+      { key: 'assetSize', label: 'Asset Size / Area' },
+      { key: 'expectedReturns', label: 'Expected Returns / Yield' },
+      { key: 'tenant', label: 'Tenant' },
+      { key: 'propertyType', label: 'Property Type (Rental Income)' },
+      { key: 'currentRent', label: 'Current Monthly Rent' },
+      { key: 'leaseExpiry', label: 'Lease Expiry' },
+      { key: 'description', label: 'Description' },
+    ];
+
+    // Also add any extra field keys found in data that might not be in the master list
+    const masterKeys = new Set(allFieldColumns.map(f => f.key));
+    filteredProperties.forEach(p => {
+      if (p.fields) {
+        Object.keys(p.fields).forEach(k => {
+          if (!masterKeys.has(k)) {
+            allFieldColumns.push({ key: k, label: k });
+            masterKeys.add(k);
+          }
+        });
+      }
+    });
+
+    // Generate CSV (Excel-compatible) with each field as its own column
     const headers = [
       'Property ID', 'Title/Heading', 'City', 'Transaction Type', 'Category', 'Office Type',
-      'Status', 'Sold Out', 'Location/Area', 'Nearby Areas',
+      'Status', 'Sold Out', 'Nearby Areas',
       'Contact Name', 'Contact Mobile', 'Contact Designation', 'Location PIN',
-      'Remarks/Notes', 'Submitted By', 'Agent/Admin', 'Created Date', 'All Field Details'
+      'Remarks/Notes', 'Submitted By', 'Agent/Admin', 'Created Date',
+      ...allFieldColumns.map(f => f.label)
     ];
     const rows = filteredProperties.map(p => {
-      const fieldDetails = Object.entries(p.fields || {}).map(([k, v]) => `${k}: ${Array.isArray(v.value) ? v.value.join(', ') : v.value}${v.unit ? ' ' + v.unit : ''}`).join(' | ');
+      const fieldValues = allFieldColumns.map(col => {
+        const f = p.fields?.[col.key];
+        if (!f) return '';
+        const val = Array.isArray(f.value) ? f.value.join(', ') : (f.value || '');
+        return f.unit ? `${val} ${f.unit}` : val;
+      });
       return [
         p.propertyId,
         p.customHeading || '',
@@ -107,7 +158,6 @@ export default function ManagePropertiesPage() {
         p.officeType || '',
         p.status,
         p.soldOut ? 'Yes' : 'No',
-        (p.fields?.locationArea?.value as string) || p.locationArea || '',
         (p.nearbyAreas || []).join(', '),
         p.contactName || '',
         p.contactMobile || '',
@@ -117,7 +167,7 @@ export default function ManagePropertiesPage() {
         p.submittedBy?.name || '',
         p.submittedBy?.type || '',
         new Date(p.createdAt).toLocaleDateString(),
-        fieldDetails,
+        ...fieldValues,
       ];
     });
     const csv = [headers.join(','), ...rows.map(r => r.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(','))].join('\n');
