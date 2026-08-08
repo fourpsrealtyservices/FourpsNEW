@@ -2,6 +2,23 @@ import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/mongodb';
 import Agent from '@/models/Agent';
 
+// GET single agent
+export async function GET(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    await dbConnect();
+    const { id } = await params;
+    const agent = await Agent.findById(id).select('-password');
+    if (!agent) return NextResponse.json({ error: 'Agent not found' }, { status: 404 });
+    return NextResponse.json(agent);
+  } catch (error) {
+    console.error('Error fetching agent:', error);
+    return NextResponse.json({ error: 'Failed to fetch agent' }, { status: 500 });
+  }
+}
+
 // Generate unique agent code
 async function generateAgentCode(): Promise<string> {
   const count = await Agent.countDocuments();

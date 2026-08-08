@@ -199,12 +199,17 @@ export default function AgentManagementPage() {
                 <div className="flex justify-between items-start">
                   <div>
                     <div className="flex items-center gap-3 mb-1">
-                      <span className="font-medium text-gray-800">{agent.name}</span>
+                      <Link href={`/addddmin/agents/${agent._id}`} className="font-medium text-gray-800 hover:text-blue-600 transition-colors">
+                        {agent.name}
+                      </Link>
                       {agent.agentCode && <span className="font-mono text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded">{agent.agentCode}</span>}
                       {statusBadge(agent)}
                     </div>
                     <p className="text-sm text-gray-600">{agent.phone} {agent.email && `• ${agent.email}`}</p>
-                    <p className="text-xs text-gray-400 mt-1">Registered: {new Date(agent.createdAt).toLocaleDateString()}</p>
+                    <div className="flex items-center gap-3 mt-1">
+                      <p className="text-xs text-gray-400">Registered: {new Date(agent.createdAt).toLocaleDateString()}</p>
+                      <Link href={`/addddmin/agents/${agent._id}`} className="text-xs text-blue-600 hover:text-blue-700 font-medium">View Properties →</Link>
+                    </div>
                   </div>
                   <div className="flex gap-2 flex-wrap justify-end">
                     {agent.status === 'pending' && (
