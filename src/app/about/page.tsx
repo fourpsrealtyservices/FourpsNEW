@@ -126,10 +126,10 @@ export default function AboutPage() {
 
       {/* Meet Our Founder */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-start">
           {/* Founder Photo */}
           <div className="flex flex-col items-center lg:items-start">
-            <div className="w-48 h-64 bg-gradient-to-br from-gray-100 to-gray-200 rounded-2xl overflow-hidden shadow-xl mb-3">
+            <div className="w-full h-72 bg-gradient-to-br from-gray-100 to-gray-200 rounded-2xl overflow-hidden shadow-xl mb-2">
               {data.founderPhotoUrl ? (
                 <img src={data.founderPhotoUrl} alt={data.founderName} className="w-full h-full object-cover object-top" />
               ) : (
@@ -169,7 +169,6 @@ export default function AboutPage() {
 
           {/* Education & Quote */}
           <div className="space-y-3">
-            {/* IIM Lucknow */}
             <div className="bg-white border border-gray-200 rounded-2xl p-4">
               <p className="text-orange-500 font-bold text-xs uppercase tracking-wider mb-2">Education</p>
               <div className="flex items-center gap-3 mb-3">
