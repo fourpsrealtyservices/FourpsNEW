@@ -45,28 +45,19 @@ export default function InsightDetailPage({ params }: { params: Promise<{ id: st
 
       {/* Hero Image */}
       {insight.imageUrl && (
-        <div className="w-full h-64 md:h-80 relative">
+        <div className="w-full h-64 md:h-80">
           <img src={insight.imageUrl} alt={insight.title} className="w-full h-full object-cover" />
-          <div className="absolute inset-0 bg-gradient-to-t from-gray-900/70 to-transparent"></div>
-          <div className="absolute bottom-0 left-0 right-0 p-6 md:p-10 max-w-4xl mx-auto">
-            <div className="flex items-center gap-2 mb-3">
-              <span className="text-xs font-bold text-white bg-blue-600 px-2.5 py-1 rounded">{insight.tag}</span>
-              <span className="text-xs text-gray-200">{date}</span>
-            </div>
-            <h1 className="text-2xl md:text-4xl font-extrabold text-white leading-tight">{insight.title}</h1>
-          </div>
         </div>
       )}
 
-      {!insight.imageUrl && (
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-10">
-          <div className="flex items-center gap-2 mb-3">
-            <span className="text-xs font-bold text-blue-600 bg-blue-50 px-2.5 py-1 rounded">{insight.tag}</span>
-            <span className="text-xs text-gray-400">{date}</span>
-          </div>
-          <h1 className="text-2xl md:text-4xl font-extrabold text-gray-900 leading-tight">{insight.title}</h1>
+      {/* Title as heading below image */}
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
+        <div className="flex items-center gap-2 mb-3">
+          <span className="text-xs font-bold text-blue-600 bg-blue-50 px-2.5 py-1 rounded">{insight.tag}</span>
+          <span className="text-xs text-gray-400">{date}</span>
         </div>
-      )}
+        <h1 className="text-2xl md:text-4xl font-extrabold text-gray-900 leading-tight">{insight.title}</h1>
+      </div>
 
       {/* Content */}
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
