@@ -126,11 +126,11 @@ export default function AboutPage() {
       </section>
 
       {/* Meet Our Founder */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 items-start">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
           {/* Founder Photo */}
           <div className="flex flex-col items-center lg:items-start">
-            <div className="w-56 h-80 bg-gradient-to-br from-gray-100 to-gray-200 rounded-2xl overflow-hidden shadow-xl mb-4">
+            <div className="w-48 h-64 bg-gradient-to-br from-gray-100 to-gray-200 rounded-2xl overflow-hidden shadow-xl mb-3">
               {data.founderPhotoUrl ? (
                 <img src={data.founderPhotoUrl} alt={data.founderName} className="w-full h-full object-cover object-top" />
               ) : (
@@ -169,11 +169,11 @@ export default function AboutPage() {
           </div>
 
           {/* Education & Quote */}
-          <div className="space-y-5">
+          <div className="space-y-3">
             {/* IIM Lucknow */}
-            <div className="bg-white border border-gray-200 rounded-2xl p-5">
-              <p className="text-orange-500 font-bold text-xs uppercase tracking-wider mb-3">Education</p>
-              <div className="flex items-center gap-3 mb-4">
+            <div className="bg-white border border-gray-200 rounded-2xl p-4">
+              <p className="text-orange-500 font-bold text-xs uppercase tracking-wider mb-2">Education</p>
+              <div className="flex items-center gap-3 mb-3">
                 <div className="w-12 h-12 rounded-xl border border-gray-200 bg-white overflow-hidden">
                   <img src={data.educationLogoUrl || '/logos/iim-lucknow.svg'} alt={data.education} className="w-full h-full object-contain" />
                 </div>
@@ -193,8 +193,8 @@ export default function AboutPage() {
               </div>
             </div>
 
-            <div className="bg-white border border-gray-200 rounded-2xl p-5">
-              <p className="text-gray-600 text-sm leading-relaxed">A decade of corporate leadership shaped the consulting approach that defines 4Ps Realty Services today.</p>
+            <div className="bg-white border border-gray-200 rounded-2xl p-4">
+              <p className="text-gray-600 text-sm leading-relaxed">My corporate journey across Bharti Airtel, Park+, and Disney Star shaped my understanding of businesses, markets, and growth. Today, I bring that experience into commercial real estate, helping clients make smarter leasing, sales, and investment decisions.</p>
             </div>
           </div>
         </div>
@@ -202,9 +202,9 @@ export default function AboutPage() {
 
 
       {/* Why Real Estate - Story (Full width, no numbers) */}
-      <section className="py-16">
+      <section className="py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="mb-10">
+          <div className="mb-6">
             <p className="text-orange-500 font-bold text-xs uppercase tracking-wider mb-2">My Story</p>
             <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900 mb-4">Why Real Estate?</h2>
             <div className="w-12 h-1 bg-orange-500 rounded-full mb-4"></div>
@@ -214,25 +214,22 @@ export default function AboutPage() {
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
             {data.storySteps.map((step, i) => (
               <div key={i} className="bg-white border border-gray-100 rounded-2xl p-5 hover:shadow-lg transition-shadow aspect-square flex flex-col justify-start">
-                <div className="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center mb-3">
-                  <span className="text-orange-600 text-sm">•</span>
-                </div>
                 <h4 className="font-bold text-gray-900 text-sm mb-1.5">{step.title}</h4>
                 <p className="text-xs text-gray-500 leading-relaxed">{step.description}</p>
               </div>
             ))}
           </div>
 
-          <p className="text-center text-gray-600 text-lg mt-10">
+          <p className="text-center text-gray-600 text-lg mt-6">
             Today, that journey continues through <span className="font-bold text-orange-600">4Ps Realty Services.</span>
           </p>
         </div>
       </section>
 
       {/* Mission, Vision, What Makes Us Different */}
-      <section className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 py-14">
+      <section className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6">
               <div className="w-12 h-12 bg-orange-500/20 rounded-xl flex items-center justify-center mb-4">
                 <span className="text-orange-400 text-xl">🎯</span>
@@ -270,9 +267,9 @@ export default function AboutPage() {
       </section>
 
       {/* CTA Section - Background matching site theme (gray-50 based) */}
-      <section className="bg-gray-100 border-t border-gray-200 py-14">
+      <section className="bg-gray-100 border-t border-gray-200 py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-8">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
             <div>
               <h2 className="text-2xl md:text-3xl font-extrabold text-gray-900 mb-2">
                 Let&apos;s Find the <span className="text-orange-500">Right Place</span> for Your Business
