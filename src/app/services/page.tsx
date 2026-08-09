@@ -21,8 +21,8 @@ export default function ServicesPage() {
           <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1920&q=80" alt="" className="w-full h-full object-cover" />
           <div className="absolute inset-0 bg-gradient-to-r from-gray-900/90 via-gray-900/75 to-gray-900/60"></div>
         </div>
-        <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24 text-center">
-          <h1 className="text-3xl md:text-5xl font-extrabold text-white mb-4">Our Services</h1>
+        <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16 text-center">
+          <h1 className="text-3xl md:text-4xl font-extrabold text-white mb-3">Our Services</h1>
           <p className="text-gray-200 text-lg">Comprehensive commercial real estate solutions for every business need</p>
         </div>
       </section>

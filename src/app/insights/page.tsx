@@ -25,8 +25,8 @@ export default function InsightsPage() {
           <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1920&q=80" alt="" className="w-full h-full object-cover" />
           <div className="absolute inset-0 bg-gradient-to-r from-gray-900/90 via-gray-900/75 to-gray-900/60"></div>
         </div>
-        <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24 text-center">
-          <h1 className="text-3xl md:text-5xl font-extrabold text-white mb-4">Insights & Market Updates</h1>
+        <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16 text-center">
+          <h1 className="text-3xl md:text-4xl font-extrabold text-white mb-3">Insights & Market Updates</h1>
           <p className="text-blue-100 text-lg">Stay informed about the commercial real estate market</p>
         </div>
       </section>

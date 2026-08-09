@@ -114,12 +114,12 @@ export default function AboutPage() {
           <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1920&q=80" alt="" className="w-full h-full object-cover" />
           <div className="absolute inset-0 bg-gradient-to-r from-gray-900/90 via-gray-900/70 to-gray-900/50"></div>
         </div>
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16 text-center">
           <p className="text-orange-400 font-bold text-sm uppercase tracking-wider mb-2">About Us</p>
           <h1 className="text-3xl md:text-4xl font-extrabold text-white mb-3 leading-tight">
             About 4Ps Realty Services
           </h1>
-          <p className="text-gray-300 max-w-xl text-sm leading-relaxed">
+          <p className="text-gray-300 mx-auto max-w-xl text-sm leading-relaxed">
             Commercial Real Estate Solutions Tailored to Your Goals
           </p>
         </div>
