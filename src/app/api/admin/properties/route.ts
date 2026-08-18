@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/mongodb';
 import Property from '@/models/Property';
 import { generatePropertyId } from '@/lib/propertyId';
+import cache from '@/lib/cache';
 
 // GET all properties (admin sees everything)
 export async function GET(request: NextRequest) {
@@ -83,6 +84,9 @@ export async function POST(request: NextRequest) {
         name: 'Admin',
       },
     });
+
+    // Invalidate properties cache so public sees new listing immediately
+    cache.invalidate('properties');
 
     return NextResponse.json(property, { status: 201 });
   } catch (error) {

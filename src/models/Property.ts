@@ -141,8 +141,11 @@ const PropertySchema = new Schema<IProperty>(
   { timestamps: true }
 );
 
-// Compound indexes for search
+// Compound indexes for search performance
 PropertySchema.index({ city: 1, transactionType: 1, category: 1, status: 1 });
 PropertySchema.index({ city: 1, status: 1, createdAt: -1 });
+PropertySchema.index({ status: 1, createdAt: -1 }); // For homepage latest properties (no city filter)
+PropertySchema.index({ nearbyAreas: 1 }); // For locality/area search
+PropertySchema.index({ 'fields.locationArea.value': 1 }); // For text search on location
 
 export default mongoose.models.Property || mongoose.model<IProperty>('Property', PropertySchema);

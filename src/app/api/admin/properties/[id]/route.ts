@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/mongodb';
 import Property from '@/models/Property';
+import cache from '@/lib/cache';
 
 // GET single property
 export async function GET(
@@ -41,6 +42,9 @@ export async function PUT(
         property.photos[body.photoIndex].isMasked = body.isMasked;
         await property.save();
       }
+      // Invalidate cache for this property and listings
+      cache.invalidate('properties');
+      cache.invalidate(`property:${property.propertyId}`);
       return NextResponse.json(property);
     }
 
@@ -53,6 +57,11 @@ export async function PUT(
     if (!property) {
       return NextResponse.json({ error: 'Property not found' }, { status: 404 });
     }
+
+    // Invalidate cache
+    cache.invalidate('properties');
+    cache.invalidate(`property:${property.propertyId}`);
+
     return NextResponse.json(property);
   } catch (error) {
     console.error('Error updating property:', error);
@@ -72,6 +81,11 @@ export async function DELETE(
     if (!property) {
       return NextResponse.json({ error: 'Property not found' }, { status: 404 });
     }
+
+    // Invalidate cache
+    cache.invalidate('properties');
+    cache.invalidate(`property:${property.propertyId}`);
+
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error('Error deleting property:', error);

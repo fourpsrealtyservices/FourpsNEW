@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/mongodb';
 import Property from '@/models/Property';
+import cache, { CACHE_TTL } from '@/lib/cache';
 
 // GET single published property by propertyId (e.g. FP-L-OFC-0042)
 export async function GET(
@@ -8,27 +9,50 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    await dbConnect();
     const { id } = await params;
+    const cacheKey = `property:${id}`;
+
+    // Check cache first
+    const cached = cache.get<object>(cacheKey);
+    if (cached) {
+      return NextResponse.json(cached, {
+        headers: {
+          'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=120',
+          'X-Cache': 'HIT',
+        },
+      });
+    }
+
+    await dbConnect();
 
     // Try to find by propertyId first, then by MongoDB _id
     let property = await Property.findOne({ propertyId: id, status: 'published' })
-      .select('-locationPin -contactName -contactMobile -contactDesignation');
+      .select('-locationPin -contactName -contactMobile -contactDesignation -remarks')
+      .lean();
 
     if (!property) {
       property = await Property.findOne({ _id: id, status: 'published' })
-        .select('-locationPin -contactName -contactMobile -contactDesignation');
+        .select('-locationPin -contactName -contactMobile -contactDesignation -remarks')
+        .lean();
     }
 
     if (!property) {
       return NextResponse.json({ error: 'Property not found' }, { status: 404 });
     }
 
-    if (property.soldOut) {
+    if ((property as Record<string, unknown>).soldOut) {
       return NextResponse.json({ error: 'This property has been sold out', soldOut: true }, { status: 410 });
     }
 
-    return NextResponse.json(property);
+    // Store in cache
+    cache.set(cacheKey, property, CACHE_TTL.PROPERTY_DETAIL);
+
+    return NextResponse.json(property, {
+      headers: {
+        'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=120',
+        'X-Cache': 'MISS',
+      },
+    });
   } catch (error) {
     console.error('Error fetching property:', error);
     return NextResponse.json({ error: 'Failed to fetch property' }, { status: 500 });
