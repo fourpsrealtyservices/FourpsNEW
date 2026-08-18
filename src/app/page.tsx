@@ -302,7 +302,7 @@ export default function HomePage() {
                     </span>
                   )}
                 </div>
-                <h3 className="text-gray-900 font-bold text-sm mb-1 group-hover:text-blue-600 transition-colors">{categoryLabel(property.category)} for {property.transactionType === 'lease' ? 'Lease' : 'Sale'}</h3>
+                <h3 className="text-gray-900 font-bold text-sm mb-1 group-hover:text-blue-600 transition-colors">{property.customHeading || `${categoryLabel(property.category)} for ${property.transactionType === 'lease' ? 'Lease' : 'Sale'}`}</h3>
                 <p className="text-gray-500 text-xs flex items-center gap-1">📍 {(property.fields?.locationArea?.checked && property.fields?.locationArea?.value) || property.city}</p>
                 {getArea(property) && <p className="text-xs text-gray-500 mt-1"><span className="font-medium text-gray-700">{getArea(property)}</span></p>}
               </div>

@@ -9,7 +9,7 @@ import Navbar from '@/components/Navbar';
 interface City { _id: string; name: string; status: string; }
 interface Property {
   _id: string; propertyId: string; city: string; transactionType: string; category: string;
-  officeType?: string; soldOut?: boolean; fields: Record<string, { value: string | string[]; checked: boolean; unit?: string }>;
+  officeType?: string; soldOut?: boolean; customHeading?: string; fields: Record<string, { value: string | string[]; checked: boolean; unit?: string }>;
   photos: { url: string; isCover: boolean; isMasked: boolean; label: string }[]; createdAt: string;
 }
 
@@ -158,7 +158,7 @@ function PropertiesContent() {
                   <span className="font-mono text-xs text-blue-600 font-bold bg-blue-50 px-2 py-0.5 rounded">{property.propertyId}</span>
                   {getPrice(property) && <span className={`text-sm font-bold ${getPrice(property) === 'Call for Price' ? 'text-orange-600' : 'text-gray-900'}`}>{getPrice(property)}</span>}
                 </div>
-                <h3 className="text-gray-900 font-bold text-sm mb-1 group-hover:text-blue-600">{categoryLabel(property.category)} for {property.transactionType === 'lease' ? 'Lease' : 'Sale'}</h3>
+                <h3 className="text-gray-900 font-bold text-sm mb-1 group-hover:text-blue-600">{property.customHeading || `${categoryLabel(property.category)} for ${property.transactionType === 'lease' ? 'Lease' : 'Sale'}`}</h3>
                 <p className="text-gray-500 text-xs">📍 {(property.fields?.locationArea?.checked && property.fields?.locationArea?.value) || property.city}</p>
                 {getArea(property) && <p className="text-xs text-gray-500 mt-1"><span className="font-medium text-gray-700">{getArea(property)}</span></p>}
               </div>

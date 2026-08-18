@@ -68,7 +68,7 @@ export async function PUT(request: NextRequest) {
   }
 }
 
-// POST submit new property (goes to pending)
+// POST submit new property (goes to pending or draft)
 export async function POST(request: NextRequest) {
   try {
     await dbConnect();
@@ -78,7 +78,7 @@ export async function POST(request: NextRequest) {
     if (!payload || payload.role !== 'agent') return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 
     const body = await request.json();
-    const { city, transactionType, category, officeType, fields, photos } = body;
+    const { city, transactionType, category, officeType, customHeading, fields, nearbyAreas, locationPin, contactName, contactMobile, contactDesignation, remarks, photos, status } = body;
 
     if (!city || !transactionType || !category) {
       return NextResponse.json({ error: 'City, transaction type, and category are required' }, { status: 400 });
@@ -93,11 +93,18 @@ export async function POST(request: NextRequest) {
       transactionType,
       category,
       officeType: category === 'office' ? officeType : undefined,
+      customHeading: customHeading || undefined,
       fields: fields || {},
+      nearbyAreas: nearbyAreas || [],
+      locationPin: locationPin || '',
+      contactName: contactName || '',
+      contactMobile: contactMobile || '',
+      contactDesignation: contactDesignation || '',
+      remarks: remarks || undefined,
       locationArea: fields?.locationArea?.value || '',
       description: fields?.description?.value || '',
       photos: photos || [],
-      status: 'pending', // Agent submissions are PENDING
+      status: status === 'draft' ? 'draft' : 'pending', // Agent submissions are PENDING or DRAFT
       submittedBy: {
         type: 'agent',
         id: payload.id,
