@@ -1,18 +1,31 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { CATEGORIES, getFieldsForCategory, FieldDefinition } from '@/lib/propertyFields';
 
 interface City { _id: string; name: string; status: string; }
 interface Photo { url: string; publicId: string; label: string; isMasked: boolean; isCover: boolean; order: number; }
 
-export default function AgentSubmitPage() {
+export default function AgentSubmitPageWrapper() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="w-8 h-8 border-3 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div></div>}>
+      <AgentSubmitPage />
+    </Suspense>
+  );
+}
+
+function AgentSubmitPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const editId = searchParams.get('edit');
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [editPropertyId, setEditPropertyId] = useState('');
   const [step, setStep] = useState(1);
   const [cities, setCities] = useState<City[]>([]);
   const [loading, setLoading] = useState(false);
+  const [loadingEdit, setLoadingEdit] = useState(!!editId);
 
   // Form state
   const [city, setCity] = useState('');
@@ -46,6 +59,43 @@ export default function AgentSubmitPage() {
     fetch('/api/public/cities').then(r => r.json()).then(data => setCities(data.filter((c: City) => c.status === 'active')));
   }, []);
 
+  // Load existing property for edit mode
+  useEffect(() => {
+    if (!editId) return;
+    setLoadingEdit(true);
+    fetch(`/api/agent/properties?view=mine`)
+      .then(r => r.json())
+      .then((data) => {
+        if (!Array.isArray(data)) return;
+        const prop = data.find((p: { _id: string }) => p._id === editId);
+        if (!prop) { alert('Property not found or access denied'); router.push('/agent'); return; }
+        
+        setIsEditMode(true);
+        setEditPropertyId(prop._id);
+        setCity(prop.city || '');
+        setTransactionType(prop.transactionType || '');
+        setCategory(prop.category || '');
+        setOfficeType(prop.officeType || '');
+        setCustomHeading(prop.customHeading || '');
+        setNearbyAreas(prop.nearbyAreas || []);
+        setLocationPin(prop.locationPin || '');
+        setContactName(prop.contactName || '');
+        setContactMobile(prop.contactMobile || '');
+        setContactDesignation(prop.contactDesignation || '');
+        setRemarks(prop.remarks || '');
+        setPhotos(prop.photos || []);
+        
+        // Load fields after a short delay to allow field init
+        setTimeout(() => {
+          if (prop.fields) setFieldValues(prop.fields);
+        }, 100);
+        
+        setStep(4); // Go directly to form
+        setLoadingEdit(false);
+      })
+      .catch(() => { setLoadingEdit(false); });
+  }, [editId, router]);
+
   // Fetch localities when city changes
   useEffect(() => {
     if (city) {
@@ -55,15 +105,15 @@ export default function AgentSubmitPage() {
     }
   }, [city]);
 
-  // Initialize field values when category is selected
+  // Initialize field values when category is selected (skip in edit mode as fields are loaded from API)
   useEffect(() => {
-    if (transactionType && category) {
+    if (transactionType && category && !isEditMode) {
       const fields = getFieldsForCategory(transactionType, category);
       const init: Record<string, { value: string | string[]; checked: boolean; unit?: string }> = {};
       fields.forEach(f => { init[f.key] = { value: f.type === 'multi-checkbox' ? [] : '', checked: false, unit: f.unit || '' }; });
       setFieldValues(init);
     }
-  }, [transactionType, category]);
+  }, [transactionType, category, isEditMode]);
 
   const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -111,29 +161,44 @@ export default function AgentSubmitPage() {
     }
     setLoading(true);
     try {
-      const res = await fetch('/api/agent/properties', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          city,
-          transactionType,
-          category,
-          officeType: category === 'office' ? officeType : undefined,
-          customHeading: customHeading || undefined,
-          fields: fieldValues,
-          nearbyAreas,
-          locationPin,
-          contactName,
-          contactMobile,
-          contactDesignation,
-          remarks: remarks || undefined,
-          photos,
-          status: asDraft ? 'draft' : 'pending',
-        }),
-      });
+      const payload = {
+        city,
+        transactionType,
+        category,
+        officeType: category === 'office' ? officeType : undefined,
+        customHeading: customHeading || undefined,
+        fields: fieldValues,
+        nearbyAreas,
+        locationPin,
+        contactName,
+        contactMobile,
+        contactDesignation,
+        remarks: remarks || undefined,
+        photos,
+        status: asDraft ? 'draft' : 'pending',
+      };
+
+      let res: Response;
+      if (isEditMode && editPropertyId) {
+        // Edit mode: PUT to update existing property
+        res = await fetch('/api/agent/properties', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ propertyId: editPropertyId, action: 'edit', ...payload }),
+        });
+      } else {
+        // New submission: POST
+        res = await fetch('/api/agent/properties', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+      }
 
       if (res.ok) {
-        if (asDraft) {
+        if (isEditMode) {
+          alert(asDraft ? 'Draft updated!' : 'Property updated and resubmitted for approval!');
+        } else if (asDraft) {
           alert('Property saved as draft!');
         } else {
           alert('Property submitted for Admin approval!');
@@ -209,19 +274,36 @@ export default function AgentSubmitPage() {
     );
   };
 
+  if (loadingEdit) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-8 h-8 border-3 border-blue-200 border-t-blue-600 rounded-full animate-spin mx-auto mb-3"></div>
+          <p className="text-gray-500 text-sm">Loading property...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       <header className="bg-white shadow-sm border-b">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center gap-4">
           <Link href="/agent" className="text-blue-600 hover:text-blue-800">← Back</Link>
-          <h1 className="text-xl font-bold text-gray-800">Submit Property</h1>
+          <h1 className="text-xl font-bold text-gray-800">{isEditMode ? '✏️ Edit Property' : 'Submit Property'}</h1>
         </div>
       </header>
 
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 text-sm text-yellow-800 mb-6">
-          ⚠️ Your submission will be reviewed by Admin before publishing.
-        </div>
+        {isEditMode ? (
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-sm text-blue-800 mb-6">
+            ✏️ You are editing an existing property. Changes will be resubmitted for Admin approval.
+          </div>
+        ) : (
+          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 text-sm text-yellow-800 mb-6">
+            ⚠️ Your submission will be reviewed by Admin before publishing.
+          </div>
+        )}
 
         {/* Step 1: City */}
         {step >= 1 && (
