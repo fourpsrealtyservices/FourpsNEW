@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 
 interface Property {
@@ -28,16 +29,37 @@ interface Property {
 
 const PER_PAGE = 20;
 
-export default function ManagePropertiesPage() {
+export default function ManagePropertiesPageWrapper() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><p className="text-gray-500">Loading...</p></div>}>
+      <ManagePropertiesPage />
+    </Suspense>
+  );
+}
+
+function ManagePropertiesPage() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const initialFilter = searchParams.get('status') || '';
   const [properties, setProperties] = useState<Property[]>([]);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState('');
+  const [filter, setFilter] = useState(initialFilter);
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
+  const [rejectingId, setRejectingId] = useState<string | null>(null);
+  const [rejectionReason, setRejectionReason] = useState('');
 
   useEffect(() => {
     fetchProperties();
   }, [filter]);
+
+  // Update URL when filter changes so Back button preserves the tab
+  const updateFilter = (newFilter: string) => {
+    setFilter(newFilter);
+    setLoading(true);
+    const url = newFilter ? `/addddmin/properties?status=${newFilter}` : '/addddmin/properties';
+    router.replace(url, { scroll: false });
+  };
 
   const fetchProperties = async () => {
     const params = filter ? `?status=${filter}` : '';
@@ -49,13 +71,28 @@ export default function ManagePropertiesPage() {
     setLoading(false);
   };
 
-  const handleStatusChange = async (id: string, newStatus: string) => {
+  const handleStatusChange = async (id: string, newStatus: string, reason?: string) => {
+    const body: Record<string, string> = { status: newStatus };
+    if (newStatus === 'rejected' && reason) {
+      body.rejectionReason = reason;
+    }
     await fetch(`/api/admin/properties/${id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ status: newStatus }),
+      body: JSON.stringify(body),
     });
+    setRejectingId(null);
+    setRejectionReason('');
     fetchProperties();
+  };
+
+  const handleRejectClick = (id: string) => {
+    setRejectingId(id);
+    setRejectionReason('');
+  };
+
+  const handleConfirmReject = (id: string) => {
+    handleStatusChange(id, 'rejected', rejectionReason);
   };
 
   const handleDelete = async (id: string) => {
@@ -259,7 +296,7 @@ export default function ManagePropertiesPage() {
           {['', 'published', 'pending', 'rejected', 'unpublished', 'draft'].map((s) => (
             <button
               key={s}
-              onClick={() => { setFilter(s); setLoading(true); }}
+              onClick={() => updateFilter(s)}
               className={`px-4 py-2 rounded-lg text-sm font-medium ${filter === s ? 'bg-blue-600 text-white' : 'bg-white border text-gray-600 hover:bg-gray-50'}`}
             >
               {s || 'All'}
@@ -299,7 +336,7 @@ export default function ManagePropertiesPage() {
                       {property.status === 'pending' && (
                         <>
                           <button onClick={() => handleStatusChange(property._id, 'published')} className="text-green-600 hover:text-green-800 text-sm font-medium">Approve</button>
-                          <button onClick={() => handleStatusChange(property._id, 'rejected')} className="text-red-600 hover:text-red-800 text-sm font-medium">Reject</button>
+                          <button onClick={() => handleRejectClick(property._id)} className="text-red-600 hover:text-red-800 text-sm font-medium">Reject</button>
                         </>
                       )}
                       {property.status === 'published' && (
@@ -335,6 +372,34 @@ export default function ManagePropertiesPage() {
                             </button>
                           </div>
                         ))}
+                      </div>
+                    </div>
+                  )}
+                  {/* Rejection Reason Input */}
+                  {rejectingId === property._id && (
+                    <div className="mt-3 p-3 bg-red-50 border border-red-200 rounded-lg">
+                      <label className="block text-sm font-medium text-red-800 mb-1">Reason for Rejection</label>
+                      <textarea
+                        value={rejectionReason}
+                        onChange={(e) => setRejectionReason(e.target.value)}
+                        placeholder="Enter the reason for rejecting this property (visible to agent)..."
+                        rows={3}
+                        className="w-full px-3 py-2 border border-red-200 rounded-lg text-sm text-gray-800 focus:ring-2 focus:ring-red-100 focus:border-red-300 outline-none"
+                        autoFocus
+                      />
+                      <div className="flex gap-2 mt-2">
+                        <button
+                          onClick={() => handleConfirmReject(property._id)}
+                          className="bg-red-600 text-white px-4 py-1.5 rounded-lg text-sm font-medium hover:bg-red-700"
+                        >
+                          Confirm Reject
+                        </button>
+                        <button
+                          onClick={() => { setRejectingId(null); setRejectionReason(''); }}
+                          className="bg-gray-200 text-gray-700 px-4 py-1.5 rounded-lg text-sm font-medium hover:bg-gray-300"
+                        >
+                          Cancel
+                        </button>
                       </div>
                     </div>
                   )}

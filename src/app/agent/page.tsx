@@ -14,6 +14,12 @@ interface Property {
   soldOut?: boolean;
   customHeading?: string;
   officeType?: string;
+  rejectionReason?: string;
+  locationPin?: string;
+  contactName?: string;
+  contactMobile?: string;
+  contactDesignation?: string;
+  remarks?: string;
   fields?: Record<string, { value: string | string[]; checked: boolean; unit?: string }>;
   photos?: { url: string; label: string; isMasked: boolean; isCover: boolean }[];
   createdAt: string;
@@ -166,6 +172,13 @@ export default function AgentDashboard() {
                       <p className="text-xs text-gray-500 mt-0.5">💰 Price: {property.fields.expectedSalePrice.value as string}</p>
                     )}
                     <p className="text-xs text-gray-400 mt-1">Added: {new Date(property.createdAt).toLocaleDateString()}</p>
+                    {/* Rejection Reason - visible to agent */}
+                    {property.status === 'rejected' && property.rejectionReason && (
+                      <div className="mt-2 p-2 bg-red-50 border border-red-200 rounded-lg">
+                        <p className="text-xs font-medium text-red-700">❌ Rejection Reason:</p>
+                        <p className="text-sm text-red-800 mt-0.5">{property.rejectionReason}</p>
+                      </div>
+                    )}
                   </div>
 
                   {/* Actions - Edit, View, Mark as Sold (NO Delete/Unpublish) */}
@@ -218,6 +231,27 @@ export default function AgentDashboard() {
                     )}
                   </div>
                 </div>
+
+                {/* Backend-only info (visible to agent for their own properties) */}
+                {(property.contactName || property.contactMobile || property.locationPin || property.remarks) && (
+                  <div className="mt-3 p-2.5 bg-gray-50 border border-gray-200 rounded-lg">
+                    <p className="text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wide">🔒 Backend Info (not shown publicly)</p>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 text-xs text-gray-700">
+                      {property.contactName && (
+                        <p><span className="text-gray-500">Contact:</span> {property.contactName}{property.contactDesignation ? ` (${property.contactDesignation})` : ''}</p>
+                      )}
+                      {property.contactMobile && (
+                        <p><span className="text-gray-500">Mobile:</span> {property.contactMobile}</p>
+                      )}
+                      {property.locationPin && (
+                        <p className="sm:col-span-2"><span className="text-gray-500">Location PIN:</span> <a href={property.locationPin.startsWith('http') ? property.locationPin : `https://maps.google.com/?q=${property.locationPin}`} target="_blank" className="text-blue-600 hover:underline truncate">{property.locationPin.length > 50 ? property.locationPin.slice(0, 50) + '...' : property.locationPin}</a></p>
+                      )}
+                      {property.remarks && (
+                        <p className="sm:col-span-2"><span className="text-gray-500">Remarks:</span> {property.remarks}</p>
+                      )}
+                    </div>
+                  </div>
+                )}
 
                 {/* Photos preview */}
                 {property.photos && property.photos.length > 0 && (

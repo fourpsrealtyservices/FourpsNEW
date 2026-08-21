@@ -14,9 +14,8 @@ export async function GET(request: NextRequest) {
     const payload = await verifyToken(token);
     if (!payload || payload.role !== 'agent') return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 
-    // Agent can only see their own submissions
+    // Agent can see their own submissions (including backend-only fields they submitted)
     const properties = await Property.find({ 'submittedBy.id': payload.id })
-      .select('-locationPin -contactName -contactMobile -contactDesignation')
       .sort({ createdAt: -1 });
     return NextResponse.json(properties);
   } catch (error) {

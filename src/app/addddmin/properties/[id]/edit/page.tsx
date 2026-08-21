@@ -2,7 +2,6 @@
 
 import { useState, useEffect, use } from 'react';
 import { useRouter } from 'next/navigation';
-import Link from 'next/link';
 import { getFieldsForCategory, FieldDefinition } from '@/lib/propertyFields';
 
 interface Photo {
@@ -62,7 +61,7 @@ export default function EditPropertyPage({ params }: { params: Promise<{ id: str
       }),
     });
     setSaving(false);
-    router.push('/addddmin/properties');
+    router.back();
   };
 
   const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -189,7 +188,7 @@ export default function EditPropertyPage({ params }: { params: Promise<{ id: str
     <div className="min-h-screen bg-gray-50">
       <header className="bg-white shadow-sm border-b">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center gap-4">
-          <Link href="/addddmin/properties" className="text-blue-600 hover:text-blue-800">← Back</Link>
+          <button onClick={() => router.back()} className="text-blue-600 hover:text-blue-800">← Back</button>
           <h1 className="text-xl font-bold text-gray-800">Edit Property — {property.propertyId as string}</h1>
         </div>
       </header>
@@ -304,7 +303,7 @@ export default function EditPropertyPage({ params }: { params: Promise<{ id: str
           <button onClick={handleSave} disabled={saving} className="bg-blue-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50">
             {saving ? 'Saving...' : 'Save Changes'}
           </button>
-          <Link href="/addddmin/properties" className="bg-gray-200 text-gray-700 px-8 py-3 rounded-lg font-medium hover:bg-gray-300">Cancel</Link>
+          <button onClick={() => router.back()} className="bg-gray-200 text-gray-700 px-8 py-3 rounded-lg font-medium hover:bg-gray-300">Cancel</button>
         </div>
       </main>
     </div>
