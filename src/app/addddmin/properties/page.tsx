@@ -330,7 +330,10 @@ function ManagePropertiesPage() {
                     </div>
                     <div className="flex gap-2 items-center flex-wrap justify-end">
                       {property.status === 'published' && (
-                        <a href={`/listing/${property.propertyId}`} target="_blank" className="text-blue-600 hover:text-blue-800 text-sm font-medium border px-2 py-1 rounded">View</a>
+                        <a href={`/listing/${property.propertyId}`} target="_blank" className="text-blue-600 hover:text-blue-800 text-sm font-medium border px-2 py-1 rounded">View Live</a>
+                      )}
+                      {(property.status === 'pending' || property.status === 'rejected' || property.status === 'unpublished' || property.status === 'draft') && (
+                        <a href={`/listing/${property.propertyId}?preview=true`} target="_blank" className="text-blue-600 hover:text-blue-800 text-sm font-medium border px-2 py-1 rounded">Preview</a>
                       )}
                       <Link href={`/addddmin/properties/${property._id}/edit`} className="text-indigo-600 hover:text-indigo-800 text-sm font-medium border px-2 py-1 rounded">Edit</Link>
                       {property.status === 'pending' && (

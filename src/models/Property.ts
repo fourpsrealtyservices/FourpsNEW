@@ -67,7 +67,7 @@ export interface IProperty extends Document {
 
 const PropertyPhotoSchema = new Schema<IPropertyPhoto>({
   url: { type: String, required: true },
-  publicId: { type: String, required: true },
+  publicId: { type: String, default: '' },
   label: { type: String, default: '' },
   isMasked: { type: Boolean, default: false },
   isCover: { type: Boolean, default: false },

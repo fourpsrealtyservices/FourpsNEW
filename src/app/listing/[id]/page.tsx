@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, use } from 'react';
+import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -24,6 +25,8 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.fourps.in';
 
 export default function ListingPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
+  const searchParams = useSearchParams();
+  const isPreview = searchParams.get('preview') === 'true';
   const [property, setProperty] = useState<Property | null>(null);
   const [loading, setLoading] = useState(true);
   const [soldOut, setSoldOut] = useState(false);
@@ -35,7 +38,8 @@ export default function ListingPage({ params }: { params: Promise<{ id: string }
   const [enquirySubmitted, setEnquirySubmitted] = useState(false);
 
   useEffect(() => {
-    fetch(`/api/public/properties/${id}`)
+    const previewParam = isPreview ? '?preview=true' : '';
+    fetch(`/api/public/properties/${id}${previewParam}`)
       .then(r => r.json())
       .then(data => {
         if (data.soldOut) { setSoldOut(true); setProperty(null); }
@@ -43,7 +47,7 @@ export default function ListingPage({ params }: { params: Promise<{ id: string }
         else setProperty(data);
         setLoading(false);
       });
-  }, [id]);
+  }, [id, isPreview]);
 
   const categoryLabel = (cat: string) => {
     const labels: Record<string, string> = { retail: 'Retail', office: 'Office', coworking: 'Co-working', commercial_plot: 'Commercial Plot', land_plot: 'Land/Plot', investment: 'Investment' };
@@ -131,6 +135,13 @@ export default function ListingPage({ params }: { params: Promise<{ id: string }
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
+
+      {/* Preview Banner */}
+      {isPreview && (
+        <div className="bg-amber-500 text-white text-center py-2 px-4 text-sm font-medium">
+          ⚠️ ADMIN PREVIEW — This property is not yet published. Only you can see this page.
+        </div>
+      )}
 
       <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-8">
         {/* Top Bar - Property ID & Quick Info */}

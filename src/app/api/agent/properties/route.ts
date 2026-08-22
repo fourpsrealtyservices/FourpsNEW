@@ -63,7 +63,7 @@ export async function PUT(request: NextRequest) {
       if (city) property.city = city;
       if (transactionType) property.transactionType = transactionType;
       if (category) property.category = category;
-      if (officeType !== undefined) property.officeType = category === 'office' ? officeType : undefined;
+      if (officeType !== undefined) property.officeType = (category === 'office' && officeType) ? officeType : undefined;
       if (customHeading !== undefined) property.customHeading = customHeading || undefined;
       if (fields) {
         property.fields = fields;
@@ -102,9 +102,10 @@ export async function PUT(request: NextRequest) {
     if (property.status === 'rejected') property.status = 'pending';
     await property.save();
     return NextResponse.json({ success: true });
-  } catch (error) {
-    console.error('Error:', error);
-    return NextResponse.json({ error: 'Failed to update' }, { status: 500 });
+  } catch (error: unknown) {
+    console.error('Agent PUT error:', error);
+    const message = error instanceof Error ? error.message : 'Failed to update';
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
 
