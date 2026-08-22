@@ -165,7 +165,7 @@ function AgentSubmitPage() {
         city,
         transactionType,
         category,
-        officeType: category === 'office' ? officeType : undefined,
+        officeType: (category === 'office' && officeType) ? officeType : undefined,
         customHeading: customHeading || undefined,
         fields: fieldValues,
         nearbyAreas,

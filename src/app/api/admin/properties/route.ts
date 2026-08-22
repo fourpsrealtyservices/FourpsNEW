@@ -64,7 +64,7 @@ export async function POST(request: NextRequest) {
       city,
       transactionType,
       category,
-      officeType: category === 'office' ? officeType : undefined,
+      officeType: (category === 'office' && officeType && officeType !== '') ? officeType : undefined,
       customHeading: customHeading || undefined,
       fields: fields || {},
       locationArea: fields?.locationArea?.value || '',

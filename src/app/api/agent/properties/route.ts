@@ -127,13 +127,13 @@ export async function POST(request: NextRequest) {
 
     const { propertyId, propertyNumber } = await generatePropertyId(transactionType, category);
 
-    const property = await Property.create({
+    // Build property data - strip empty strings from enum fields to prevent validation errors
+    const propertyData: Record<string, unknown> = {
       propertyId,
       propertyNumber,
-      city,
-      transactionType,
-      category,
-      officeType: (category === 'office' && officeType) ? officeType : undefined,
+      city: city.trim(),
+      transactionType: transactionType.trim(),
+      category: category.trim(),
       customHeading: customHeading || undefined,
       fields: fields || {},
       nearbyAreas: nearbyAreas || [],
@@ -145,17 +145,25 @@ export async function POST(request: NextRequest) {
       locationArea: fields?.locationArea?.value || '',
       description: fields?.description?.value || '',
       photos: photos || [],
-      status: status === 'draft' ? 'draft' : 'pending', // Agent submissions are PENDING or DRAFT
+      status: status === 'draft' ? 'draft' : 'pending',
       submittedBy: {
         type: 'agent',
         id: payload.id,
         name: payload.name || 'Agent',
       },
-    });
+    };
+
+    // Only include officeType if it's a valid non-empty value AND category is office
+    if (category === 'office' && officeType && officeType.trim() !== '') {
+      propertyData.officeType = officeType.trim();
+    }
+
+    const property = await Property.create(propertyData);
 
     return NextResponse.json(property, { status: 201 });
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('Error creating property:', error);
-    return NextResponse.json({ error: 'Failed to submit property' }, { status: 500 });
+    const message = error instanceof Error ? error.message : 'Failed to submit property';
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
