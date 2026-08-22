@@ -82,17 +82,20 @@ const PropertySchema = new Schema<IProperty>(
       type: String, 
       enum: ['lease', 'sale'], 
       required: true, 
-      index: true 
+      index: true,
+      set: (v: string) => v === '' ? undefined : v,
     },
     category: { 
       type: String, 
       enum: ['retail', 'office', 'coworking', 'commercial_plot', 'land_plot', 'investment', 'rental_income'], 
       required: true,
-      index: true 
+      index: true,
+      set: (v: string) => v === '' ? undefined : v,
     },
     officeType: { 
       type: String, 
-      enum: ['furnished', 'unfurnished'] 
+      enum: ['furnished', 'unfurnished'],
+      set: (v: string) => v === '' ? undefined : v,
     },
 
     // Dynamic checkbox-based fields
@@ -125,10 +128,11 @@ const PropertySchema = new Schema<IProperty>(
       type: String, 
       enum: ['draft', 'pending', 'published', 'rejected', 'unpublished'], 
       default: 'draft',
-      index: true 
+      index: true,
+      set: (v: string) => v === '' ? undefined : v,
     },
     submittedBy: {
-      type: { type: String, enum: ['admin', 'agent'] },
+      type: { type: String, enum: ['admin', 'agent'], set: (v: string) => v === '' ? undefined : v },
       id: { type: String },
       name: { type: String },
     },
