@@ -21,7 +21,6 @@ interface Property {
 }
 
 const WHATSAPP_NUMBER = '919059909675';
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.fourps.in';
 
 export default function ListingPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -72,7 +71,7 @@ export default function ListingPage({ params }: { params: Promise<{ id: string }
     const location = property.fields?.locationArea?.checked ? property.fields.locationArea.value : property.city;
     const area = property.fields?.superBuiltUpArea?.checked ? `${property.fields.superBuiltUpArea.value} sq ft` : '';
     return encodeURIComponent(
-      `Hi! Check out this property on 4Ps Realty Services:\n${categoryLabel(property.category)} for ${property.transactionType === 'lease' ? 'Lease' : 'Sale'} | ID: ${property.propertyId}\n${location ? `Location: ${location}` : ''}${area ? ` | Area: ${area}` : ''}\nView details: ${SITE_URL}/listing/${property.propertyId}`
+      `Hi! Check out this property on 4Ps Realty Services:\n${categoryLabel(property.category)} for ${property.transactionType === 'lease' ? 'Lease' : 'Sale'} | ID: ${property.propertyId}\n${location ? `Location: ${location}` : ''}${area ? ` | Area: ${area}` : ''}\nView details: ${window.location.origin}/listing/${property.propertyId}`
     );
   };
 
@@ -151,7 +150,7 @@ export default function ListingPage({ params }: { params: Promise<{ id: string }
             For {property.transactionType === 'lease' ? 'Lease' : 'Sale'}
           </span>
           <span className="px-3 py-1.5 rounded-lg text-sm font-semibold bg-gray-100 text-gray-700">{categoryLabel(property.category)}</span>
-          {property.officeType && <span className="px-3 py-1.5 rounded-lg text-sm font-medium bg-amber-50 text-amber-700 capitalize">{property.officeType}</span>}
+          {property.category === 'office' && property.officeType && <span className="px-3 py-1.5 rounded-lg text-sm font-medium bg-amber-50 text-amber-700 capitalize">{property.officeType}</span>}
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -326,7 +325,7 @@ export default function ListingPage({ params }: { params: Promise<{ id: string }
                       </a>
                       <button
                         onClick={() => {
-                          navigator.clipboard.writeText(`${SITE_URL}/listing/${property.propertyId}`);
+                          navigator.clipboard.writeText(`${window.location.origin}/listing/${property.propertyId}`);
                           setLinkCopied(true);
                           setTimeout(() => { setLinkCopied(false); setShowShareMenu(false); }, 1500);
                         }}
