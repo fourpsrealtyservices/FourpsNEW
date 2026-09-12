@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/mongodb';
 import Agent from '@/models/Agent';
 import { verifyToken, createToken } from '@/lib/auth';
+import bcrypt from 'bcryptjs';
 
 export async function POST(request: NextRequest) {
   try {
@@ -28,12 +29,24 @@ export async function POST(request: NextRequest) {
 
     // If must change password (first login), skip current password check
     if (!agent.mustChangePassword) {
-      if (!currentPassword || agent.password !== currentPassword) {
+      if (!currentPassword) {
+        return NextResponse.json({ error: 'Current password is incorrect' }, { status: 401 });
+      }
+      // Support both bcrypt hashed and plain text (legacy) passwords
+      const isHashed = agent.password?.startsWith('$2a$') || agent.password?.startsWith('$2b$');
+      let currentMatch = false;
+      if (isHashed) {
+        currentMatch = await bcrypt.compare(currentPassword, agent.password!);
+      } else {
+        currentMatch = agent.password === currentPassword;
+      }
+      if (!currentMatch) {
         return NextResponse.json({ error: 'Current password is incorrect' }, { status: 401 });
       }
     }
 
-    agent.password = newPassword;
+    // Hash the new password before saving
+    agent.password = await bcrypt.hash(newPassword, 10);
     agent.mustChangePassword = false;
     await agent.save();
 

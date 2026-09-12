@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/mongodb';
 import Agent from '@/models/Agent';
 import { createToken } from '@/lib/auth';
+import bcrypt from 'bcryptjs';
 
 export async function POST(request: NextRequest) {
   try {
@@ -27,8 +28,17 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'No password set. Contact admin to set your password.' }, { status: 403 });
     }
 
-    // Simple password check (plain text for now — can add bcrypt later)
-    if (agent.password !== password) {
+    // Password check - supports both bcrypt hashed and plain text (legacy)
+    const isHashed = agent.password.startsWith('$2a$') || agent.password.startsWith('$2b$');
+    let passwordMatch = false;
+    if (isHashed) {
+      passwordMatch = await bcrypt.compare(password, agent.password);
+    } else {
+      // Legacy plain text comparison
+      passwordMatch = agent.password === password;
+    }
+
+    if (!passwordMatch) {
       return NextResponse.json({ error: 'Incorrect password' }, { status: 401 });
     }
 
