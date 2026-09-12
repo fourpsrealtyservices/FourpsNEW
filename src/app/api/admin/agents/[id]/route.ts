@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/mongodb';
 import Agent from '@/models/Agent';
+import bcrypt from 'bcryptjs';
 
 // GET single agent
 export async function GET(
@@ -19,11 +20,23 @@ export async function GET(
   }
 }
 
-// Generate unique agent code
+// Generate unique agent code by finding the highest existing number
 async function generateAgentCode(): Promise<string> {
-  const count = await Agent.countDocuments();
-  const num = String(count + 1).padStart(3, '0');
-  return `FP-AGT-${num}`;
+  const agents = await Agent.find({ agentCode: { $exists: true, $ne: null } })
+    .select('agentCode')
+    .lean();
+  
+  let maxNum = 0;
+  for (const agent of agents) {
+    const match = (agent as { agentCode?: string }).agentCode?.match(/FP-AGT-(\d+)/);
+    if (match) {
+      const num = parseInt(match[1], 10);
+      if (num > maxNum) maxNum = num;
+    }
+  }
+  
+  const nextNum = String(maxNum + 1).padStart(3, '0');
+  return `FP-AGT-${nextNum}`;
 }
 
 // PUT update agent
@@ -44,15 +57,21 @@ export async function PUT(
       }
     }
 
-    const agent = await Agent.findByIdAndUpdate(id, body, { new: true });
+    // Hash password if being set/updated
+    if (body.password && body.password.length < 60) {
+      body.password = await bcrypt.hash(body.password, 10);
+    }
+
+    const agent = await Agent.findByIdAndUpdate(id, body, { new: true, runValidators: true });
     if (!agent) {
       return NextResponse.json({ error: 'Agent not found' }, { status: 404 });
     }
 
     return NextResponse.json(agent);
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('Error updating agent:', error);
-    return NextResponse.json({ error: 'Failed to update agent' }, { status: 500 });
+    const message = error instanceof Error ? error.message : 'Failed to update agent';
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
 
