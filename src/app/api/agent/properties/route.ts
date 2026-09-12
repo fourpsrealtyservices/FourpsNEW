@@ -60,6 +60,34 @@ export async function PUT(request: NextRequest) {
     if (action === 'edit') {
       const { city, transactionType, category, officeType, customHeading, fields, nearbyAreas, locationPin, contactName, contactMobile, contactDesignation, remarks, photos, status: requestedStatus } = body;
 
+      // If property is published, store edits separately (original stays live)
+      if (property.status === 'published') {
+        const edits: Record<string, unknown> = {};
+        if (city) edits.city = city;
+        if (transactionType) edits.transactionType = transactionType;
+        if (category) edits.category = category;
+        if (officeType !== undefined) edits.officeType = (category === 'office' && officeType) ? officeType : undefined;
+        if (customHeading !== undefined) edits.customHeading = customHeading || undefined;
+        if (fields) {
+          edits.fields = fields;
+          edits.locationArea = fields?.locationArea?.value || '';
+          edits.description = fields?.description?.value || '';
+        }
+        if (nearbyAreas !== undefined) edits.nearbyAreas = nearbyAreas;
+        if (locationPin !== undefined) edits.locationPin = locationPin;
+        if (contactName !== undefined) edits.contactName = contactName;
+        if (contactMobile !== undefined) edits.contactMobile = contactMobile;
+        if (contactDesignation !== undefined) edits.contactDesignation = contactDesignation;
+        if (remarks !== undefined) edits.remarks = remarks;
+        if (photos !== undefined) edits.photos = photos;
+
+        property.pendingEdits = edits;
+        property.hasPendingEdits = true;
+        await property.save();
+        return NextResponse.json({ success: true, message: 'Edits submitted for admin approval. The published listing remains unchanged until approved.', property });
+      }
+
+      // For non-published properties (draft, pending, rejected), apply edits directly
       if (city) property.city = city;
       if (transactionType) property.transactionType = transactionType;
       if (category) property.category = category;
@@ -83,7 +111,7 @@ export async function PUT(request: NextRequest) {
         property.status = 'pending';
       }
       // If rejected and agent resubmits, change to pending
-      if (property.status === 'rejected') {
+      else if (property.status === 'rejected') {
         property.status = 'pending';
       }
       // If it was a draft and agent wants to keep as draft
@@ -97,6 +125,16 @@ export async function PUT(request: NextRequest) {
 
     // Legacy: simple field/photo update (backward compatible)
     const { fields, photos } = body;
+    if (property.status === 'published') {
+      // For published properties, store as pending edits
+      const edits: Record<string, unknown> = {};
+      if (fields) edits.fields = fields;
+      if (photos) edits.photos = photos;
+      property.pendingEdits = edits;
+      property.hasPendingEdits = true;
+      await property.save();
+      return NextResponse.json({ success: true, message: 'Edits submitted for admin approval.' });
+    }
     if (fields) property.fields = fields;
     if (photos) property.photos = photos;
     if (property.status === 'rejected') property.status = 'pending';

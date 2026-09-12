@@ -48,9 +48,49 @@ export async function PUT(
       return NextResponse.json(property);
     }
 
+    // Handle pending edits approval
+    if (body.action === 'approveEdits') {
+      const property = await Property.findById(id);
+      if (!property) {
+        return NextResponse.json({ error: 'Property not found' }, { status: 404 });
+      }
+      if (!property.pendingEdits || !property.hasPendingEdits) {
+        return NextResponse.json({ error: 'No pending edits to approve' }, { status: 400 });
+      }
+      // Apply pending edits to the property
+      const edits = property.pendingEdits as Record<string, unknown>;
+      for (const [key, value] of Object.entries(edits)) {
+        (property as Record<string, unknown>)[key] = value;
+      }
+      property.pendingEdits = undefined;
+      property.hasPendingEdits = false;
+      await property.save();
+      cache.invalidate('properties');
+      cache.invalidate(`property:${property.propertyId}`);
+      return NextResponse.json(property);
+    }
+
+    // Handle pending edits rejection
+    if (body.action === 'rejectEdits') {
+      const property = await Property.findById(id);
+      if (!property) {
+        return NextResponse.json({ error: 'Property not found' }, { status: 404 });
+      }
+      property.pendingEdits = undefined;
+      property.hasPendingEdits = false;
+      await property.save();
+      return NextResponse.json(property);
+    }
+
     // Handle approval/rejection
     if (body.status === 'published' && !body.publishedAt) {
       body.publishedAt = new Date();
+    }
+
+    // Clear pendingEdits if setting status
+    if (body.status) {
+      body.pendingEdits = undefined;
+      body.hasPendingEdits = false;
     }
 
     const property = await Property.findByIdAndUpdate(id, body, { new: true });

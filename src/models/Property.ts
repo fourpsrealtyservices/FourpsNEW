@@ -57,6 +57,10 @@ export interface IProperty extends Document {
   rejectionReason?: string;
   soldOut?: boolean;
   
+  // Pending edits from agent (stored separately, applied on admin approval)
+  pendingEdits?: Record<string, unknown>;
+  hasPendingEdits?: boolean;
+  
   // Auto-increment number for property ID
   propertyNumber: number;
 
@@ -138,6 +142,10 @@ const PropertySchema = new Schema<IProperty>(
     },
     rejectionReason: { type: String },
     soldOut: { type: Boolean, default: false },
+
+    // Pending edits from agent (original stays live, edits applied on admin approval)
+    pendingEdits: { type: Schema.Types.Mixed },
+    hasPendingEdits: { type: Boolean, default: false },
 
     propertyNumber: { type: Number, required: true },
     publishedAt: { type: Date },

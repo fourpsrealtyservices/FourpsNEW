@@ -24,6 +24,8 @@ interface Property {
   fields?: Record<string, { value: string | string[]; checked: boolean; unit?: string }>;
   photos?: { url: string; label: string; isMasked: boolean; isCover: boolean }[];
   submittedBy: { type: string; name: string; agentId?: string };
+  hasPendingEdits?: boolean;
+  pendingEdits?: Record<string, unknown>;
   createdAt: string;
 }
 
@@ -108,6 +110,17 @@ function ManagePropertiesPage() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ soldOut }),
     });
+  };
+
+  const handlePendingEditsAction = async (id: string, action: 'approveEdits' | 'rejectEdits') => {
+    const label = action === 'approveEdits' ? 'approve' : 'reject';
+    if (!confirm(`Are you sure you want to ${label} these edits?`)) return;
+    await fetch(`/api/admin/properties/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action }),
+    });
+    fetchProperties();
   };
 
   const handleTogglePhotoMask = async (propertyId: string, photoIndex: number, isMasked: boolean) => {
@@ -317,6 +330,7 @@ function ManagePropertiesPage() {
                         <span className="font-mono text-sm font-bold text-blue-600">{property.propertyId}</span>
                         {statusBadge(property.status)}
                         {property.soldOut && <span className="px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">🚫 Sold Out</span>}
+                        {property.hasPendingEdits && <span className="px-2 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800 animate-pulse">✏️ Pending Edits</span>}
                         <span className="text-xs text-gray-500">{property.transactionType === 'lease' ? 'Lease' : 'Sale'}</span>
                         <span className="text-xs bg-gray-100 px-2 py-0.5 rounded">{categoryLabel(property.category)}</span>
                       </div>
@@ -373,6 +387,38 @@ function ManagePropertiesPage() {
                             >
                               {photo.isMasked ? '🔒' : '👁️'}
                             </button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  {/* Pending Edits from Agent */}
+                  {property.hasPendingEdits && property.pendingEdits && (
+                    <div className="mt-3 p-3 bg-orange-50 border border-orange-200 rounded-lg">
+                      <div className="flex items-center justify-between mb-2">
+                        <p className="text-sm font-semibold text-orange-800">✏️ Agent submitted edits for review</p>
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() => handlePendingEditsAction(property._id, 'approveEdits')}
+                            className="bg-green-600 text-white px-3 py-1.5 rounded-lg text-xs font-medium hover:bg-green-700"
+                          >
+                            ✅ Approve Edits
+                          </button>
+                          <button
+                            onClick={() => handlePendingEditsAction(property._id, 'rejectEdits')}
+                            className="bg-red-600 text-white px-3 py-1.5 rounded-lg text-xs font-medium hover:bg-red-700"
+                          >
+                            ❌ Reject Edits
+                          </button>
+                        </div>
+                      </div>
+                      <div className="text-xs text-orange-700 space-y-1">
+                        {Object.entries(property.pendingEdits).map(([key, value]) => (
+                          <div key={key}>
+                            <span className="font-medium">{key}:</span>{' '}
+                            <span className="text-gray-700">
+                              {typeof value === 'object' ? JSON.stringify(value).slice(0, 100) + '...' : String(value)}
+                            </span>
                           </div>
                         ))}
                       </div>

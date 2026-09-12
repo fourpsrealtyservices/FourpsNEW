@@ -22,6 +22,7 @@ interface Property {
   remarks?: string;
   fields?: Record<string, { value: string | string[]; checked: boolean; unit?: string }>;
   photos?: { url: string; label: string; isMasked: boolean; isCover: boolean }[];
+  hasPendingEdits?: boolean;
   createdAt: string;
 }
 
@@ -155,6 +156,7 @@ export default function AgentDashboard() {
                     <div className="flex items-center gap-2 flex-wrap">
                       <span className="font-mono text-sm font-bold text-blue-600">{property.propertyId}</span>
                       {statusBadge(property.status, property.soldOut)}
+                      {property.hasPendingEdits && <span className="px-2 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800">✏️ Edits Under Review</span>}
                       <span className={`text-xs px-2 py-0.5 rounded ${property.transactionType === 'lease' ? 'bg-emerald-50 text-emerald-700' : 'bg-violet-50 text-violet-700'}`}>
                         {property.transactionType === 'lease' ? 'Lease' : 'Sale'}
                       </span>
